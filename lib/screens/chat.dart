@@ -11,6 +11,14 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<ChatMessage> messages = [];
 
+  void handleSend() {
+    setState(() {
+      messages.add(
+          ChatMessage(content: _messageController.text, role: UserRole.user));
+    });
+    _messageController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +58,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        // Focused border
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide:
                             const BorderSide(color: Colors.blue, width: 2.0),
@@ -62,14 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: () {
-                    setState(() {
-                      messages.add(ChatMessage(
-                          content: _messageController.text,
-                          role: UserRole.user));
-                    });
-                    _messageController.clear();
-                  },
+                  onPressed: handleSend,
                 ),
               ],
             ),
@@ -83,13 +83,16 @@ class _ChatScreenState extends State<ChatScreen> {
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
-        padding: const EdgeInsets.all(8.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         decoration: BoxDecoration(
-          color: Colors.blue[100],
-          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.blue[50],
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Text(message.content),
+        child: Text(
+          message.content,
+          style: const TextStyle(fontSize: 18.0, color: Colors.black87),
+        ),
       ),
     );
   }
@@ -98,13 +101,16 @@ class _ChatScreenState extends State<ChatScreen> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: const EdgeInsets.all(8.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         decoration: BoxDecoration(
-          color: Colors.green[100],
-          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.green[50],
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Text(message.content),
+        child: Text(
+          message.content,
+          style: const TextStyle(fontSize: 18.0, color: Colors.black87),
+        ),
       ),
     );
   }
@@ -113,12 +119,13 @@ class _ChatScreenState extends State<ChatScreen> {
     return Align(
       alignment: Alignment.center,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
         child: Text(
           message.content,
-          style: const TextStyle(
+          style: TextStyle(
             fontStyle: FontStyle.italic,
-            color: Colors.grey,
+            color: Colors.grey[600],
+            fontSize: 16.0,
           ),
         ),
       ),
