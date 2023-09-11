@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/services/auth_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'services/auth_service.dart'; // Assuming you've created this for authentication
+import 'screens/chat.dart'; // Import the ChatScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,8 +12,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final AuthService _authService = AuthService();
-
-  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
             if (user == null) {
               return LoginScreen(authService: _authService);
             } else {
-              return ChatScreen(user: user);
+              return const ChatScreen(); // Navigate to the ChatScreen when a user is detected
             }
           }
           return const CircularProgressIndicator(); // Show a loading indicator until the auth state is checked
@@ -42,7 +41,7 @@ class MyApp extends StatelessWidget {
 class LoginScreen extends StatelessWidget {
   final AuthService authService;
 
-  const LoginScreen({super.key, required this.authService});
+  LoginScreen({required this.authService});
 
   @override
   Widget build(BuildContext context) {
@@ -54,24 +53,6 @@ class LoginScreen extends StatelessWidget {
             await authService.signInWithGoogle();
           },
         ),
-      ),
-    );
-  }
-}
-
-class ChatScreen extends StatelessWidget {
-  final User user;
-
-  const ChatScreen({super.key, required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat App'),
-      ),
-      body: Center(
-        child: Text('Hello, ${user.displayName}!'),
       ),
     );
   }
