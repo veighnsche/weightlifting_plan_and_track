@@ -10,7 +10,7 @@ class SocketService {
   Future<void> connect() async {
     var token = await _authService.token;
 
-    _socket = IO.io(
+    var socket = IO.io(
         'http://localhost:3000',
         IO.OptionBuilder().setTransports(['websocket']).setAuth({
           'token': token,
@@ -25,6 +25,18 @@ class SocketService {
           print('Disconnected from Socket.io server');
         }
       });
+
+    socket.on('user-connected', (data) {
+      socket.emit('pong', {
+        'message': 'acknowledged',
+      });
+
+      if (data['onboarded'] == false) {
+        print('User is not onboarded');
+      }
+    });
+
+    _socket = socket;
   }
 
   void disconnect() {

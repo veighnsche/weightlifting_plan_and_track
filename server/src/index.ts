@@ -36,6 +36,10 @@ io.on("connection", async (socket) => {
   });
 
   await connectUser(socket);
+
+  socket.on("pong", (message) => {
+    console.log("pong", message);
+  });
 });
 
 const PORT = process.env.PORT || 3000;

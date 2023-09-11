@@ -9,6 +9,7 @@ export interface ClientToServerEvents {
 
   // chat events
   "fetch-chat-history": () => void;
+
   "fetch-chat-messages": (data: {
     chatId: string;
   }) => void;
@@ -20,6 +21,9 @@ export interface ClientToServerEvents {
     height: number;
     gymDescription?: string;
   }) => void;
+
+  // misc events
+  "pong": (message: string) => void;
 }
 
 export interface ServerToClientEvents {
@@ -33,6 +37,7 @@ export interface ServerToClientEvents {
     chatTitle: string;
     timestamp: number;
   }[]) => void;
+
   "chat-messages": (data: {
     chatId: string;
     messages: {
