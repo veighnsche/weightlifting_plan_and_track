@@ -40,15 +40,7 @@ class SocketService {
         }
       })
       ..on('user-connected', (data) {
-        if (data['onboarded'] == false) {
-          print('User not onboarded');
-          onUserNotOnboarded?.call(false);
-        } else {
-          print('User onboarded');
-          onUserNotOnboarded?.call(true);
-        }
-
-        _socket?.emit('acknowledge-user-connected');
+        onUserNotOnboarded?.call(data['onboarded']);
       });
   }
 
