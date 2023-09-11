@@ -12,8 +12,9 @@ const options: DataSourceOptions = {
   synchronize: true,
 };
 
+export const dataSource = new DataSource(options);
+
 export const connectDatabase = async () => {
-  const connection = new DataSource(options);
-  await connection.initialize();
+  await dataSource.initialize();
   console.log("DB connected");
 };

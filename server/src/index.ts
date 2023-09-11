@@ -4,11 +4,11 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from "./events";
-import { connectDatabase } from "./services/databaseConnection";
+import { connectUser } from "./services/connectUser";
+import { connectDatabase } from "./services/database";
 import { initializeFirebase } from "./services/firebase";
 import { getRateLimiter } from "./services/rateLimiter";
 import { authenticateSocket } from "./services/socketAuth";
-import { socketRouter } from "./services/socketRouter";
 
 config();
 
@@ -27,7 +27,16 @@ app.use(cors());
 app.use(express.json());
 app.use(getRateLimiter());
 io.use(authenticateSocket);
-io.use(socketRouter);
+
+io.on("connection", async (socket) => {
+  console.log(`user ${socket.data.decodedToken.name} connected`);
+
+  socket.on("disconnect", () => {
+    console.log(`user ${socket.data.decodedToken.name} disconnected`);
+  });
+
+  await connectUser(socket);
+});
 
 const PORT = process.env.PORT || 3000;
 
