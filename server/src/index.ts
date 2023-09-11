@@ -38,8 +38,27 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
+io.use(async (socket, next) => {
+  const token = socket.handshake.auth.token;
+  if (!token) {
+    console.error("Authentication error: Token not provided");
+    return next(new Error("Authentication error"));
+  }
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    if (decodedToken) {
+      socket.data.decodedToken = decodedToken;
+      return next();
+    }
+  } catch (err: any) {
+    console.error("Authentication error:", err.message);
+    return next(new Error("Authentication error"));
+  }
+});
+
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("user name", socket.data.decodedToken.name);
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

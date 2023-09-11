@@ -31,4 +31,8 @@ class AuthService {
     await googleSignIn.signOut();
     await _auth.signOut();
   }
+
+  Future<String?>? get token {
+    return _auth.currentUser?.getIdToken();
+  }
 }
