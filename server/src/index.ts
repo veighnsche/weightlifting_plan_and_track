@@ -6,6 +6,7 @@ import admin, { ServiceAccount } from "firebase-admin";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { DataSource, DataSourceOptions } from "typeorm";
+import { User } from "./entities/user";
 import serviceAccountKey from "./service-account-key.json";
 
 config(); // Initialize dotenv
@@ -74,11 +75,12 @@ const options: DataSourceOptions = {
   username: "weightlifting_user",
   password: "J8f!2gH#1kP6wQr9",
   database: "weightlifting_db",
-  entities: [/* paths to your entity files */],
+  entities: [User],
   synchronize: true,
 };
 
 const connection = new DataSource(options);
+
 connection.initialize().then(() => {
   console.log("DB connected");
   httpServer.listen(PORT, () => {
