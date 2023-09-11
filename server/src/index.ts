@@ -36,9 +36,10 @@ io.on("connection", async (socket) => {
   });
 
   await connectUser(socket);
+  console.log(`user ${socket.data.decodedToken.name} authenticated`);
 
-  socket.on("pong", (message) => {
-    console.log("pong", message);
+  socket.onAny((event, message) => {
+    console.log(event, message);
   });
 });
 

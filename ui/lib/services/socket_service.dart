@@ -4,13 +4,25 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'auth_service.dart';
 
 class SocketService {
+  SocketService._privateConstructor();
+
+  static final SocketService _instance = SocketService._privateConstructor();
+
+  factory SocketService() {
+    return _instance;
+  }
+
   IO.Socket? _socket;
   final AuthService _authService = AuthService();
 
   Future<void> connect() async {
+    if (_socket?.connected ?? false) {
+      return;
+    }
+
     var token = await _authService.token;
 
-    var socket = IO.io(
+    _socket = IO.io(
         'http://localhost:3000',
         IO.OptionBuilder().setTransports(['websocket']).setAuth({
           'token': token,
@@ -24,22 +36,23 @@ class SocketService {
         if (kDebugMode) {
           print('Disconnected from Socket.io server');
         }
+      })
+      ..on('user-connected', (data) {
+        if (data['onboarded'] == false) {
+          print('User is not onboarded');
+        }
+
+        _socket?.emit('acknowledge-user-connected');
       });
-
-    socket.on('user-connected', (data) {
-      socket.emit('pong', {
-        'message': 'acknowledged',
-      });
-
-      if (data['onboarded'] == false) {
-        print('User is not onboarded');
-      }
-    });
-
-    _socket = socket;
   }
 
   void disconnect() {
     _socket?.disconnect();
+  }
+
+  void sendMessage(String content) {
+    _socket?.emit('new-user-message', {
+      'content': content,
+    });
   }
 }

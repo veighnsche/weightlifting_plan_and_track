@@ -4,7 +4,7 @@ export interface ClientToServerEvents {
   // chat conversation events
   "new-user-message": (data: {
     chatId: string;
-    message: string;
+    content: string;
   }) => void;
 
   // chat events
@@ -23,13 +23,13 @@ export interface ClientToServerEvents {
   }) => void;
 
   // misc events
-  "pong": (message: string) => void;
+  "pongen": (message: string) => void;
 }
 
 export interface ServerToClientEvents {
   // chat conversation events
-  "new-assistant-message": (message: string) => void;
-  "new-system-message": (message: string) => void;
+  "new-assistant-message": (content: string) => void;
+  "new-system-message": (content: string) => void;
 
   // chat events
   "chat-history": (data: {
@@ -41,7 +41,7 @@ export interface ServerToClientEvents {
   "chat-messages": (data: {
     chatId: string;
     messages: {
-      message: string;
+      content: string;
       role: "user" | "assistant" | "system";
     }[];
   }) => void;
@@ -54,7 +54,7 @@ export interface ServerToClientEvents {
 
 export interface InterServerEvents {
   // chat events
-  "new-message": (message: string) => void;
+  "new-message": (content: string) => void;
 }
 
 export interface SocketData {

@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 
+import '../services/socket_service.dart';
+
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final SocketService socketService;
+
+  const ChatScreen({super.key, required this.socketService});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _messageController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
   final List<ChatMessage> messages = [];
 
   void handleSend() {
+    widget.socketService.sendMessage(_contentController.text);
+
     setState(() {
       messages.add(
-          ChatMessage(content: _messageController.text, role: UserRole.user));
+          ChatMessage(content: _contentController.text, role: UserRole.user));
     });
-    _messageController.clear();
+    _contentController.clear();
   }
 
   @override
@@ -51,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _messageController,
+                    controller: _contentController,
                     decoration: InputDecoration(
                       hintText: 'Type a message...',
                       border: OutlineInputBorder(

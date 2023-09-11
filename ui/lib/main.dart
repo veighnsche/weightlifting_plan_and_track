@@ -12,8 +12,14 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final AuthService _authService = AuthService();
+
   final SocketService _socketService = SocketService();
 
   @override
@@ -32,14 +38,27 @@ class MyApp extends StatelessWidget {
               _socketService.disconnect();
               return LoginScreen(authService: _authService);
             } else {
-              _socketService.connect();
-              return const ChatScreen();
+              return FutureBuilder<void>(
+                future: _socketService.connect(),
+                builder: (context, socketSnapshot) {
+                  if (socketSnapshot.connectionState == ConnectionState.done) {
+                    return ChatScreen(socketService: _socketService);
+                  }
+                  return const CircularProgressIndicator(); // Show a loader while connecting
+                },
+              );
             }
           }
           return const CircularProgressIndicator();
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _socketService.disconnect();
+    super.dispose();
   }
 }
 
