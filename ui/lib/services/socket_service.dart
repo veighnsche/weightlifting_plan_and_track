@@ -41,8 +41,10 @@ class SocketService {
       })
       ..on('user-connected', (data) {
         if (data['onboarded'] == false) {
+          print('User not onboarded');
           onUserNotOnboarded?.call(false);
         } else {
+          print('User onboarded');
           onUserNotOnboarded?.call(true);
         }
 
