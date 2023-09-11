@@ -4,7 +4,7 @@
 
 This project provides a chat application with Firebase authentication and a backend server for handling real-time chat using Socket.io.
 
-## Frontend (`lib` folder)
+## Frontend (`ui/lib` folder)
 
 ### Firebase Configuration (`firebase_options.dart`)
 
