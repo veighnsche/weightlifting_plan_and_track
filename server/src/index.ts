@@ -1,15 +1,14 @@
 import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
-import rateLimit from "express-rate-limit";
-import admin, { ServiceAccount } from "firebase-admin";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { DataSource, DataSourceOptions } from "typeorm";
-import { User } from "./entities/user";
-import serviceAccountKey from "./service-account-key.json";
+import { connectDatabase } from "./services/databaseConnection";
+import { initializeFirebase } from "./services/firebase";
+import { getRateLimiter } from "./services/rateLimiter";
+import { authenticateSocket } from "./services/socketAuth";
 
-config(); // Initialize dotenv
+config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -20,43 +19,12 @@ const io = new Server(httpServer, {
   },
 });
 
-// Firebase Admin SDK initialization
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccountKey as ServiceAccount),
-});
+initializeFirebase();
 
 app.use(cors());
 app.use(express.json());
-
-// Rate limiter middleware
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
-
-app.get("/", (req, res) => {
-  res.send("Server is running!");
-});
-
-io.use(async (socket, next) => {
-  const token = socket.handshake.auth.token;
-  if (!token) {
-    console.error("Authentication error: Token not provided");
-    return next(new Error("Authentication error"));
-  }
-
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    if (decodedToken) {
-      socket.data.decodedToken = decodedToken;
-      return next();
-    }
-  } catch (err: any) {
-    console.error("Authentication error:", err.message);
-    return next(new Error("Authentication error"));
-  }
-});
+app.use(getRateLimiter());
+io.use(authenticateSocket);
 
 io.on("connection", (socket) => {
   // console.log("user name", socket.data.decodedToken.name);
@@ -68,21 +36,7 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 3000;
 
-const options: DataSourceOptions = {
-  type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "weightlifting_user",
-  password: "J8f!2gH#1kP6wQr9",
-  database: "weightlifting_db",
-  entities: [User],
-  synchronize: true,
-};
-
-const connection = new DataSource(options);
-
-connection.initialize().then(() => {
-  console.log("DB connected");
+connectDatabase().then(() => {
   httpServer.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
