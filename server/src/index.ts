@@ -14,19 +14,18 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "*", // Adjust this to your client's domain or a list of allowed domains
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
 
 // Firebase Admin SDK initialization
-// Make sure to initialize with your serviceAccountKey and databaseURL
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey as ServiceAccount),
 });
 
 app.use(cors());
-app.use(express.json()); // This replaces body-parser for parsing JSON
+app.use(express.json());
 
 // Rate limiter middleware
 const limiter = rateLimit({

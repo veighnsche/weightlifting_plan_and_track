@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'services/auth_service.dart'; // Assuming you've created this for authentication
-import 'screens/chat.dart'; // Import the ChatScreen
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+
+import 'screens/chat.dart';
+import 'services/auth_service.dart';
+import 'services/socket_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +14,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final AuthService _authService = AuthService();
+  final SocketService _socketService = SocketService();
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +29,14 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active) {
             User? user = snapshot.data;
             if (user == null) {
+              _socketService.disconnect();
               return LoginScreen(authService: _authService);
             } else {
-              return const ChatScreen(); // Navigate to the ChatScreen when a user is detected
+              _socketService.connect();
+              return const ChatScreen();
             }
           }
-          return const CircularProgressIndicator(); // Show a loading indicator until the auth state is checked
+          return const CircularProgressIndicator();
         },
       ),
     );
