@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "448087616119",
+    "project_id": "weightlifting-plan-and-track",
+    "storage_bucket": "weightlifting-plan-and-track.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448087616119:android:dbbfae8831cbf911a43472",
+        "android_client_info": {
+          "package_name": "com.example.weightlifting_plan_and_track"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448087616119-rilhsaevnhg34kcs8qjkonoidn67dgm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGZ0_ZOQjzr-azvZ7ZQM5iLevGLuPMwIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448087616119-rilhsaevnhg34kcs8qjkonoidn67dgm8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
