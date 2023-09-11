@@ -5,7 +5,7 @@ import rateLimit from "express-rate-limit";
 import admin, { ServiceAccount } from "firebase-admin";
 import { createServer } from "http";
 import { Server } from "socket.io";
-// import { createConnection } from 'typeorm'; // Uncomment if you're setting up TypeORM immediately
+import { DataSource, DataSourceOptions } from "typeorm";
 import serviceAccountKey from "./service-account-key.json";
 
 config(); // Initialize dotenv
@@ -58,18 +58,30 @@ io.use(async (socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("user name", socket.data.decodedToken.name);
+  // console.log("user name", socket.data.decodedToken.name);
+  console.log(`user ${socket.data.decodedToken.name} connected`);
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
 });
 
 const PORT = process.env.PORT || 3000;
-httpServer.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
 
-// Uncomment below if you're setting up TypeORM immediately
-// createConnection().then(() => {
-//   console.log('Database connected!');
-// }).catch(error => console.log(error));
+const options: DataSourceOptions = {
+  type: "postgres",
+  host: "localhost",
+  port: 5432,
+  username: "weightlifting_user",
+  password: "J8f!2gH#1kP6wQr9",
+  database: "weightlifting_db",
+  entities: [/* paths to your entity files */],
+  synchronize: true,
+};
+
+const connection = new DataSource(options);
+connection.initialize().then(() => {
+  console.log("DB connected");
+  httpServer.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+});
