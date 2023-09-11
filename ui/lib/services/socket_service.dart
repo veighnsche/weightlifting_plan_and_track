@@ -12,6 +12,8 @@ class SocketService {
     return _instance;
   }
 
+  Function? onUserNotOnboarded;
+
   IO.Socket? _socket;
   final AuthService _authService = AuthService();
 
@@ -39,7 +41,9 @@ class SocketService {
       })
       ..on('user-connected', (data) {
         if (data['onboarded'] == false) {
-          print('User is not onboarded');
+          onUserNotOnboarded?.call(false);
+        } else {
+          onUserNotOnboarded?.call(true);
         }
 
         _socket?.emit('acknowledge-user-connected');
@@ -54,5 +58,9 @@ class SocketService {
     _socket?.emit('new-user-message', {
       'content': content,
     });
+  }
+
+  void upsertUser(Map<String, String> details) {
+    _socket?.emit('upsert-user', details);
   }
 }

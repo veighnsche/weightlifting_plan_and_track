@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'screens/chat.dart';
+import 'screens/chat_screen.dart';
+import 'screens/onboarding_screen.dart';
 import 'services/auth_service.dart';
 import 'services/socket_service.dart';
 
@@ -19,8 +20,19 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AuthService _authService = AuthService();
-
   final SocketService _socketService = SocketService();
+
+  bool? _isOnboarded;
+
+  @override
+  void initState() {
+    super.initState();
+    _socketService.onUserNotOnboarded = (bool isOnboarded) {
+      setState(() {
+        _isOnboarded = isOnboarded;
+      });
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +54,9 @@ class _MyAppState extends State<MyApp> {
                 future: _socketService.connect(),
                 builder: (context, socketSnapshot) {
                   if (socketSnapshot.connectionState == ConnectionState.done) {
+                    if (_isOnboarded != null && !_isOnboarded!) {
+                      return OnboardingScreen(socketService: _socketService);
+                    }
                     return ChatScreen(socketService: _socketService);
                   }
                   return const CircularProgressIndicator(); // Show a loader while connecting

@@ -4,6 +4,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from "./events";
+import { registerUserHandlers } from "./events/user";
 import { connectUser } from "./services/connectUser";
 import { connectDatabase } from "./services/database";
 import { initializeFirebase } from "./services/firebase";
@@ -36,11 +37,12 @@ io.on("connection", async (socket) => {
   });
 
   await connectUser(socket);
-  console.log(`user ${socket.data.decodedToken.name} authenticated`);
 
   socket.onAny((event, message) => {
-    console.log(event, message);
+    console.log("onAny:", { event, message });
   });
+
+  registerUserHandlers(socket);
 });
 
 const PORT = process.env.PORT || 3000;

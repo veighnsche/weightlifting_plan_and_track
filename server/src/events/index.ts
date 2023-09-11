@@ -1,4 +1,5 @@
 import { DecodedIdToken } from "firebase-admin/lib/auth";
+import { Socket } from "socket.io";
 
 export interface ClientToServerEvents {
   // chat conversation events
@@ -16,9 +17,9 @@ export interface ClientToServerEvents {
 
   // user events
   "upsert-user": (data: {
-    age: number;
-    weight: number;
-    height: number;
+    age?: number;
+    weight?: number;
+    height?: number;
     gymDescription?: string;
   }) => void;
 
@@ -61,3 +62,5 @@ export interface SocketData {
   // user data
   decodedToken: DecodedIdToken;
 }
+
+export type AppSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;

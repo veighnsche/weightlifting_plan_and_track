@@ -9,7 +9,6 @@ export const authenticateSocket: Parameters<Server["use"]>[0] = async (socket, n
   }
 
   try {
-    console.info("Authenticating token")
     const decodedToken = await admin.auth().verifyIdToken(token);
     if (decodedToken) {
       socket.data.decodedToken = decodedToken;

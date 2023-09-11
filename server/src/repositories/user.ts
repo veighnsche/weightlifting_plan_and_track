@@ -12,13 +12,19 @@ export const userExists = async (uid: string): Promise<boolean> => {
   return !!user;
 };
 
-export const upsertUser = async (user: User): Promise<User> => {
+export const upsertUser = async (user: Partial<User> & { uid: string }): Promise<User> => {
   const existingUser = await findByUid(user.uid);
 
-
-  if (existingUser) {
-    return userRepository.merge(existingUser, user);
-  } else {
-    return userRepository.create(user);
+  try {
+    if (existingUser) {
+      console.info("User already exists, merging...");
+      return userRepository.merge(existingUser, user);
+    } else {
+      console.info("User does not exist, creating...");
+      return userRepository.create(user);
+    }
+  } catch (error) {
+    console.error("Error upserting user:", error);
+    throw error;
   }
 };
