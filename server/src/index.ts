@@ -1,11 +1,12 @@
-import * as express from 'express';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { config } from 'dotenv';
-import * as cors from 'cors';
-import rateLimit from 'express-rate-limit';
-import * as admin from 'firebase-admin';
+import cors from "cors";
+import { config } from "dotenv";
+import express from "express";
+import rateLimit from "express-rate-limit";
+import admin, { ServiceAccount } from "firebase-admin";
+import { createServer } from "http";
+import { Server } from "socket.io";
 // import { createConnection } from 'typeorm'; // Uncomment if you're setting up TypeORM immediately
+import serviceAccountKey from "./service-account-key.json";
 
 config(); // Initialize dotenv
 
@@ -14,16 +15,15 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: "*", // Adjust this to your client's domain or a list of allowed domains
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 
 // Firebase Admin SDK initialization
 // Make sure to initialize with your serviceAccountKey and databaseURL
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccountKey),
-//   databaseURL: 'YOUR_DATABASE_URL'
-// });
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccountKey as ServiceAccount),
+});
 
 app.use(cors());
 app.use(express.json()); // This replaces body-parser for parsing JSON
@@ -31,18 +31,18 @@ app.use(express.json()); // This replaces body-parser for parsing JSON
 // Rate limiter middleware
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
-app.get('/', (req, res) => {
-  res.send('Server is running!');
+app.get("/", (req, res) => {
+  res.send("Server is running!");
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
 

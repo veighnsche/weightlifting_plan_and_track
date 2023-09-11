@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist", // Directory for the compiled JavaScript files
-    "rootDir": "./src"  // Root directory of your TypeScript source files
-
+    "module": "commonjs",
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020"
   },
   "include": [
     "src/**/*.ts"
