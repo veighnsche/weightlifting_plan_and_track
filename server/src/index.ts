@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from "./events";
 import { connectDatabase } from "./services/databaseConnection";
 import { initializeFirebase } from "./services/firebase";
 import { getRateLimiter } from "./services/rateLimiter";
@@ -12,7 +13,7 @@ config();
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
+const io: Server<ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData> = new Server(httpServer, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],

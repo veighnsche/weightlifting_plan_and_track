@@ -10,6 +10,10 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   userId!: string;
 
+  // firebase uid
+  @Column({ type: "varchar", length: 255 })
+  uid!: string;
+
   @Column({ type: "varchar", length: 255 })
   name!: string;
 

@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-import { Server } from "socket.io";
+import type { Server } from "socket.io";
 
 export const authenticateSocket: Parameters<Server["use"]>[0] = async (socket, next) => {
   const token = socket.handshake.auth.token;
