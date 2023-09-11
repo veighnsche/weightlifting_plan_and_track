@@ -6,12 +6,22 @@ export interface ServerToClientEvents {
   "new-system-message": (message: string) => void;
 
   // user events
-  "initialize-user": (onboard: boolean) => void;
+  "user-connected": (data: {
+    onboarded: boolean;
+  }) => void;
 }
 
 export interface ClientToServerEvents {
   // chat events
   "new-user-message": (message: string) => void;
+
+  // user events
+  "upsert-user": (data: {
+    age: number;
+    weight: number;
+    height: number;
+    gymDescription?: string;
+  }) => void;
 }
 
 export interface InterServerEvents {
