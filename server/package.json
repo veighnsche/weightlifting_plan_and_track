@@ -4,7 +4,7 @@
   "description": "Backend for Chat App",
   "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "build": "tsc"
   },
   "dependencies": {
