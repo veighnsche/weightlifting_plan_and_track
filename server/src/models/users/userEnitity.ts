@@ -17,14 +17,20 @@ export class UserEntity {
   @Column({ type: "varchar", length: 255 })
   name!: string;
 
-  @Column({ type: "int" })
-  age!: number;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  gender?: string;
 
-  @Column({ type: "float" })
-  weight!: number; // in kg
+  @Column({ type: "int", nullable: true })
+  age?: number;
 
-  @Column({ type: "float" })
-  height!: number; // in cm
+  @Column({ type: "float", nullable: true })
+  weight?: number; // in kg
+
+  @Column({ type: "float", nullable: true })
+  height?: number; // in cm
+
+  @Column({ type: "float", nullable: true })
+  fatPercentage?: number;
 
   @Column({ type: "text", nullable: true })
   gymDescription?: string;

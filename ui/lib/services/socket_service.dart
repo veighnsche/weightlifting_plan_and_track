@@ -54,7 +54,7 @@ class SocketService {
     });
   }
 
-  void upsertUser(Map<String, String> details) {
+  void upsertUser(Map<String, dynamic> details) {
     _socket?.emit('upsert-user', details);
   }
 }
