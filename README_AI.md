@@ -1,82 +1,73 @@
-# Weightlifting Plan and Track: Developer Onboarding 🌹📈🔥
+# README_AI.md for weightlifting_plan_and_track
 
-## **Project Overview**:
-A platform to plan and track weightlifting activities with real-time chat, workout recommendations, and user onboarding.
+## Overview
 
-## **Technical Stack**:
-- **Frontend**: Flutter with Firebase and Google Sign-In integrations.
-- **Backend**: Node.js with [Socket.io](https://github.com/socketio/socket.io) and [TypeORM](https://github.com/typeorm/typeorm).
-- **Database**: PostgreSQL.
-- **Authentication**: Firebase.
+This repository contains the codebase for a weightlifting planning and tracking application. It consists of a backend server and a Flutter-based frontend UI.
 
-## **Repository Structure**:
-- `ui`: Flutter frontend.
-    - 🔍 **Main (`lib/main.dart`)**: App initialization.
-    - 🔍 **Onboarding (`lib/screens/onboarding_screen.dart`)**: User detail collection.
-    - 🔍 **Chat (`lib/screens/chat_screen.dart`)**: Real-time chat interface.
-    - **Socket Service (`lib/services/socket_service.dart`)**: Socket.io connection management.
+## Server
 
-- `server`: Node.js backend.
-    - 🔍 **Initialization (`src/index.ts`)**: Server setup and Firebase configuration.
-    - 🔍 **Socket Events (`src/models/socketEvents.ts`)**: Real-time event definitions.
-    - **User Entity (`src/models/users/userEnitity.ts`)**: User database structure.
-    - **Database Service (`src/services/database.ts`)**: PostgreSQL connection.
+### Initialization
 
-## **Development Setup**:
-1. Clone the repository.
-2. Backend: `npm install`.
-3. Frontend: Follow Flutter setup guidelines.
-4. Initialize PostgreSQL with Docker.
+- The server is set up using Express and Socket.io.
+- Firebase is utilized for authentication.
+- Middleware for CORS and rate limiting is applied.
+- Socket.io connections are authenticated using Firebase tokens.
 
-## **Coding Standards**:
-Dart style for frontend and ES6 for backend. Clear and descriptive commit messages.
+### User Entity
 
-## **Resources**:
-- **Project Repository**: [GitHub Link](https://github.com/veighnsche/weightlifting_plan_and_track)
-- **Socket.io**: [GitHub Repository](https://github.com/socketio/socket.io)
-- **TypeORM**: [GitHub Repository](https://github.com/typeorm/typeorm)
+- The user entity is structured with the following fields:
+    - `userId`: A unique identifier for the user.
+    - `uid`: Firebase UID.
+    - `name`: User's name.
+    - `age`: User's age.
+    - `weight`: User's weight (in kg).
+    - `height`: User's height (in cm).
+    - `gymDescription`: An optional description of the user's gym.
 
-## Frontend (`ui/lib` folder)
+### User Events
 
-### Firebase Configuration (`firebase_options.dart`)
+- The server listens for an "upsert-user" event to handle both the creation and updating of user data.
+- Upon receiving this event, the server updates the user data and emits a "user-connected" event with an "onboarded" status.
 
-- Contains default Firebase options for different platforms (Android, iOS).
-- Provides a way to initialize Firebase with the default options for the current platform.
+### Dependencies
 
-### Main Application (`main.dart`)
+- Express, Socket.io, TypeORM, Firebase Admin, and other essential libraries.
+- Development scripts include starting the server, building the TypeScript code, and running the application in Docker.
 
-- Initializes Firebase.
-- Contains the main `MyApp` widget which listens to Firebase authentication state changes.
-- Displays a login screen if the user is not authenticated and a chat screen if the user is authenticated.
+## UI
 
-### Chat Screen (`screens/chat.dart`)
+### Onboarding Screen
 
-- Provides a chat interface where users can send and receive messages.
-- Messages are displayed based on their role (user, assistant, system).
+- The onboarding screen collects user details such as age, weight, height, and an optional gym description.
+- The user's name is fetched from Firebase Auth.
+- Once the user submits the form, the data is sent to the server using the socket service's `upsertUser` method.
 
-### Authentication Service (`services/auth_service.dart`)
+### Authentication Service
 
 - Provides methods for signing in with Google and signing out.
-- Uses Firebase authentication and Google Sign-In.
+- Uses Firebase Auth and Google Sign-In for authentication.
+- Can fetch the current user's Firebase token.
 
-### Socket Service (`services/socket_service.dart`)
+### Socket Service
 
 - Provides methods to connect and disconnect from a Socket.io server.
 - Uses the user's Firebase token for authentication with the server.
+- Can send user messages and upsert user data to the server.
 
-## Backend (`server` folder)
+### Dependencies
 
-### Dependencies (`package.json`)
+- Firebase Core, Firebase Auth, Google Sign-In, Socket.io Client, and other essential Flutter packages.
 
-- Uses Express for the server framework.
-- Uses Socket.io for real-time communication.
-- Uses Firebase Admin SDK for Firebase authentication.
-- Other dependencies include `cors`, `dotenv`, `express-rate-limit`, and more.
+## Development and Deployment
 
-### Server Entry Point (`src/socketEvents.ts`)
+- Backend: Use the scripts in `package.json` for development and deployment. For Docker deployment, use the `docker` script.
+- UI: Follow Flutter's standard development and deployment procedures. Refer to the links provided in the UI's `README.md` for more resources.
 
-- Sets up an Express server and a Socket.io server.
-- Initializes Firebase Admin SDK.
-- Uses middleware for CORS and rate limiting.
-- Authenticates Socket.io connections using Firebase tokens.
-- Listens for incoming Socket.io connections and logs user details.
+## Additional Resources
+
+- [Flutter Documentation](https://docs.flutter.dev/)
+- [Firebase Documentation](https://firebase.google.com/docs)
+- [Socket.io Documentation](https://socket.io/docs/v4)
+- [Socket.io Repository](https://github.com/socketio/socket.io)
+- [TypeORM Documentation](https://typeorm.io/#/)
+- [TypeORM Repository](https://github.com/typeorm/typeorm)
