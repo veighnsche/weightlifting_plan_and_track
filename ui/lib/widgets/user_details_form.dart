@@ -4,7 +4,8 @@ class UserDetailsForm extends StatefulWidget {
   final Function(Map<String, dynamic>) onSubmit;
   final String name;
 
-  const UserDetailsForm({super.key, required this.onSubmit, required this.name});
+  const UserDetailsForm(
+      {super.key, required this.onSubmit, required this.name});
 
   @override
   _UserDetailsFormState createState() => _UserDetailsFormState();
@@ -18,6 +19,21 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
   String? height;
   String? fatPercentage;
   String? gymDescription;
+
+  void handlePressed() {
+    _formKey.currentState!.save();
+
+    widget.onSubmit({
+      'user': {
+        'gender': gender,
+        'age': age,
+        'weight': weight,
+        'height': height,
+        'fatPercentage': fatPercentage,
+        'gymDescription': gymDescription,
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +64,14 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
                   onSaved: (value) => height = value,
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: "Fat Percentage (%)"),
+                  decoration:
+                      const InputDecoration(labelText: "Fat Percentage (%)"),
                   keyboardType: TextInputType.number,
                   onSaved: (value) => fatPercentage = value,
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: "Gym Description"),
+                  decoration:
+                      const InputDecoration(labelText: "Gym Description"),
                   maxLines: 3,
                   onSaved: (value) => gymDescription = value,
                 ),
@@ -65,18 +83,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
             width: double.infinity,
             height: 60,
             child: ElevatedButton(
-              onPressed: () {
-                _formKey.currentState!.save();
-
-                widget.onSubmit({
-                  'gender': gender,
-                  'age': age,
-                  'weight': weight,
-                  'height': height,
-                  'fatPercentage': fatPercentage,
-                  'gymDescription': gymDescription,
-                });
-              },
+              onPressed: handlePressed,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),

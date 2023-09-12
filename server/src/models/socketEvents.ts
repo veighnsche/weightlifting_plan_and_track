@@ -17,20 +17,26 @@ export interface ClientToServerEvents {
 
   // user events
   "upsert-user": (data: {
-    age?: number;
-    weight?: number;
-    height?: number;
-    gymDescription?: string;
+    user: {
+      age?: number;
+      weight?: number;
+      height?: number;
+      gymDescription?: string;
+    }
   }) => void;
-
-  // misc events
-  "pongen": (message: string) => void;
 }
 
 export interface ServerToClientEvents {
   // chat conversation events
-  "new-assistant-message": (content: string) => void;
-  "new-system-message": (content: string) => void;
+  "new-assistant-message": (data: {
+    chatId: string;
+    content: string;
+  }) => void;
+
+  "new-system-message": (data: {
+    chatId: string;
+    content: string;
+  }) => void;
 
   // chat events
   "chat-history": (data: {
@@ -54,8 +60,6 @@ export interface ServerToClientEvents {
 }
 
 export interface InterServerEvents {
-  // chat events
-  "new-message": (content: string) => void;
 }
 
 export interface SocketData {

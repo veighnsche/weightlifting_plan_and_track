@@ -37,8 +37,8 @@ io.on("connection", async (socket) => {
     console.log(`user ${socket.data.decodedToken.name} disconnected`);
   });
 
-  socket.onAny((event, message) => {
-    console.log("onAny:", { event, message });
+  socket.onAny((event, data) => {
+    console.log("onAny:", { event, data });
   });
 
   await registerUserHandlers(socket);
