@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_shell.dart';
-import '../services/socket_service.dart';
+import '../services/socket_emitters.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -11,13 +11,13 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final SocketService _socketService = SocketService();
+  final SocketEmitters _socketEmitter = SocketEmitters();
   final TextEditingController _contentController = TextEditingController();
 
   final List<ChatMessage> messages = [];
 
   void handleSend() {
-    _socketService.sendMessage(_contentController.text);
+    _socketEmitter.newUserMessage(_contentController.text);
 
     setState(() {
       messages.add(

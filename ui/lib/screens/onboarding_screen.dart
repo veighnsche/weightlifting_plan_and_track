@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../services/socket_service.dart';
+import '../services/socket_emitters.dart';
 import '../widgets/user_details_form.dart';
 
 class OnboardingScreen extends StatelessWidget {
   OnboardingScreen({super.key});
 
-  final SocketService _socketService = SocketService();
+  final SocketEmitters _socketEmitter = SocketEmitters();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class OnboardingScreen extends StatelessWidget {
             Expanded(
               child: UserDetailsForm(
                 onSubmit: (userData) {
-                  _socketService.upsertUser(userData);
+                  _socketEmitter.upsertUser(userData);
                 },
               ),
             ),

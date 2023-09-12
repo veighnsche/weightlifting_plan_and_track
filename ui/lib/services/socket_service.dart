@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 import 'auth_service.dart';
 
@@ -12,9 +12,9 @@ class SocketService {
     return _instance;
   }
 
-  Function? onUserNotOnboarded;
+  Function? onUserConnect;
 
-  IO.Socket? _socket;
+  Socket? _socket;
   final AuthService _authService = AuthService();
 
   Future<void> connect() async {
@@ -24,9 +24,9 @@ class SocketService {
 
     var token = await _authService.token;
 
-    _socket = IO.io(
+    _socket = io(
         'http://localhost:3000',
-        IO.OptionBuilder().setTransports(['websocket']).setAuth({
+        OptionBuilder().setTransports(['websocket']).setAuth({
           'token': token,
         }).build())
       ..onConnect((_) {
@@ -38,9 +38,6 @@ class SocketService {
         if (kDebugMode) {
           print('Disconnected from Socket.io server');
         }
-      })
-      ..on('user-connected', (data) {
-        onUserNotOnboarded?.call(data['onboarded']);
       });
   }
 
@@ -48,13 +45,7 @@ class SocketService {
     _socket?.disconnect();
   }
 
-  void sendMessage(String content) {
-    _socket?.emit('new-user-message', {
-      'content': content,
-    });
-  }
+  get emit => _socket?.emit;
 
-  void upsertUser(Map<String, dynamic> details) {
-    _socket?.emit('upsert-user', details);
-  }
+  get on => _socket?.on;
 }
