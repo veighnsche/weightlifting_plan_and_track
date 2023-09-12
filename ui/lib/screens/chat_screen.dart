@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
 
+import '../core/app_shell.dart';
 import '../services/socket_service.dart';
 
 class ChatScreen extends StatefulWidget {
-  final SocketService socketService;
-
-  const ChatScreen({super.key, required this.socketService});
+  const ChatScreen({super.key});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final SocketService _socketService = SocketService();
   final TextEditingController _contentController = TextEditingController();
+
   final List<ChatMessage> messages = [];
 
   void handleSend() {
-    widget.socketService.sendMessage(_contentController.text);
+    _socketService.sendMessage(_contentController.text);
 
     setState(() {
       messages.add(
           ChatMessage(content: _contentController.text, role: UserRole.user));
     });
+
     _contentController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
+    return AppShell(
+      title: 'Chat',
       body: Column(
         children: [
           Expanded(

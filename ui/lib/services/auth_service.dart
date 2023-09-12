@@ -3,6 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
+  AuthService._privateConstructor();
+
+  static final AuthService _instance = AuthService._privateConstructor();
+
+  factory AuthService() {
+    return _instance;
+  }
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 

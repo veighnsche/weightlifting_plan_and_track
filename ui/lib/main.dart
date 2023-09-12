@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:weightlifting_plan_and_track/screens/splash_screen.dart';
 
 import 'screens/chat_screen.dart';
 import 'screens/onboarding_screen.dart';
@@ -23,17 +24,17 @@ class _MyAppState extends State<MyApp> {
   final AuthService _authService = AuthService();
   final SocketService _socketService = SocketService();
 
-  bool? _isOnboarded;
+  // bool? _isOnboarded;
 
-  @override
-  void initState() {
-    super.initState();
-    _socketService.onUserNotOnboarded = (bool isOnboarded) {
-      setState(() {
-        _isOnboarded = isOnboarded;
-      });
-    };
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _socketService.onUserNotOnboarded = (bool isOnboarded) {
+  //     setState(() {
+  //       _isOnboarded = isOnboarded;
+  //     });
+  //   };
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,32 +52,41 @@ class _MyAppState extends State<MyApp> {
         Locale('nl', 'NL'), // Dutch
         Locale('en', 'US'), // English
       ],
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            User? user = snapshot.data;
-            if (user == null) {
-              _socketService.disconnect();
-              return LoginScreen(authService: _authService);
-            } else {
-              return FutureBuilder<void>(
-                future: _socketService.connect(),
-                builder: (context, socketSnapshot) {
-                  if (socketSnapshot.connectionState == ConnectionState.done) {
-                    if (_isOnboarded != null && !_isOnboarded!) {
-                      return OnboardingScreen(socketService: _socketService);
-                    }
-                    return ChatScreen(socketService: _socketService);
-                  }
-                  return const CircularProgressIndicator();
-                },
-              );
-            }
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/login': (context) => LoginScreen(),
+        '/onboarding': (context) => OnboardingScreen(),
+        '/chat': (context) => const ChatScreen(),
+      },
+      onGenerateRoute: (settings) {
+        // Handle any other routes or pass arguments to routes if needed
+      },
+      // home: StreamBuilder<User?>(
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.active) {
+      //       User? user = snapshot.data;
+      //       if (user == null) {
+      //         _socketService.disconnect();
+      //         return LoginScreen(authService: _authService);
+      //       } else {
+      //         return FutureBuilder<void>(
+      //           future: _socketService.connect(),
+      //           builder: (context, socketSnapshot) {
+      //             if (socketSnapshot.connectionState == ConnectionState.done) {
+      //               if (_isOnboarded != null && !_isOnboarded!) {
+      //                 return OnboardingScreen(socketService: _socketService);
+      //               }
+      //               return ChatScreen(socketService: _socketService);
+      //             }
+      //             return const CircularProgressIndicator();
+      //           },
+      //         );
+      //       }
+      //     }
+      //     return const CircularProgressIndicator();
+      //   },
+      // ),
     );
   }
 
@@ -88,9 +98,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 class LoginScreen extends StatelessWidget {
-  final AuthService authService;
+  final AuthService _authService = AuthService();
 
-  LoginScreen({required this.authService});
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +109,7 @@ class LoginScreen extends StatelessWidget {
         child: ElevatedButton(
           child: const Text('Sign in with Google'),
           onPressed: () async {
-            await authService.signInWithGoogle();
+            await _authService.signInWithGoogle();
           },
         ),
       ),

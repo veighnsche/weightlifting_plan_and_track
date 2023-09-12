@@ -4,16 +4,11 @@ import 'package:flutter/material.dart';
 import '../services/socket_service.dart';
 import '../widgets/user_details_form.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  final SocketService socketService;
+class OnboardingScreen extends StatelessWidget {
+  OnboardingScreen({super.key});
 
-  const OnboardingScreen({super.key, required this.socketService});
+  final SocketService _socketService = SocketService();
 
-  @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
-}
-
-class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -39,7 +34,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Expanded(
               child: UserDetailsForm(
                 onSubmit: (userData) {
-                  widget.socketService.upsertUser(userData);
+                  _socketService.upsertUser(userData);
                 },
               ),
             ),
