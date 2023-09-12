@@ -1,8 +1,40 @@
-# Weightlifting Plan and Track
+# Weightlifting Plan and Track: Developer Onboarding 🌹📈🔥
 
-## Overview
+## **Project Overview**:
+A platform to plan and track weightlifting activities with real-time chat, workout recommendations, and user onboarding.
 
-This project provides a chat application with Firebase authentication and a backend server for handling real-time chat using Socket.io.
+## **Technical Stack**:
+- **Frontend**: Flutter with Firebase and Google Sign-In integrations.
+- **Backend**: Node.js with [Socket.io](https://github.com/socketio/socket.io) and [TypeORM](https://github.com/typeorm/typeorm).
+- **Database**: PostgreSQL.
+- **Authentication**: Firebase.
+
+## **Repository Structure**:
+- `ui`: Flutter frontend.
+    - 🔍 **Main (`lib/main.dart`)**: App initialization.
+    - 🔍 **Onboarding (`lib/screens/onboarding_screen.dart`)**: User detail collection.
+    - 🔍 **Chat (`lib/screens/chat_screen.dart`)**: Real-time chat interface.
+    - **Socket Service (`lib/services/socket_service.dart`)**: Socket.io connection management.
+
+- `server`: Node.js backend.
+    - 🔍 **Initialization (`src/index.ts`)**: Server setup and Firebase configuration.
+    - 🔍 **Socket Events (`src/models/socketEvents.ts`)**: Real-time event definitions.
+    - **User Entity (`src/models/users/userEnitity.ts`)**: User database structure.
+    - **Database Service (`src/services/database.ts`)**: PostgreSQL connection.
+
+## **Development Setup**:
+1. Clone the repository.
+2. Backend: `npm install`.
+3. Frontend: Follow Flutter setup guidelines.
+4. Initialize PostgreSQL with Docker.
+
+## **Coding Standards**:
+Dart style for frontend and ES6 for backend. Clear and descriptive commit messages.
+
+## **Resources**:
+- **Project Repository**: [GitHub Link](https://github.com/veighnsche/weightlifting_plan_and_track)
+- **Socket.io**: [GitHub Repository](https://github.com/socketio/socket.io)
+- **TypeORM**: [GitHub Repository](https://github.com/typeorm/typeorm)
 
 ## Frontend (`ui/lib` folder)
 
