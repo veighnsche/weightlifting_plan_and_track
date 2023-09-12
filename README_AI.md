@@ -41,7 +41,7 @@ This project provides a chat application with Firebase authentication and a back
 - Uses Firebase Admin SDK for Firebase authentication.
 - Other dependencies include `cors`, `dotenv`, `express-rate-limit`, and more.
 
-### Server Entry Point (`src/index.ts`)
+### Server Entry Point (`src/socketEvents.ts`)
 
 - Sets up an Express server and a Socket.io server.
 - Initializes Firebase Admin SDK.

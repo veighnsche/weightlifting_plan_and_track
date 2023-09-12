@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
                     }
                     return ChatScreen(socketService: _socketService);
                   }
-                  return const CircularProgressIndicator(); // Show a loader while connecting
+                  return const CircularProgressIndicator();
                 },
               );
             }

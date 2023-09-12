@@ -2,10 +2,10 @@ import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
 import { createServer } from "http";
+import "reflect-metadata";
 import { Server } from "socket.io";
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from "./events";
-import { registerUserHandlers } from "./events/user";
-import { connectUser } from "./services/connectUser";
+import { AppServer } from "./models/socketEvents";
+import { registerUserHandlers } from "./models/users/userEvents";
 import { connectDatabase } from "./services/database";
 import { initializeFirebase } from "./services/firebase";
 import { getRateLimiter } from "./services/rateLimiter";
@@ -13,12 +13,13 @@ import { authenticateSocket } from "./services/socketAuth";
 
 config();
 
+const PORT = process.env.PORT || 3000;
+
 const app = express();
 const httpServer = createServer(app);
-const io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData> = new Server(httpServer, {
+const io: AppServer = new Server(httpServer, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
+    origin: "*", methods: ["GET", "POST"],
   },
 });
 
@@ -36,16 +37,12 @@ io.on("connection", async (socket) => {
     console.log(`user ${socket.data.decodedToken.name} disconnected`);
   });
 
-  await connectUser(socket);
-
   socket.onAny((event, message) => {
     console.log("onAny:", { event, message });
   });
 
-  registerUserHandlers(socket);
+  await registerUserHandlers(socket);
 });
-
-const PORT = process.env.PORT || 3000;
 
 connectDatabase().then(() => {
   httpServer.listen(PORT, () => {

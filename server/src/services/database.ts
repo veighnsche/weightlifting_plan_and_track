@@ -1,5 +1,5 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-import { User } from "../entities/user";
+import { UserEntity } from "../models/users/userEnitity";
 
 const options: DataSourceOptions = {
   type: "postgres",
@@ -8,7 +8,7 @@ const options: DataSourceOptions = {
   username: "weightlifting_user",
   password: "J8f!2gH#1kP6wQr9",
   database: "weightlifting_db",
-  entities: [User],
+  entities: [UserEntity],
   synchronize: true,
 };
 

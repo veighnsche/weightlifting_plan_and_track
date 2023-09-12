@@ -1,5 +1,5 @@
 import { DecodedIdToken } from "firebase-admin/lib/auth";
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 export interface ClientToServerEvents {
   // chat conversation events
@@ -64,3 +64,4 @@ export interface SocketData {
 }
 
 export type AppSocket = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
+export type AppServer = Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
