@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/widgets/custom_date_picker.dart';
+
+import '../themes/input_decorations.dart';
 
 class UserDetailsForm extends StatefulWidget {
   final Function(Map<String, dynamic>) onSubmit;
-  final String name;
 
-  const UserDetailsForm(
-      {super.key, required this.onSubmit, required this.name});
+  const UserDetailsForm({super.key, required this.onSubmit});
 
   @override
   _UserDetailsFormState createState() => _UserDetailsFormState();
@@ -14,7 +15,7 @@ class UserDetailsForm extends StatefulWidget {
 class _UserDetailsFormState extends State<UserDetailsForm> {
   final _formKey = GlobalKey<FormState>();
   String? gender;
-  String? age;
+  DateTime? dateOfBirth; // New dateOfBirth field
   String? weight;
   String? height;
   String? fatPercentage;
@@ -26,7 +27,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
     widget.onSubmit({
       'user': {
         'gender': gender,
-        'age': age,
+        'dateOfBirth': dateOfBirth?.toIso8601String(), // Save as ISO string
         'weight': weight,
         'height': height,
         'fatPercentage': fatPercentage,
@@ -43,35 +44,46 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
         children: [
           Expanded(
             child: ListView(
+              padding: const EdgeInsets.all(8.0),
               children: [
                 TextFormField(
-                  decoration: const InputDecoration(labelText: "Gender"),
+                  decoration:
+                      blueInputDecoration(label: "Gender", icon: Icons.person),
                   onSaved: (value) => gender = value,
                 ),
+                const SizedBox(height: 16),
+                CustomDatePicker(
+                    initialDate: dateOfBirth,
+                    onDateChanged: (date) {
+                      setState(() {
+                        dateOfBirth = date;
+                      });
+                    }),
+                const SizedBox(height: 16),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: "Age"),
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) => age = value,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: "Weight (kg)"),
+                  decoration: blueInputDecoration(
+                      label: "Weight (kg)", icon: Icons.fitness_center),
                   keyboardType: TextInputType.number,
                   onSaved: (value) => weight = value,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: "Height (cm)"),
+                  decoration: blueInputDecoration(
+                      label: "Height (cm)", icon: Icons.height),
                   keyboardType: TextInputType.number,
                   onSaved: (value) => height = value,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: "Fat Percentage (%)"),
+                  decoration: blueInputDecoration(
+                      label: "Fat Percentage (%)", icon: Icons.pie_chart),
                   keyboardType: TextInputType.number,
                   onSaved: (value) => fatPercentage = value,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: "Gym Description"),
+                  decoration: blueInputDecoration(
+                      label: "Gym Description", icon: Icons.description),
                   maxLines: 3,
                   onSaved: (value) => gymDescription = value,
                 ),
@@ -85,6 +97,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
             child: ElevatedButton(
               onPressed: handlePressed,
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               child: const Text(

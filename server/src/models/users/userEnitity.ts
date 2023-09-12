@@ -20,8 +20,8 @@ export class UserEntity {
   @Column({ type: "varchar", length: 255, nullable: true })
   gender?: string;
 
-  @Column({ type: "int", nullable: true })
-  age?: number;
+  @Column({ type: "date", nullable: true })
+  dateOfBirth?: Date;  // New dateOfBirth field
 
   @Column({ type: "float", nullable: true })
   weight?: number; // in kg
