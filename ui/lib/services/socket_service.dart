@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:socket_io_client/socket_io_client.dart';
 
 import 'auth_service.dart';
@@ -12,10 +13,11 @@ class SocketService {
     return _instance;
   }
 
-  Function? onUserConnect;
-
   Socket? _socket;
   final AuthService _authService = AuthService();
+
+  final _connectionStateController = StreamController<bool>.broadcast();
+  Stream<bool> get connectionState => _connectionStateController.stream;
 
   Future<void> connect() async {
     if (_socket?.connected ?? false) {
@@ -30,14 +32,10 @@ class SocketService {
           'token': token,
         }).build())
       ..onConnect((_) {
-        if (kDebugMode) {
-          print('Connected to Socket.io server');
-        }
+        _connectionStateController.add(true);
       })
       ..onDisconnect((_) {
-        if (kDebugMode) {
-          print('Disconnected from Socket.io server');
-        }
+        _connectionStateController.add(false);
       });
   }
 
@@ -46,6 +44,8 @@ class SocketService {
   }
 
   get emit => _socket?.emit;
+
+  get emitWithAck => _socket?.emitWithAck;
 
   get on => _socket?.on;
 }

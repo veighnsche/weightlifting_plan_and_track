@@ -16,6 +16,8 @@ export interface ClientToServerEvents {
   }) => void;
 
   // user events
+  "check-onboarding": (_: never, ackCallback: (data: { onboarded: boolean }) => void) => void;
+
   "upsert-user": (data: {
     user: {
       age?: number;
@@ -23,7 +25,7 @@ export interface ClientToServerEvents {
       height?: number;
       gymDescription?: string;
     }
-  }) => void;
+  }, ackCallback: (response: { error?: string }) => void) => void;
 }
 
 export interface ServerToClientEvents {
@@ -51,11 +53,6 @@ export interface ServerToClientEvents {
       content: string;
       role: "user" | "assistant" | "system";
     }[];
-  }) => void;
-
-  // user events
-  "user-connected": (data: {
-    onboarded: boolean;
   }) => void;
 }
 
