@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:socket_io_client/socket_io_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'auth_service.dart';
 
 class SocketService {
@@ -11,10 +11,11 @@ class SocketService {
     return _instance;
   }
 
-  Socket? _socket;
+  IO.Socket? _socket;
   final AuthService _authService = AuthService();
 
   final _connectionStateController = StreamController<bool>.broadcast();
+
   Stream<bool> get connectionState => _connectionStateController.stream;
 
   Future<void> connect() async {
@@ -24,15 +25,18 @@ class SocketService {
 
     var token = await _authService.token;
 
-    _socket = io(
+    _socket = IO.io(
         'http://localhost:3000',
-        OptionBuilder().setTransports(['websocket']).setAuth({
+        IO.OptionBuilder().setTransports(['websocket']).setAuth({
           'token': token,
         }).build())
       ..onConnect((_) {
         _connectionStateController.add(true);
       })
       ..onDisconnect((_) {
+        _connectionStateController.add(false);
+      })
+      ..onConnectError((_) {
         _connectionStateController.add(false);
       });
   }

@@ -31,9 +31,6 @@ class _SocketConnectionStreamState extends State<SocketConnectionStream> {
     return StreamBuilder<bool>(
       stream: _socketService.connectionState,
       builder: (context, snapshot) {
-        print(
-            "socket_connection_stream.dart: connectionState: ${snapshot.connectionState}");
-
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While waiting for the connection state, display a loading indicator
           return const Center(
@@ -50,8 +47,6 @@ class _SocketConnectionStreamState extends State<SocketConnectionStream> {
             ),
           );
         }
-
-        print("socket_connection_stream.dart: hasData: ${snapshot.hasData}");
 
         if (snapshot.hasData && snapshot.data == true) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
