@@ -1,6 +1,5 @@
 import express from "express";
 import { AuthenticatedRequest } from "../../services/auth";
-import { AppSocket } from "../socketEvents";
 import { upsertUser, userExists } from "./userRepository";
 
 const router = express.Router();
@@ -16,16 +15,20 @@ router.get("/check-onboarding", async (req: AuthenticatedRequest, res) => {
   res.json({ onboarded });
 });
 
-export const userRouter = router;
+router.post("/upsert", async (req: AuthenticatedRequest, res) => {
+  const { user } = req.body;
+  const { uid, name } = req.user!;
 
-export const registerUserHandlers = async (socket: AppSocket) => {
-  socket.on("upsert-user", async ({ user }, ackCallback) => {
-    const { uid, name } = socket.data.decodedToken;
-    await upsertUser({ ...user, name, uid }).then(() => {
-      ackCallback({});
-    }).catch((e) => {
-      console.error(e);
-      ackCallback({ error: "Error upserting user" });
-    });
+  if (!user) {
+    return res.status(400).send("User not found.");
+  }
+
+  await upsertUser({ ...user, name, uid }).then(() => {
+    res.sendStatus(200);
+  }).catch((e) => {
+    console.error(e);
+    res.status(500).send("Error upserting user");
   });
-};
+});
+
+export const userRouter = router;

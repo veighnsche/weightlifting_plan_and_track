@@ -5,7 +5,7 @@ import { createServer } from "http";
 import "reflect-metadata";
 import { Server } from "socket.io";
 import { AppServer } from "./models/socketEvents";
-import { registerUserHandlers, userRouter } from "./models/users/userEvents";
+import { userRouter } from "./models/users/userEvents";
 import { authenticateRequest, authenticateSocket } from "./services/auth";
 import { connectDatabase } from "./services/database";
 import { initializeFirebase } from "./services/firebase";
@@ -43,8 +43,6 @@ io.on("connection", async (socket) => {
   socket.onAny((event, data) => {
     console.log("onAny:", { event, data });
   });
-
-  await registerUserHandlers(socket);
 });
 
 connectDatabase().then(() => {

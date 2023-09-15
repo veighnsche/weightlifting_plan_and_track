@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../services/socket_emitters.dart';
+import '../services/user_service.dart';
 import '../widgets/user_details_form.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -12,26 +12,23 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  late final SocketEmitters _socketEmitter;
+  final UserService _userService = UserService();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  @override
-  void initState() {
-    super.initState();
-    _socketEmitter = SocketEmitters();
-  }
-
-  void _handleUpsertResponse(Map<String, dynamic> response) {
-    if (response['error'] != null) {
+  void _handleUpsert(Map<String, dynamic> userData) async {
+    try {
+      await _userService.upsert(userData);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/chat');
+      });
+    } catch (error) {
       _scaffoldMessengerKey.currentState?.showSnackBar(
         SnackBar(
-          content: Text("Error during upsert: ${response['error']}"),
+          content: Text("Error during upsert: $error"),
           backgroundColor: Colors.red,
         ),
       );
-    } else if (mounted) {
-      Navigator.pushReplacementNamed(context, '/chat');
     }
   }
 
@@ -71,10 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   duration: Duration(seconds: 2),
                 ),
               );
-              _socketEmitter.upsertUser(
-                userData,
-                _handleUpsertResponse,
-              );
+              _handleUpsert(userData);
             })),
           ],
         ),

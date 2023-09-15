@@ -8,8 +8,4 @@ class SocketEmitters {
       'content': content,
     });
   }
-
-  void upsertUser(Map<String, dynamic> details, Function(Map<String, dynamic>) ackCallback) {
-    _socketService.emitWithAck('upsert-user', details, ack: ackCallback);
-  }
 }

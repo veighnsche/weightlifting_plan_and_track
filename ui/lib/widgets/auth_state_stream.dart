@@ -1,16 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AuthStateStream extends StatefulWidget {
+class AuthStateStream extends StatelessWidget {
   final VoidCallback handleDone;
 
   const AuthStateStream({Key? key, required this.handleDone}) : super(key: key);
 
-  @override
-  _AuthStateStreamState createState() => _AuthStateStreamState();
-}
-
-class _AuthStateStreamState extends State<AuthStateStream> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -37,7 +32,7 @@ class _AuthStateStreamState extends State<AuthStateStream> {
             );
           } else {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              widget.handleDone();
+              handleDone();
             });
             return const SizedBox.shrink();
           }
