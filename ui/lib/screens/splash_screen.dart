@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/widgets/onboarding_status_checker.dart';
 import 'package:weightlifting_plan_and_track/widgets/socket_connection_stream.dart';
 
 import '../widgets/auth_state_stream.dart';
@@ -19,7 +20,9 @@ class SplashScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             AuthStateStream(
-              child: SocketConnectionStream(),
+              child: SocketConnectionStream(
+                child: OnboardingStatusChecker(),
+              ),
             ),
           ],
         ),

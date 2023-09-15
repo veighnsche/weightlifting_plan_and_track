@@ -19,8 +19,21 @@ class _AuthStateStreamState extends State<AuthStateStream> {
         if (snapshot.connectionState == ConnectionState.active) {
           User? user = snapshot.data;
           if (user == null) {
-            Future.microtask(() => Navigator.pushReplacementNamed(context, '/login'));
-            return const SizedBox.shrink();
+            Future.microtask(
+                () => Navigator.pushReplacementNamed(context, '/login'));
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16), // Add some spacing
+                  Text(
+                    "Checking authentication status...",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            );
           } else {
             return widget.child;
           }

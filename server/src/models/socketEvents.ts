@@ -15,9 +15,6 @@ export interface ClientToServerEvents {
     chatId: string;
   }) => void;
 
-  // user events
-  "check-onboarding": (_: never, ackCallback: (data: { onboarded: boolean }) => void) => void;
-
   "upsert-user": (data: {
     user: {
       age?: number;

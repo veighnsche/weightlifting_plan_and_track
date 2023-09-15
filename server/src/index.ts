@@ -5,11 +5,11 @@ import { createServer } from "http";
 import "reflect-metadata";
 import { Server } from "socket.io";
 import { AppServer } from "./models/socketEvents";
-import { registerUserHandlers } from "./models/users/userEvents";
+import { registerUserHandlers, userRouter } from "./models/users/userEvents";
+import { authenticateRequest, authenticateSocket } from "./services/auth";
 import { connectDatabase } from "./services/database";
 import { initializeFirebase } from "./services/firebase";
 import { getRateLimiter } from "./services/rateLimiter";
-import { authenticateSocket } from "./services/socketAuth";
 
 config();
 
@@ -28,6 +28,9 @@ initializeFirebase();
 app.use(cors());
 app.use(express.json());
 app.use(getRateLimiter());
+app.use(authenticateRequest);
+app.use("/user", userRouter);
+
 io.use(authenticateSocket);
 
 io.on("connection", async (socket) => {

@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import '../services/socket_emitters.dart';
+
 import '../services/socket_service.dart';
 
 class SocketConnectionStream extends StatefulWidget {
-  const SocketConnectionStream({Key? key}) : super(key: key);
+  final Widget child;
+
+  const SocketConnectionStream({super.key, required this.child});
 
   @override
   _SocketConnectionStreamState createState() => _SocketConnectionStreamState();
@@ -11,15 +15,28 @@ class SocketConnectionStream extends StatefulWidget {
 
 class _SocketConnectionStreamState extends State<SocketConnectionStream> {
   late final SocketService _socketService;
-  late final SocketEmitters _socketEmitters;
+  String? _errorMessage;
+  StreamSubscription? _errorSubscription; // Reference to the StreamSubscription
 
   @override
   void initState() {
     super.initState();
     _socketService = SocketService();
-    _socketService.connect().then((_) {
-      _socketEmitters = SocketEmitters();
+    _socketService.connect();
+
+    _errorSubscription = _socketService.errors.listen((errorMsg) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = errorMsg;
+        });
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _errorSubscription?.cancel(); // Cancel the StreamSubscription
+    super.dispose();
   }
 
   @override
@@ -27,18 +44,33 @@ class _SocketConnectionStreamState extends State<SocketConnectionStream> {
     return StreamBuilder<bool>(
       stream: _socketService.connectionState,
       builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data == true) {
-          _socketEmitters.checkOnboarding((data) {
-            if (mounted) {
-              if (data['onboarded'] == false) {
-                Navigator.pushReplacementNamed(context, '/onboarding');
-              } else {
-                Navigator.pushReplacementNamed(context, '/chat');
-              }
-            }
-          });
-          return const SizedBox.shrink();
+        if (_errorMessage != null) {
+          return Center(child: Text(_errorMessage!));
         }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // While waiting for the connection state, display a loading indicator
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16), // Add some spacing
+                Text(
+                  "Connecting to server...",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          );
+        }
+
+        print(snapshot.data);
+
+        if (snapshot.hasData && snapshot.data == true) {
+          return widget.child;
+        }
+
         return const CircularProgressIndicator();
       },
     );
