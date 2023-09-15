@@ -63,6 +63,33 @@ This repository contains the codebase for a weightlifting planning and tracking 
 - Backend: Use the scripts in `package.json` for development and deployment. For Docker deployment, use the `docker` script.
 - UI: Follow Flutter's standard development and deployment procedures. Refer to the links provided in the UI's `README.md` for more resources.
 
+## Token Renewal and Error Handling
+
+### Token Renewal:
+
+Firebase ID tokens have a limited lifespan for security reasons. To ensure uninterrupted user experience:
+
+1. **Frontend**:
+  - Monitor the expiration time of the Firebase ID token.
+  - As the token nears its expiration, automatically request a fresh token from Firebase.
+  - Replace the old token with the new one in subsequent requests to the backend.
+
+2. **Backend**:
+  - Before processing any request that requires authentication, verify the token's validity.
+  - If the token is nearing its expiration, consider sending a preemptive response to the frontend, suggesting a token renewal.
+
+### Error Handling:
+
+1. **Frontend**:
+  - If the backend indicates an expired token, either:
+    - Prompt the user to re-authenticate.
+    - Or, automatically refresh the token if the user session is still active.
+  - Display user-friendly error messages for any authentication-related issues.
+
+2. **Backend**:
+  - When verifying the token, if it's expired, respond with a specific error code/message indicating the token expiration.
+  - Log any authentication errors for monitoring and debugging purposes.
+
 ## Additional Resources
 
 - [Flutter Documentation](https://docs.flutter.dev/)
