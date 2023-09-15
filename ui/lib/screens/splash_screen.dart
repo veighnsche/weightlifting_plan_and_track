@@ -1,29 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/widgets/onboarding_status_checker.dart';
-import 'package:weightlifting_plan_and_track/widgets/socket_connection_stream.dart';
 
 import '../widgets/auth_state_stream.dart';
+import '../widgets/onboarding_status_checker.dart';
+import '../widgets/socket_connection_stream.dart';
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  bool authStreamStateDone = false;
+  bool socketStreamStateDone = false;
+
+  void handleAuthStateStreamDone() {
+    setState(() {
+      authStreamStateDone = true;
+    });
+  }
+
+  void handleSocketConnectionStreamDone() {
+    setState(() {
+      socketStreamStateDone = true;
+    });
+  }
+
+  void handleOnboardingStatusCheckerDone(bool onboarded) {
+    if (onboarded) {
+      Navigator.pushReplacementNamed(context, '/chat');
+    } else {
+      Navigator.pushReplacementNamed(context, '/onboarding');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Weightlifting Plan and Track',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            AuthStateStream(
-              child: SocketConnectionStream(
-                child: OnboardingStatusChecker(),
-              ),
-            ),
+            const SizedBox(height: 20),
+            if (!authStreamStateDone)
+              AuthStateStream(handleDone: handleAuthStateStreamDone),
+
+            if (authStreamStateDone && !socketStreamStateDone)
+              SocketConnectionStream(
+                  handleDone: handleSocketConnectionStreamDone),
+
+            if (authStreamStateDone && socketStreamStateDone)
+              OnboardingStatusChecker(
+                  handleDone: handleOnboardingStatusCheckerDone),
+
           ],
         ),
       ),

@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import '../services/socket_service.dart';
 
 class SocketConnectionStream extends StatefulWidget {
-  final Widget child;
+  final VoidCallback handleDone;
 
-  const SocketConnectionStream({super.key, required this.child});
+  const SocketConnectionStream({super.key, required this.handleDone});
 
   @override
   _SocketConnectionStreamState createState() => _SocketConnectionStreamState();
@@ -15,27 +13,16 @@ class SocketConnectionStream extends StatefulWidget {
 
 class _SocketConnectionStreamState extends State<SocketConnectionStream> {
   late final SocketService _socketService;
-  String? _errorMessage;
-  StreamSubscription? _errorSubscription; // Reference to the StreamSubscription
 
   @override
   void initState() {
     super.initState();
     _socketService = SocketService();
     _socketService.connect();
-
-    _errorSubscription = _socketService.errors.listen((errorMsg) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = errorMsg;
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
-    _errorSubscription?.cancel(); // Cancel the StreamSubscription
     super.dispose();
   }
 
@@ -44,9 +31,8 @@ class _SocketConnectionStreamState extends State<SocketConnectionStream> {
     return StreamBuilder<bool>(
       stream: _socketService.connectionState,
       builder: (context, snapshot) {
-        if (_errorMessage != null) {
-          return Center(child: Text(_errorMessage!));
-        }
+        print(
+            "socket_connection_stream.dart: connectionState: ${snapshot.connectionState}");
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While waiting for the connection state, display a loading indicator
@@ -65,10 +51,13 @@ class _SocketConnectionStreamState extends State<SocketConnectionStream> {
           );
         }
 
-        print(snapshot.data);
+        print("socket_connection_stream.dart: hasData: ${snapshot.hasData}");
 
         if (snapshot.hasData && snapshot.data == true) {
-          return widget.child;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.handleDone();
+          });
+          return const SizedBox.shrink();
         }
 
         return const CircularProgressIndicator();

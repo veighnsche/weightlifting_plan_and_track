@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthStateStream extends StatefulWidget {
-  final Widget child;
+  final VoidCallback handleDone;
 
-  const AuthStateStream({Key? key, required this.child}) : super(key: key);
+  const AuthStateStream({Key? key, required this.handleDone}) : super(key: key);
 
   @override
   _AuthStateStreamState createState() => _AuthStateStreamState();
@@ -19,14 +19,15 @@ class _AuthStateStreamState extends State<AuthStateStream> {
         if (snapshot.connectionState == ConnectionState.active) {
           User? user = snapshot.data;
           if (user == null) {
-            Future.microtask(
-                () => Navigator.pushReplacementNamed(context, '/login'));
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(),
-                  SizedBox(height: 16), // Add some spacing
+                  SizedBox(height: 16),
                   Text(
                     "Checking authentication status...",
                     style: TextStyle(fontSize: 16),
@@ -35,7 +36,10 @@ class _AuthStateStreamState extends State<AuthStateStream> {
               ),
             );
           } else {
-            return widget.child;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.handleDone();
+            });
+            return const SizedBox.shrink();
           }
         }
         return const CircularProgressIndicator();
