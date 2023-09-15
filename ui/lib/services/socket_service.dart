@@ -17,9 +17,6 @@ class SocketService {
   final _connectionStateController = StreamController<bool>.broadcast();
   Stream<bool> get connectionState => _connectionStateController.stream;
 
-  final _errorController = StreamController<String?>.broadcast();
-  Stream<String?> get errors => _errorController.stream;
-
   Future<void> connect() async {
     if (_socket?.connected ?? false) {
       return;
@@ -27,34 +24,21 @@ class SocketService {
 
     var token = await _authService.token;
 
-    try {
-      _socket = io(
-          'http://localhost:3000',
-          OptionBuilder().setTransports(['websocket']).setAuth({
-            'token': token,
-          }).build())
-        ..onConnect((_) {
-          _connectionStateController.add(true);
-          clearError(); // Clear any previous errors
-        })
-        ..onDisconnect((_) {
-          _connectionStateController.add(false);
-        })
-        ..onError((errorData) {
-          // Handle the error data here
-          _errorController.add("Failed to connect to the server: $errorData");
-        });
-    } catch (e) {
-      _errorController.add("Error connecting to the server.");
-    }
+    _socket = io(
+        'http://localhost:3000',
+        OptionBuilder().setTransports(['websocket']).setAuth({
+          'token': token,
+        }).build())
+      ..onConnect((_) {
+        _connectionStateController.add(true);
+      })
+      ..onDisconnect((_) {
+        _connectionStateController.add(false);
+      });
   }
 
   void disconnect() {
     _socket?.disconnect();
-  }
-
-  void clearError() {
-    _errorController.add(null);
   }
 
   get emit => _socket?.emit;
