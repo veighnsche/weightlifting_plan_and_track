@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             title: 'Chat App',
             theme: ThemeData(
-              primarySwatch: Colors.blue,
+              primarySwatch: Colors.blueGrey,
             ),
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,

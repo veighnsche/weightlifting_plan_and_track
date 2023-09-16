@@ -20,15 +20,41 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[50], // Soft background color
       body: Center(
-        child: loading
-            ? const CircularProgressIndicator() // Show loading indicator when loading is true
-            : ElevatedButton(
-          child: const Text('Sign in with Google'),
-          onPressed: () {
-            final scaffoldMessenger = ScaffoldMessenger.of(context);
-            _signIn(scaffoldMessenger);
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // App logo placeholder
+            const Icon(Icons.fitness_center, size: 100, color: Colors.blueGrey),
+            const SizedBox(height: 20),
+            const Text(
+              'Weightlifting Plan & Track',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey,
+              ),
+            ),
+            const SizedBox(height: 40),
+            loading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueGrey,
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 5,
+              ),
+              child: const Text('Sign in with Google'),
+              onPressed: () {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                _signIn(scaffoldMessenger);
+              },
+            ),
+          ],
         ),
       ),
     );

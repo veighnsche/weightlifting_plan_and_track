@@ -36,7 +36,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               : "Date of Birth: ${DateFormat('dd-MM-yyyy').format(dateOfBirth!)}",
           style: TextStyle(color: Colors.grey[700]),
         ),
-        leading: const Icon(Icons.calendar_today, color: Colors.blue),
+        leading: const Icon(Icons.calendar_today, color: Colors.blueGrey),
         onTap: () async {
           DateTime? selectedDate = await showDatePicker(
             context: context,
@@ -47,12 +47,12 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             builder: (BuildContext context, Widget? child) {
               return Theme(
                 data: ThemeData.light().copyWith(
-                  primaryColor: Colors.blue,
-                  colorScheme: const ColorScheme.light(primary: Colors.blue),
+                  primaryColor: Colors.blueGrey,
+                  colorScheme: const ColorScheme.light(primary: Colors.blueGrey),
                   buttonTheme:
                       const ButtonThemeData(textTheme: ButtonTextTheme.primary),
                   textButtonTheme: TextButtonThemeData(
-                    style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                    style: TextButton.styleFrom(foregroundColor: Colors.blueGrey),
                   ),
                 ),
                 child: child!,

@@ -128,7 +128,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
             child: ElevatedButton(
               onPressed: handlePressed,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.blueGrey,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               child: const Text(
