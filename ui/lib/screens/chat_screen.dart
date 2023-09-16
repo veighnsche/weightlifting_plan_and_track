@@ -29,8 +29,8 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder<List<WPTChatMessage>>(
-              future: _chatService.getMessages(),
+            child: StreamBuilder<List<WPTChatMessage>>(
+              stream: _chatService.getMessagesStream(),
               builder: (context, snapshot) {
                 print("snapshot.connectionState ${snapshot.connectionState}");
 

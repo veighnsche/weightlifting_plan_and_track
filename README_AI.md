@@ -72,23 +72,30 @@ The chat feature facilitates real-time interactions, allowing users to communica
 ### Databases
 
 - **PostgreSQL Database**: Manages the association between `userIDs` and `conversationIDs`.
-- **Firebase Real-time Database**: Stores the chat messages under their respective `conversationID`.
+- **Firestore**: Stores the chat messages under their respective `conversationID`.
 
 ### Data Models
 
 **ChatConversation**:
-- `conversationID`: Unique identifier for the conversation.
-- `messages`: Array of ChatMessage objects.
+- `conversationID`: A unique identifier for the conversation.
+- `messages`: An array containing individual ChatMessage objects representing the flow of the conversation.
 
 **ChatMessage**:
-- `messageID`: Unique identifier for the message.
-- `role`: Enum (user, assistant, system).
-- `content`: String (The message for user and assistant roles, the data for system role).
-- `functionCall`: Object (For assistant messages).
-    - `functionName`: String (eg. OnlyContent, CreateExercise, ReadExercise, UpdateExercise, DeleteExercise).
-    - `parameters`: String (JSON stringified).
-    - `callback`: String (Description of the next action, optional).
-    - `status`: Enum (open, expired, approved, rejected, none [none = Read* & OnlyContent]).
+- `role`: Specifies the sender's role in the conversation. Possible values are:
+    - user: Represents the end-user or client.
+    - assistant: Represents the AI assistant or bot.
+    - system: Represents system-generated messages or notifications.
+- `content`: The actual text of the message. For the 'system' role, this might contain data or system-specific information.
+- `functionCall`: (Optional) An object present in assistant messages that might call a specific function.
+    - `functionName`: The name of the function being called (e.g., OnlyContent, CreateExercise, etc.).
+    - `parameters`: Parameters required for the function, provided as a JSON stringified format.
+    - `callback`: (Optional) A description or instruction for the next action to be taken after the function call.
+    - `status`: Indicates the status of the function call. Possible values are:
+        - pending: The function call has been made, but the status is yet to be determined.
+        - expired: Another function call has been made, rendering this one invalid.
+        - approved: The function call was successful and approved.
+        - rejected: The function call was unsuccessful or denied.
+        - none: Used for Read* functions & OnlyContent where no specific status is required.
 
 ### Chat Flow
 

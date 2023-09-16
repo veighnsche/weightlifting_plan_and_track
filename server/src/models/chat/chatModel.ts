@@ -1,34 +1,30 @@
-interface WPTChatConversation {
+export interface WPTChatConversation {
   conversationID: string;
   messages: WPTChatMessage[];
 }
 
-interface WPTChatMessage {
+export interface WPTChatMessage {
   messageID: string;
   role: WPTMessageRole;
   content: string;
   functionCall?: WPTFunctionCall;
 }
 
-enum WPTMessageRole {
+export enum WPTMessageRole {
   User = 'user',
   Assistant = 'assistant',
   System = 'system',
 }
 
-interface WPTFunctionCall {
+export interface WPTFunctionCall {
   functionName: string;
   parameters: Record<string, any>;
-  metadata: WPTFunctionMetadata;
-}
-
-interface WPTFunctionMetadata {
-  callback: string;
+  callback?: string;  // Making callback optional as per the database table
   status: WPTFunctionStatus;
 }
 
-enum WPTFunctionStatus {
-  Open = 'open',
+export enum WPTFunctionStatus {
+  Pending = 'pending',
   Expired = 'expired',
   Approved = 'approved',
   Rejected = 'rejected',

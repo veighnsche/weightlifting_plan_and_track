@@ -3,6 +3,13 @@ class WPTChatConversation {
   final List<WPTChatMessage> messages;
 
   WPTChatConversation({required this.conversationID, required this.messages});
+
+  static WPTChatConversation fromMap(Map<String, dynamic> map) {
+    return WPTChatConversation(
+      conversationID: map['conversationID'],
+      messages: List<WPTChatMessage>.from(map['messages'].map((messageMap) => WPTChatMessage.fromMap('', messageMap))),
+    );
+  }
 }
 
 class WPTChatMessage {
@@ -17,6 +24,15 @@ class WPTChatMessage {
     required this.content,
     this.functionCall,
   });
+
+  static WPTChatMessage fromMap(String id, Map<String, dynamic> map) {
+    return WPTChatMessage(
+      messageID: id,
+      role: WPTMessageRole.values.firstWhere((e) => e.toString() == 'WPTMessageRole.${map['role']}'),
+      content: map['content'],
+      functionCall: map['functionCall'] != null ? WPTFunctionCall.fromMap(map['functionCall']) : null,
+    );
+  }
 }
 
 enum WPTMessageRole {
@@ -27,25 +43,29 @@ enum WPTMessageRole {
 
 class WPTFunctionCall {
   final String functionName;
-  final Map<String, dynamic> parameters;
-  final WPTFunctionMetadata metadata;
+  final String parameters;
+  final String? callback;
+  final WPTFunctionStatus status;
 
   WPTFunctionCall({
     required this.functionName,
     required this.parameters,
-    required this.metadata,
+    this.callback,
+    required this.status,
   });
-}
 
-class WPTFunctionMetadata {
-  final String callback;
-  final WPTFunctionStatus status;
-
-  WPTFunctionMetadata({required this.callback, required this.status});
+  static WPTFunctionCall fromMap(Map<String, dynamic> map) {
+    return WPTFunctionCall(
+      functionName: map['functionName'],
+      parameters: map['parameters'],
+      callback: map['callback'],
+      status: WPTFunctionStatus.values[map['status']],
+    );
+  }
 }
 
 enum WPTFunctionStatus {
-  open,
+  pending,
   expired,
   approved,
   rejected,
