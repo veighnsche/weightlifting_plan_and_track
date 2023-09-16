@@ -14,6 +14,18 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
+  Future<String?>? get token {
+    return _auth.currentUser?.getIdToken();
+  }
+
+  bool get isSignedIn {
+    return _auth.currentUser != null;
+  }
+
+  Stream<User?> get authStateChanges {
+    return _auth.authStateChanges();
+  }
+
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -38,9 +50,5 @@ class AuthService {
   Future<void> signOut() async {
     await googleSignIn.signOut();
     await _auth.signOut();
-  }
-
-  Future<String?>? get token {
-    return _auth.currentUser?.getIdToken();
   }
 }

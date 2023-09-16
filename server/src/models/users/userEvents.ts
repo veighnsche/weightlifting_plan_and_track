@@ -7,6 +7,8 @@ const router = express.Router();
 router.get("/check-onboarding", async (req: AuthenticatedRequest, res) => {
   const uid = req.user?.uid;
 
+  console.info(`Checking onboarding for user ${uid}`);
+
   if (!uid) {
     return res.status(400).send("UID not found.");
   }

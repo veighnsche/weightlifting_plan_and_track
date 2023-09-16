@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/auth_state_stream.dart';
 import '../widgets/onboarding_status_checker.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,14 +10,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool authStreamStateDone = false;
-
-  void handleAuthStateStreamDone() {
-    setState(() {
-      authStreamStateDone = true;
-    });
-  }
-
   void handleOnboardingStatusCheckerDone(bool onboarded) {
     if (onboarded) {
       Navigator.pushReplacementNamed(context, '/chat');
@@ -39,13 +30,8 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            if (!authStreamStateDone)
-              AuthStateStream(handleDone: handleAuthStateStreamDone),
-
-            if (authStreamStateDone)
-              OnboardingStatusChecker(
-                  handleDone: handleOnboardingStatusCheckerDone),
-
+            OnboardingStatusChecker(
+                handleDone: handleOnboardingStatusCheckerDone),
           ],
         ),
       ),
