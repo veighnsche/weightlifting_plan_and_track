@@ -82,16 +82,13 @@ The chat feature facilitates real-time interactions, allowing users to communica
 
 **ChatMessage**:
 - `messageID`: Unique identifier for the message.
-- `timestamp`: Timestamp of the message.
 - `role`: Enum (user, assistant, system).
-- `content`: String (For user and assistant messages).
-- `data`: Object (For system messages).
+- `content`: String (The message for user and assistant roles, the data for system role).
 - `functionCall`: Object (For assistant messages).
-    - `functionName`: String.
-    - `parameters`: Object.
-    - `metadata`: Object.
-        - `callback`: String (Description of the next action).
-        - `status`: Enum (valid, invalid, replaced).
+    - `functionName`: String (eg. OnlyContent, CreateExercise, ReadExercise, UpdateExercise, DeleteExercise).
+    - `parameters`: String (JSON stringified).
+    - `callback`: String (Description of the next action, optional).
+    - `status`: Enum (open, expired, approved, rejected, none [none = Read* & OnlyContent]).
 
 ### Chat Flow
 
@@ -106,11 +103,11 @@ The chat feature facilitates real-time interactions, allowing users to communica
 3. **Backend Processing**:
     - For messages without a `conversationID`:
         - A new `conversationID` is generated.
-        - The message is associated with this `conversationID` and stored in the Firebase real-time database.
+        - The message is associated with this `conversationID` and stored in the Firestore.
         - The `conversationID` is relayed back to the client.
 
 4. **Client Connection to Real-time Database**:
-    - Post-receipt of a `conversationID`, the client establishes a connection to the Firebase real-time database using this ID, ensuring real-time updates for the specific conversation.
+    - Post-receipt of a `conversationID`, the client establishes a connection to the Firestore using this ID, ensuring real-time updates for the specific conversation.
 
 5. **Assistant Interaction**:
     - The backend communicates the message to the assistant.
