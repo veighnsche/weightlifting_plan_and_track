@@ -22,6 +22,11 @@ export const authenticateSocket: Parameters<Server["use"]>[0] = async (socket, n
       return next();
     }
   } catch (err: any) {
+    if (err.code === 'auth/id-token-expired') {
+      console.log("Token expired");
+      socket.emit('token-expired');
+      return;
+    }
     console.error("Authentication error:", err.message);
     return next(new Error("Authentication error"));
   }

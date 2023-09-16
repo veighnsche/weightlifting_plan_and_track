@@ -23,6 +23,11 @@ export interface ClientToServerEvents {
       gymDescription?: string;
     }
   }, ackCallback: (response: { error?: string }) => void) => void;
+
+  // auth events
+  "authenticate": (data: {
+    token: string;
+  }, ackCallback: (response: { error?: string }) => void) => void;
 }
 
 export interface ServerToClientEvents {
@@ -57,7 +62,8 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-  // user data
+  // auth data
+  token: string;
   decodedToken: DecodedIdToken;
 }
 

@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 import 'auth_service.dart';
 
 class SocketService {
@@ -18,9 +20,13 @@ class SocketService {
 
   Stream<bool> get connectionState => _connectionStateController.stream;
 
-  Future<void> connect() async {
-    if (_socket?.connected ?? false) {
+  Future<void> connect([bool? forceReconnect]) async {
+    if ((_socket?.connected ?? false) && forceReconnect != true) {
       return;
+    }
+
+    if (_socket != null) {
+      _socket?.disconnect();
     }
 
     var token = await _authService.token;
@@ -38,6 +44,9 @@ class SocketService {
       })
       ..onConnectError((_) {
         _connectionStateController.add(false);
+      })
+      ..on('token-expired', (_) {
+        connect(true);
       });
   }
 
