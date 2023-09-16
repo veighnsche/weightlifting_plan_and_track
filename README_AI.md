@@ -82,6 +82,7 @@ The chat feature facilitates real-time interactions, allowing users to communica
 
 **ChatMessage**:
 - `messageID`: Unique identifier for the message.
+- `timestamp`: Timestamp of the message.
 - `role`: Enum (user, assistant, system).
 - `content`: String (For user and assistant messages).
 - `data`: Object (For system messages).
