@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'user_profile.dart';
+import 'app_logo.dart'; // Assuming you have the AppLogo widget in a separate file named app_logo.dart
 
 class DrawerContent extends StatelessWidget {
   const DrawerContent({super.key});
@@ -13,10 +14,7 @@ class DrawerContent extends StatelessWidget {
           child: ListView(
             children: [
               const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('User Info Here'),
+                child: AppLogo(iconSize: 60.0, spacing: 10.0, textSize: 18.0),
               ),
               ListTile(
                 title: const Text('Chat'),

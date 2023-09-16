@@ -61,32 +61,74 @@ This repository houses the codebase for the weightlifting planning and tracking 
 - **Backend**: The scripts in `package.json` are the guiding lights for development and deployment. For those who seek the embrace of Docker, the `docker` script is the path.
 - **UI**: The path is illuminated by Flutter's standard development and deployment procedures. For those who seek further enlightenment, the links provided in the UI's `README.md` are the guiding stars.
 
-## Token Renewal and Error Handling
+## Chat Feature
 
-### Token Renewal:
+Welcome to the chat feature of the Weightlifting Plan and Track application. This document provides a detailed breakdown of the chat functionality, ensuring a seamless interaction between users, the assistant, and the system.
 
-Firebase ID tokens are ephemeral, ensuring security. To guarantee an uninterrupted odyssey:
+### Overview
 
-1. **Frontend**:
-- Be ever-watchful of the expiration time of the Firebase ID token.
-- As the token approaches its twilight, seek a fresh token from Firebase.
-- Let the new token replace the old, ensuring a seamless journey to the backend.
+The chat feature facilitates real-time interactions, allowing users to communicate with an assistant. Messages within the chat can have one of three roles: user, assistant, or system. The flow is designed to be dynamic, with the assistant capable of making function calls that can lead to iterative interactions until a final message is delivered. Crucially, for operations that can create, update, or delete data, the user has the ability to confirm or adjust the function call arguments, ensuring user oversight.
 
-2. **Backend**:
-- Before embarking on any request that demands authentication, verify the token's authenticity.
-- If the token's twilight is near, send a beacon to the frontend, suggesting a token renewal.
+### Databases
 
-### Error Handling:
+- **PostgreSQL Database**: Manages the association between `userIDs` and `conversationIDs`.
+- **Firebase Real-time Database**: Stores the chat messages under their respective `conversationID`.
 
-1. **Frontend**:
-- If the backend sends a signal of an expired token, either:
-    - Summon the user to re-authenticate.
-    - Or, rejuvenate the token if the user's session is still vibrant.
-- Illuminate the path with user-friendly messages for any authentication-related detours.
+### Data Models
 
-2. **Backend**:
-- During the token's verification, if it's found to be in its twilight, respond with a beacon indicating the token's end.
-- Chronicle any authentication detours for future voyages.
+**ChatConversation**:
+- `conversationID`: Unique identifier for the conversation.
+- `messages`: Array of ChatMessage objects.
+
+**ChatMessage**:
+- `messageID`: Unique identifier for the message.
+- `role`: Enum (user, assistant, system).
+- `content`: String (For user and assistant messages).
+- `data`: Object (For system messages).
+- `functionCall`: Object (For assistant messages).
+    - `functionName`: String.
+    - `parameters`: Object.
+    - `metadata`: Object.
+        - `callback`: String (Description of the next action).
+        - `status`: Enum (valid, invalid, replaced).
+
+### Chat Flow
+
+1. **Client Initialization**:
+    - On pressing "New", a fresh chat screen is presented without any associated `conversationID`.
+    - Users compose their initial message.
+
+2. **User Interaction**:
+    - Upon sending the first message:
+        - The message is transmitted to the backend without a `conversationID`, signaling the initiation of a new conversation.
+
+3. **Backend Processing**:
+    - For messages without a `conversationID`:
+        - A new `conversationID` is generated.
+        - The message is associated with this `conversationID` and stored in the Firebase real-time database.
+        - The `conversationID` is relayed back to the client.
+
+4. **Client Connection to Real-time Database**:
+    - Post-receipt of a `conversationID`, the client establishes a connection to the Firebase real-time database using this ID, ensuring real-time updates for the specific conversation.
+
+5. **Assistant Interaction**:
+    - The backend communicates the message to the assistant.
+    - The assistant processes the message, returning a function call accompanied by metadata.
+    - The `functionCallStatus` in the metadata is checked:
+        - If "valid", the client displays the function call for user confirmation or adjustment.
+        - If "invalid" or "replaced", the function call is either disabled on the client side or replaced with the new valid function call.
+
+6. **User Approval**:
+    - For function calls that can create, update, or delete data:
+        - The user reviews the function call and its parameters.
+        - Upon user approval, the client sends the approved function call and its arguments to the backend.
+
+7. **Backend Processing & System Interaction**:
+    - The backend invokes the approved function.
+    - The system then adds relevant data to the conversation based on the function's outcome.
+    - If the function call has an associated `callback` in its metadata:
+        - The assistant is invoked again with the description from the callback, along with all previous messages.
+    - This iterative process persists until a conclusive message is determined.
 
 ## Additional Resources
 

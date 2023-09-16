@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+
+class AppLogo extends StatelessWidget {
+  final double iconSize;
+  final double spacing;
+  final double textSize;
+
+  const AppLogo({
+    super.key,
+    this.iconSize = 100.0,
+    this.spacing = 20.0,
+    this.textSize = 24.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(Icons.fitness_center, size: iconSize, color: Colors.blueGrey),
+        SizedBox(height: spacing),
+        Text(
+          'Weightlifting Plan & Track',
+          style: TextStyle(
+            fontSize: textSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.blueGrey,
+          ),
+        ),
+      ],
+    );
+  }
+}
