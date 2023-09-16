@@ -15,12 +15,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
 
   bool error = false;
+  bool loading = false; // New state variable for loading
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
+        child: loading
+            ? const CircularProgressIndicator() // Show loading indicator when loading is true
+            : ElevatedButton(
           child: const Text('Sign in with Google'),
           onPressed: () {
             final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -32,7 +35,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signIn(ScaffoldMessengerState scaffoldMessenger) async {
+    setState(() {
+      loading = true; // Set loading to true when sign-in starts
+    });
+
     User? user = await _authService.signInWithGoogle();
+
+    setState(() {
+      loading = false; // Set loading to false when sign-in completes
+    });
+
     if (user == null) {
       setState(() {
         error = true;
@@ -49,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const SplashScreen()),
-            (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
           );
         }
       });
