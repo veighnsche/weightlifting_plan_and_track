@@ -7,9 +7,7 @@ interface WPTChatMessage {
   messageID: string;
   role: WPTMessageRole;
   content: string;
-  data?: Record<string, any>;
   functionCall?: WPTFunctionCall;
-  timestamp: number;
 }
 
 enum WPTMessageRole {
@@ -30,7 +28,9 @@ interface WPTFunctionMetadata {
 }
 
 enum WPTFunctionStatus {
-  Valid = 'valid',
-  Invalid = 'invalid',
-  Replaced = 'replaced',
+  Open = 'open',
+  Expired = 'expired',
+  Approved = 'approved',
+  Rejected = 'rejected',
+  None = 'none',
 }

@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:448087616119:android:dbbfae8831cbf911a43472',
     messagingSenderId: '448087616119',
     projectId: 'weightlifting-plan-and-track',
+    databaseURL: 'https://weightlifting-plan-and-track-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'weightlifting-plan-and-track.appspot.com',
   );
 
@@ -62,6 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:448087616119:ios:90a9ad8d9db1116ea43472',
     messagingSenderId: '448087616119',
     projectId: 'weightlifting-plan-and-track',
+    databaseURL: 'https://weightlifting-plan-and-track-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'weightlifting-plan-and-track.appspot.com',
     iosClientId: '448087616119-lftrhtj2i08inb5ge66nai90tbmjtdvp.apps.googleusercontent.com',
     iosBundleId: 'com.example.weightliftingPlanAndTrack',

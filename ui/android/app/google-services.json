@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "448087616119",
+    "firebase_url": "https://weightlifting-plan-and-track-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "weightlifting-plan-and-track",
     "storage_bucket": "weightlifting-plan-and-track.appspot.com"
   },
@@ -29,6 +30,13 @@
             {
               "client_id": "448087616119-rilhsaevnhg34kcs8qjkonoidn67dgm8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "448087616119-lftrhtj2i08inb5ge66nai90tbmjtdvp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.weightliftingPlanAndTrack"
+              }
             }
           ]
         }

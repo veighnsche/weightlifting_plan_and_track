@@ -9,17 +9,13 @@ class WPTChatMessage {
   final String messageID;
   final WPTMessageRole role;
   final String content;
-  final Map<String, dynamic>? data;
   final WPTFunctionCall? functionCall;
-  final int timestamp;
 
   WPTChatMessage({
     required this.messageID,
     required this.role,
     required this.content,
-    this.data,
     this.functionCall,
-    required this.timestamp,
   });
 }
 
@@ -49,7 +45,9 @@ class WPTFunctionMetadata {
 }
 
 enum WPTFunctionStatus {
-  valid,
-  invalid,
-  replaced,
+  open,
+  expired,
+  approved,
+  rejected,
+  none,
 }
