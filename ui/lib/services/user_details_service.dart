@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'api_service.dart';
 
-class UserService {
+class UserDetailsService {
   final ApiService _apiService = ApiService();
 
   Future<bool> isOnboarded() async {
@@ -23,6 +23,25 @@ class UserService {
         print(error);
       }
       return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> read() async {
+    try {
+      final response =
+          await _apiService.get('http://localhost:3000/user/read');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return data;
+      } else {
+        throw Exception('Failed to read user');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return {};
     }
   }
 

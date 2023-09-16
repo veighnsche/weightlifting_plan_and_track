@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/widgets/custom_date_picker.dart';
 
 import '../themes/input_decorations.dart';
+import 'custom_date_picker.dart';
 
 class UserDetailsForm extends StatefulWidget {
   final Function(Map<String, dynamic>) onSubmit;
+  final String? initialGender;
+  final DateTime? initialDateOfBirth;
+  final String? initialWeight;
+  final String? initialHeight;
+  final String? initialFatPercentage;
+  final String? initialGymDescription;
 
-  const UserDetailsForm({super.key, required this.onSubmit});
+  const UserDetailsForm({
+    super.key,
+    required this.onSubmit,
+    this.initialGender,
+    this.initialDateOfBirth,
+    this.initialWeight,
+    this.initialHeight,
+    this.initialFatPercentage,
+    this.initialGymDescription,
+  });
 
   @override
   _UserDetailsFormState createState() => _UserDetailsFormState();
@@ -14,12 +29,23 @@ class UserDetailsForm extends StatefulWidget {
 
 class _UserDetailsFormState extends State<UserDetailsForm> {
   final _formKey = GlobalKey<FormState>();
-  String? gender;
-  DateTime? dateOfBirth; // New dateOfBirth field
-  String? weight;
-  String? height;
-  String? fatPercentage;
-  String? gymDescription;
+  late String? gender;
+  late DateTime? dateOfBirth;
+  late String? weight;
+  late String? height;
+  late String? fatPercentage;
+  late String? gymDescription;
+
+  @override
+  void initState() {
+    super.initState();
+    gender = widget.initialGender;
+    dateOfBirth = widget.initialDateOfBirth;
+    weight = widget.initialWeight;
+    height = widget.initialHeight;
+    fatPercentage = widget.initialFatPercentage;
+    gymDescription = widget.initialGymDescription;
+  }
 
   void handlePressed() {
     _formKey.currentState!.save();
@@ -27,7 +53,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
     widget.onSubmit({
       'user': {
         'gender': gender,
-        'dateOfBirth': dateOfBirth?.toIso8601String(), // Save as ISO string
+        'dateOfBirth': dateOfBirth?.toIso8601String(),
         'weight': weight,
         'height': height,
         'fatPercentage': fatPercentage,
@@ -47,6 +73,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
               padding: const EdgeInsets.all(8.0),
               children: [
                 TextFormField(
+                  initialValue: gender,
                   decoration:
                       blueInputDecoration(label: "Gender", icon: Icons.person),
                   onSaved: (value) => gender = value,
@@ -61,6 +88,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
                     }),
                 const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: weight,
                   decoration: blueInputDecoration(
                       label: "Weight (kg)", icon: Icons.fitness_center),
                   keyboardType: TextInputType.number,
@@ -68,6 +96,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: height,
                   decoration: blueInputDecoration(
                       label: "Height (cm)", icon: Icons.height),
                   keyboardType: TextInputType.number,
@@ -75,6 +104,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: fatPercentage,
                   decoration: blueInputDecoration(
                       label: "Fat Percentage (%)", icon: Icons.pie_chart),
                   keyboardType: TextInputType.number,
@@ -82,6 +112,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: gymDescription,
                   decoration: blueInputDecoration(
                       label: "Gym Description", icon: Icons.description),
                   maxLines: 3,

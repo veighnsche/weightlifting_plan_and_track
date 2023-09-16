@@ -18,7 +18,7 @@ class AppShell extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      drawer: const DrawerContent(),
+      drawer: const Drawer(child: DrawerContent()),
       body: body,
     );
   }

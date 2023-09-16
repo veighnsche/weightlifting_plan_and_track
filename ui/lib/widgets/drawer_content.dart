@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'user_profile.dart';
 
 class DrawerContent extends StatelessWidget {
@@ -34,7 +35,7 @@ class DrawerContent extends StatelessWidget {
             ],
           ),
         ),
-        const UserProfile(),
+        UserProfile(),
       ],
     );
   }

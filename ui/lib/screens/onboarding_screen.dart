@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:weightlifting_plan_and_track/services/auth_service.dart';
 
-import '../services/user_service.dart';
+import '../services/user_details_service.dart';
 import '../widgets/user_details_form.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final UserService _userService = UserService();
+  final UserDetailsService _userService = UserDetailsService();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 

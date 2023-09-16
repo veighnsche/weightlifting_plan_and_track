@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:weightlifting_plan_and_track/screens/user_details_edit_screen.dart';
 
 import 'screens/chat_screen.dart';
 import 'screens/login_screen.dart';
@@ -49,6 +50,9 @@ class _MyAppState extends State<MyApp> {
             routes: {
               '/chat': (context) => const ChatScreen(),
               '/onboarding': (context) => const OnboardingScreen(),
+              '/user/edit': (context) => UserDetailsEditScreen(
+                  userDetails: ModalRoute.of(context)!.settings.arguments
+                      as Map<String, dynamic>),
             },
           );
         }

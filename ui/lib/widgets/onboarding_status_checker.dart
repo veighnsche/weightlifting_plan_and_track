@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../services/user_service.dart';
+import '../services/user_details_service.dart';
 
 class OnboardingStatusChecker extends StatelessWidget {
   final Function(bool) handleDone;
@@ -10,7 +10,7 @@ class OnboardingStatusChecker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: UserService().isOnboarded(),
+      future: UserDetailsService().isOnboarded(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

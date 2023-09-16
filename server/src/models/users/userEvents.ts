@@ -1,13 +1,11 @@
 import express from "express";
 import { AuthenticatedRequest } from "../../services/auth";
-import { upsertUser, userExists } from "./userRepository";
+import { findByUid, upsertUser, userExists } from "./userRepository";
 
 const router = express.Router();
 
 router.get("/check-onboarding", async (req: AuthenticatedRequest, res) => {
   const uid = req.user?.uid;
-
-  console.info(`Checking onboarding for user ${uid}`);
 
   if (!uid) {
     return res.status(400).send("UID not found.");
@@ -15,6 +13,17 @@ router.get("/check-onboarding", async (req: AuthenticatedRequest, res) => {
 
   const onboarded = await userExists(uid);
   res.json({ onboarded });
+});
+
+router.get("/read", async (req: AuthenticatedRequest, res) => {
+  const uid = req.user?.uid;
+
+  if (!uid) {
+    return res.status(400).send("UID not found.");
+  }
+
+  const user = await findByUid(uid);
+  res.json({ user });
 });
 
 router.post("/upsert", async (req: AuthenticatedRequest, res) => {
