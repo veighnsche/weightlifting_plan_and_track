@@ -2,99 +2,95 @@
 
 ## Overview
 
-This repository contains the codebase for a weightlifting planning and tracking application. It consists of a backend server and a Flutter-based frontend UI.
+This repository houses the codebase for the weightlifting planning and tracking application. It's a harmonious blend of a robust backend server and a dynamic Flutter-based frontend UI.
 
 ## Server
 
 ### Initialization
 
-- The server is set up using Express and Socket.io.
-- Firebase is utilized for authentication.
-- Middleware for CORS and rate limiting is applied.
-- Socket.io connections are authenticated using Firebase tokens.
+- The server is crafted using Express.
+- Firebase stands as the guardian of authentication.
+- Middleware for CORS and rate limiting ensures a seamless and secure user experience.
 
 ### User Entity
 
-- The user entity is structured with the following fields:
-    - `userId`: A unique identifier for the user.
+- The user entity is a tapestry of the following fields:
+    - `userId`: A unique beacon identifying the user.
     - `uid`: Firebase UID.
-    - `name`: User's name.
-    - `age`: User's age.
-    - `weight`: User's weight (in kg).
-    - `height`: User's height (in cm).
-    - `gymDescription`: An optional description of the user's gym.
+    - `name`: The name of the user, echoing their identity.
+    - `age`: The age of the user, representing their journey in years.
+    - `weight`: The user's weight, measured in the universal metric of kg.
+    - `height`: The stature of the user, captured in cm.
+    - `gymDescription`: A canvas for users to paint a description of their gym.
 
 ### User Events
 
-- The server listens for an "upsert-user" event to handle both the creation and updating of user data.
-- Upon receiving this event, the server updates the user data and emits a "user-connected" event with an "onboarded" status.
+- The server is ever-vigilant, listening for an "upsert-user" event. This event is the key to both the creation and updating of user data.
+- Upon receiving this beacon, the server rejuvenates the user data and heralds a "user-connected" event with an "onboarded" status.
 
 ### Dependencies
 
-- Express, Socket.io, TypeORM, Firebase Admin, and other essential libraries.
-- Development scripts include starting the server, building the TypeScript code, and running the application in Docker.
+- The server's compass is set with Express, TypeORM, Firebase Admin, and other essential libraries that form its backbone.
+- Development scripts are the guiding stars, including starting the server, transmuting the TypeScript code, and running the application in the embrace of Docker.
 
 ## UI
 
 ### Onboarding Screen
 
-- The onboarding screen collects user details such as age, weight, height, and an optional gym description.
-- The user's name is fetched from Firebase Auth.
-- Once the user submits the form, the data is sent to the server using the socket service's `upsertUser` method.
+- The onboarding screen is a gateway, collecting user details like age, weight, height, and an optional gym description.
+- The user's name is a treasure fetched from Firebase Auth.
+- Upon the user's decree (form submission), the data embarks on a journey to the server.
 
 ### Authentication Service
 
-- Provides methods for signing in with Google and signing out.
-- Uses Firebase Auth and Google Sign-In for authentication.
-- Can fetch the current user's Firebase token.
+- This service is the sentinel, offering methods for signing in with Google and signing out.
+- It harnesses the power of Firebase Auth and Google Sign-In for authentication.
+- It's equipped to fetch the current user's Firebase token, ensuring a seamless experience.
 
-### Socket Service
+### Chat Capabilities
 
-- Provides methods to connect and disconnect from a Socket.io server.
-- Uses the user's Firebase token for authentication with the server.
-- Can send user messages and upsert user data to the server.
+- The chat capabilities are powered by either Firestore or the Real-Time Database, ensuring real-time interactions and a seamless chat experience.
+- The user and gym planning and tracking data remain anchored in PostgreSQL, ensuring depth and clarity.
 
 ### Dependencies
 
-- Firebase Core, Firebase Auth, Google Sign-In, Socket.io Client, and other essential Flutter packages.
+- The UI's compass points to Firebase Core, Firebase Auth, Google Sign-In, and other essential Flutter packages that form its foundation.
 
 ## Development and Deployment
 
-- Backend: Use the scripts in `package.json` for development and deployment. For Docker deployment, use the `docker` script.
-- UI: Follow Flutter's standard development and deployment procedures. Refer to the links provided in the UI's `README.md` for more resources.
+- **Backend**: The scripts in `package.json` are the guiding lights for development and deployment. For those who seek the embrace of Docker, the `docker` script is the path.
+- **UI**: The path is illuminated by Flutter's standard development and deployment procedures. For those who seek further enlightenment, the links provided in the UI's `README.md` are the guiding stars.
 
 ## Token Renewal and Error Handling
 
 ### Token Renewal:
 
-Firebase ID tokens have a limited lifespan for security reasons. To ensure uninterrupted user experience:
+Firebase ID tokens are ephemeral, ensuring security. To guarantee an uninterrupted odyssey:
 
 1. **Frontend**:
-  - Monitor the expiration time of the Firebase ID token.
-  - As the token nears its expiration, automatically request a fresh token from Firebase.
-  - Replace the old token with the new one in subsequent requests to the backend.
+- Be ever-watchful of the expiration time of the Firebase ID token.
+- As the token approaches its twilight, seek a fresh token from Firebase.
+- Let the new token replace the old, ensuring a seamless journey to the backend.
 
 2. **Backend**:
-  - Before processing any request that requires authentication, verify the token's validity.
-  - If the token is nearing its expiration, consider sending a preemptive response to the frontend, suggesting a token renewal.
+- Before embarking on any request that demands authentication, verify the token's authenticity.
+- If the token's twilight is near, send a beacon to the frontend, suggesting a token renewal.
 
 ### Error Handling:
 
 1. **Frontend**:
-  - If the backend indicates an expired token, either:
-    - Prompt the user to re-authenticate.
-    - Or, automatically refresh the token if the user session is still active.
-  - Display user-friendly error messages for any authentication-related issues.
+- If the backend sends a signal of an expired token, either:
+    - Summon the user to re-authenticate.
+    - Or, rejuvenate the token if the user's session is still vibrant.
+- Illuminate the path with user-friendly messages for any authentication-related detours.
 
 2. **Backend**:
-  - When verifying the token, if it's expired, respond with a specific error code/message indicating the token expiration.
-  - Log any authentication errors for monitoring and debugging purposes.
+- During the token's verification, if it's found to be in its twilight, respond with a beacon indicating the token's end.
+- Chronicle any authentication detours for future voyages.
 
 ## Additional Resources
 
 - [Flutter Documentation](https://docs.flutter.dev/)
 - [Firebase Documentation](https://firebase.google.com/docs)
-- [Socket.io Documentation](https://socket.io/docs/v4)
-- [Socket.io Repository](https://github.com/socketio/socket.io)
 - [TypeORM Documentation](https://typeorm.io/#/)
 - [TypeORM Repository](https://github.com/typeorm/typeorm)
