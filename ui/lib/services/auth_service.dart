@@ -26,6 +26,10 @@ class AuthService {
     return _auth.authStateChanges();
   }
 
+  User get currentUser {
+    return _auth.currentUser!;
+  }
+
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();

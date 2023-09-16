@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/services/auth_service.dart';
 
 import '../services/user_service.dart';
 import '../widgets/user_details_form.dart';
@@ -34,9 +35,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final name = user?.displayName ?? "User";
-    final photoUrl = user?.photoURL;
+    final AuthService authService = AuthService();
+    final User user = authService.currentUser;
+    final String name = user.displayName ?? "User";
+    final String? photoUrl = user.photoURL;
 
     return Scaffold(
       key: _scaffoldMessengerKey,

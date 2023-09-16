@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/screens/splash_screen.dart';
 
 import '../services/auth_service.dart';
 
@@ -43,6 +44,15 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.red,
         ),
       );
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+            (Route<dynamic> route) => false,
+          );
+        }
+      });
     }
   }
 }

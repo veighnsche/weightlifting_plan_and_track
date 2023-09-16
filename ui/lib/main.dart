@@ -15,7 +15,12 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final AuthService _authService = AuthService();
 
   @override
@@ -41,30 +46,12 @@ class MyApp extends StatelessWidget {
               Locale('en', 'US'), // English
             ],
             home: isSignedIn ? const SplashScreen() : LoginScreen(),
-            onGenerateRoute: (settings) {
-              if (isSignedIn) {
-                switch (settings.name) {
-                  case '/':
-                    return MaterialPageRoute(
-                        builder: (context) => const SplashScreen());
-                  case '/onboarding':
-                    return MaterialPageRoute(
-                        builder: (context) => const OnboardingScreen());
-                  case '/chat':
-                    return MaterialPageRoute(
-                        builder: (context) => const ChatScreen());
-                  // case '/user/edit':
-                  //   return MaterialPageRoute(
-                  //       builder: (context) => const EditUserForm());
-                }
-              } else {
-                return MaterialPageRoute(builder: (context) => LoginScreen());
-              }
-              return null;
+            routes: {
+              '/chat': (context) => const ChatScreen(),
+              '/onboarding': (context) => const OnboardingScreen(),
             },
           );
         }
-        // While waiting for the stream to emit data, show a loading indicator
         return const CircularProgressIndicator();
       },
     );
