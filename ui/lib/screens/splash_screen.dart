@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../widgets/auth_state_stream.dart';
 import '../widgets/onboarding_status_checker.dart';
-import '../widgets/socket_connection_stream.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,17 +12,10 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool authStreamStateDone = false;
-  bool socketStreamStateDone = false;
 
   void handleAuthStateStreamDone() {
     setState(() {
       authStreamStateDone = true;
-    });
-  }
-
-  void handleSocketConnectionStreamDone() {
-    setState(() {
-      socketStreamStateDone = true;
     });
   }
 
@@ -50,11 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (!authStreamStateDone)
               AuthStateStream(handleDone: handleAuthStateStreamDone),
 
-            if (authStreamStateDone && !socketStreamStateDone)
-              SocketConnectionStream(
-                  handleDone: handleSocketConnectionStreamDone),
-
-            if (authStreamStateDone && socketStreamStateDone)
+            if (authStreamStateDone)
               OnboardingStatusChecker(
                   handleDone: handleOnboardingStatusCheckerDone),
 

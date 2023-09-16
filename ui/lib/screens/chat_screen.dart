@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_shell.dart';
-import '../services/socket_emitters.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -11,14 +10,11 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final SocketEmitters _socketEmitter = SocketEmitters();
   final TextEditingController _contentController = TextEditingController();
 
-  final List<ChatMessage> messages = [];
+  final List<ChatMessage> messages = []; // should be replace with a firestore collection
 
   void handleSend() {
-    _socketEmitter.newUserMessage(_contentController.text);
-
     setState(() {
       messages.add(
           ChatMessage(content: _contentController.text, role: UserRole.user));

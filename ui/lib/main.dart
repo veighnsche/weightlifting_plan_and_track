@@ -6,7 +6,6 @@ import 'package:weightlifting_plan_and_track/screens/splash_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
-import 'services/socket_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +19,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final SocketService _socketService = SocketService();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,18 +38,12 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (context) => const SplashScreen(),
         '/login': (context) => LoginScreen(),
-        '/onboarding': (context) => OnboardingScreen(),
+        '/onboarding': (context) => const OnboardingScreen(),
         '/chat': (context) => const ChatScreen(),
       },
       // onGenerateRoute: (settings) {
       //   // Handle any other routes or pass arguments to routes if needed
       // },
     );
-  }
-
-  @override
-  void dispose() {
-    _socketService.disconnect();
-    super.dispose();
   }
 }
