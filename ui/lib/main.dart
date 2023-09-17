@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
           bool isSignedIn = snapshot.data != null;
 
           return MaterialApp(
-            title: 'Chat App',
+            title: 'Weightlifting Plan & Track',
             theme: ThemeData(
               primarySwatch: Colors.blueGrey,
             ),

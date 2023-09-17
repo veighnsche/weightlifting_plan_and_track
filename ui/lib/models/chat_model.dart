@@ -59,7 +59,7 @@ class WPTFunctionCall {
       functionName: map['functionName'],
       parameters: map['parameters'],
       callback: map['callback'],
-      status: WPTFunctionStatus.values[map['status']],
+      status: WPTFunctionStatus.values.firstWhere((e) => e.toString() == 'WPTFunctionStatus.${map['status']}'),
     );
   }
 }

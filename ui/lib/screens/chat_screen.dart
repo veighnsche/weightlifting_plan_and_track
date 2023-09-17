@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../core/app_shell.dart';
 import '../models/chat_model.dart';
-import '../widgets/chat_message_widgets.dart';
-import '../widgets/message_input.dart';
+import '../widgets/chat/message_widgets.dart';
+import '../widgets/chat/message_input.dart';
 import '../services/chat_service.dart'; // Import the service class
 
 class ChatScreen extends StatefulWidget {
@@ -44,12 +44,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   return const Center(child: Text('No messages yet.'));
                 }
 
-                List<WPTChatMessage>? messages = snapshot.data;
+                List<WPTChatMessage> messages = snapshot.data!;
 
                 return ListView.builder(
-                  itemCount: messages?.length,
+                  itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    WPTChatMessage message = messages![index];
+                    WPTChatMessage message = messages[index];
                     return ChatMessageWidget(message: message);
                   },
                 );
