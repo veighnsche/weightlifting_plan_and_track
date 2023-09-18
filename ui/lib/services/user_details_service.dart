@@ -7,25 +7,6 @@ import 'api_service.dart';
 class UserDetailsService {
   final ApiService _apiService = ApiService();
 
-  Future<bool> isOnboarded() async {
-    try {
-      final response =
-          await _apiService.get('http://localhost:3000/user/check-onboarding');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return data['onboarded'] as bool;
-      } else {
-        throw Exception('Failed to check onboarding status');
-      }
-    } catch (error) {
-      if (kDebugMode) {
-        print(error);
-      }
-      return false;
-    }
-  }
-
   Future<Map<String, dynamic>> read() async {
     try {
       final response =

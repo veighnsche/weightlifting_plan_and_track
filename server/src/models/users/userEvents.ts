@@ -1,21 +1,11 @@
 import express from "express";
-import { AuthenticatedRequest } from "../../services/auth";
-import { findByUid, upsertUser, userExists } from "./userRepository";
+import { AuthRequest } from "../../services/auth";
+import { UserEntity } from "./userEnitity";
+import { findByUid, upsertUser } from "./userRepository";
 
 const router = express.Router();
 
-router.get("/check-onboarding", async (req: AuthenticatedRequest, res) => {
-  const uid = req.user?.uid;
-
-  if (!uid) {
-    return res.status(400).send("UID not found.");
-  }
-
-  const onboarded = await userExists(uid);
-  res.json({ onboarded });
-});
-
-router.get("/read", async (req: AuthenticatedRequest, res) => {
+router.get("/read", async (req: AuthRequest, res) => {
   const uid = req.user?.uid;
 
   if (!uid) {
@@ -26,7 +16,7 @@ router.get("/read", async (req: AuthenticatedRequest, res) => {
   res.json({ user });
 });
 
-router.post("/upsert", async (req: AuthenticatedRequest, res) => {
+router.post("/upsert", async (req: AuthRequest<{ user: Partial<UserEntity> }>, res) => {
   const { user } = req.body;
   const { uid, name } = req.user!;
 
@@ -42,4 +32,4 @@ router.post("/upsert", async (req: AuthenticatedRequest, res) => {
   });
 });
 
-export const userRouter = router;
+export default router;

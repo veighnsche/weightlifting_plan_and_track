@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "start:typeSync": "ts-node src/index.typeSync.ts",
     "build": "tsc",
     "docker": "docker-compose up -d --build"
   },

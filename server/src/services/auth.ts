@@ -1,13 +1,16 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import type { ParamsDictionary } from "express-serve-static-core";
 import admin from "firebase-admin";
+import type { DecodedIdToken } from "firebase-admin/lib/auth";
 
-export interface AuthenticatedRequest extends Request {
-  user?: admin.auth.DecodedIdToken;
+
+export interface AuthRequest<T = any> extends Request<ParamsDictionary, any, T> {
+  user?: DecodedIdToken;
 }
 
-export type AuthenticatedMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => void;
+export type AuthMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => void;
 
-export const authenticateRequest: AuthenticatedMiddleware = async (req, res, next) => {
+export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
   const token = req.headers.authorization?.split("Bearer ")[1];
 
   if (!token) {
