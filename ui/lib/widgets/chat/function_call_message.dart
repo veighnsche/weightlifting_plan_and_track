@@ -7,11 +7,12 @@ import '../../models/chat_model.dart';
 import '../../models/function_call_model.dart';
 import '../../providers/function_calls_provider.dart';
 import '../../utils/strings.dart';
+import 'function_call_body.dart';
 
-class FunctionCall extends StatelessWidget {
+class FunctionCallMessage extends StatelessWidget {
   final WPTChatMessage message;
 
-  FunctionCall({super.key, required this.message});
+  const FunctionCallMessage({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +41,9 @@ class FunctionCall extends StatelessWidget {
               style: const TextStyle(fontFamily: 'Courier New'),
             ),
           ),
-          _buildBody(
-            context,
-            json.decode(message.functionCall!.parameters),
-            functionCallInfo?.parameters.propertiesKeys,
+          FunctionCallBody(
+            parameters: json.decode(message.functionCall!.parameters),
+            properties: functionCallInfo?.parameters.propertiesKeys,
           ),
           ButtonBar(
             children: [
@@ -64,53 +64,6 @@ class FunctionCall extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBody(
-    BuildContext context,
-    Map<String, dynamic> parameters,
-    List<String>? properties,
-  ) {
-    List<TextSpan> spans = [];
-
-    if (properties != null) {
-      for (var property in properties) {
-        if (parameters.containsKey(property)) {
-          spans.add(
-            TextSpan(
-              text: "${camelCaseToSpaceCase(property)}:",
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          );
-          spans.add(
-            TextSpan(text: ' ${parameters[property].toString()}'),
-          );
-        } else {
-          spans.add(
-            TextSpan(
-              text: property,
-              style: const TextStyle(color: Colors.grey),
-            ),
-          );
-          spans.add(
-            const TextSpan(text: ' -'),
-          );
-        }
-        spans.add(
-          const TextSpan(text: '; '),
-        );
-      }
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: RichText(
-        text: TextSpan(
-          style: DefaultTextStyle.of(context).style,
-          children: spans,
-        ),
       ),
     );
   }

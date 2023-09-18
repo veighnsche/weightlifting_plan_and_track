@@ -37,7 +37,7 @@ class AssistantMessage extends StatelessWidget {
             ),
           ),
         ),
-        if (message.functionCall != null) FunctionCall(message: message),
+        if (message.functionCall != null) FunctionCallMessage(message: message),
       ],
     );
   }
