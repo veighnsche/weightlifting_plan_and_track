@@ -32,13 +32,9 @@ class _ChatScreenState extends State<ChatScreen> {
             child: StreamBuilder<List<WPTChatMessage>>(
               stream: _chatService.getMessagesStream(),
               builder: (context, snapshot) {
-                print("snapshot.connectionState ${snapshot.connectionState}");
-
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
-                print("snapshot.data $snapshot.data");
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No messages yet.'));

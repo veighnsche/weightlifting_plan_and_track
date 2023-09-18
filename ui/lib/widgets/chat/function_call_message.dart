@@ -1,25 +1,24 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/models/function_call_model.dart';
-import 'package:weightlifting_plan_and_track/services/function_calls_store.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
+import '../../models/function_call_model.dart';
+import '../../providers/function_calls_provider.dart';
 import '../../utils/strings.dart';
 
 class FunctionCall extends StatelessWidget {
-  final FunctionCallsStore _functionCallsStore = FunctionCallsStore();
-
   final WPTChatMessage message;
 
   FunctionCall({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
-    FunctionCallInfo? functionCallInfo =
-        _functionCallsStore.getFunctionCallInfo(message.functionCall!.functionName);
+    final functionCallsStore = Provider.of<FunctionCallsProvider>(context);
 
-    print(functionCallInfo?.name);
+    FunctionCallInfo? functionCallInfo = functionCallsStore
+        .getFunctionCallInfo(message.functionCall!.functionName);
 
     return Card(
       child: Column(
@@ -28,14 +27,24 @@ class FunctionCall extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.code_outlined),
             title: Text(
-              camelCaseToSpaceCase(functionCallInfo?.name ?? message.functionCall!.functionName),
+              camelCaseToSpaceCase(
+                  functionCallInfo?.name ?? message.functionCall!.functionName),
               style: const TextStyle(
-                  fontFamily: 'Courier New',
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold),
+                fontFamily: 'Courier New',
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              functionCallInfo?.description ?? '',
+              style: const TextStyle(fontFamily: 'Courier New'),
             ),
           ),
-          _buildBody(context, json.decode(message.functionCall!.parameters)),
+          _buildBody(
+            context,
+            json.decode(message.functionCall!.parameters),
+            functionCallInfo?.parameters.propertiesKeys,
+          ),
           ButtonBar(
             children: [
               OutlinedButton(
@@ -59,24 +68,41 @@ class FunctionCall extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, Map<String, dynamic> parameters) {
+  Widget _buildBody(
+    BuildContext context,
+    Map<String, dynamic> parameters,
+    List<String>? properties,
+  ) {
     List<TextSpan> spans = [];
 
-    parameters.forEach((key, value) {
-      spans.add(
-        TextSpan(
-          text: key,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      );
-      spans.add(
-        TextSpan(text: ' ${value.toString()}'),
-      );
-
-      spans.add(
-        const TextSpan(text: '; '),
-      );
-    });
+    if (properties != null) {
+      for (var property in properties) {
+        if (parameters.containsKey(property)) {
+          spans.add(
+            TextSpan(
+              text: "${camelCaseToSpaceCase(property)}:",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          );
+          spans.add(
+            TextSpan(text: ' ${parameters[property].toString()}'),
+          );
+        } else {
+          spans.add(
+            TextSpan(
+              text: property,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          );
+          spans.add(
+            const TextSpan(text: ' -'),
+          );
+        }
+        spans.add(
+          const TextSpan(text: '; '),
+        );
+      }
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),

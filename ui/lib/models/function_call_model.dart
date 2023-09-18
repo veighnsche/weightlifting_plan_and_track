@@ -1,7 +1,7 @@
 class FunctionCallInfo {
   final String name;
   final String description;
-  final Parameters parameters;
+  final FunctionCallParameters parameters;
 
   FunctionCallInfo({
     required this.name,
@@ -13,41 +13,35 @@ class FunctionCallInfo {
     return FunctionCallInfo(
       name: map['name'],
       description: map['description'],
-      parameters: Parameters.fromMap(map['parameters']),
+      parameters: FunctionCallParameters.fromMap(map['parameters']),
     );
   }
 
-  static List<FunctionCallInfo> fromMapList(List<Map<String, dynamic>> mapList) {
+  static List<FunctionCallInfo> fromMapList(List<dynamic> mapList) {
     return mapList.map((map) => FunctionCallInfo.fromMap(map)).toList();
   }
 }
 
-
-class Parameters {
+class FunctionCallParameters {
   final String type;
   final Map<String, FunctionCallProperty> properties;
   final List<String> required;
 
-  Parameters({
+  FunctionCallParameters({
     required this.type,
     required this.properties,
     required this.required,
   });
 
-  factory Parameters.fromMap(Map<String, dynamic> map) {
-    Map<String, FunctionCallProperty> propertiesMap = {};
-    if (map['properties'] != null) {
-      map['properties'].forEach((key, value) {
-        propertiesMap[key] = FunctionCallProperty.fromMap(value);
-      });
-    }
-
-    return Parameters(
+  factory FunctionCallParameters.fromMap(Map<String, dynamic> map) {
+    return FunctionCallParameters(
       type: map['type'],
-      properties: propertiesMap,
+      properties: FunctionCallProperty.propertiesFromMap(map['properties'] ?? {}),
       required: List<String>.from(map['required']),
     );
   }
+
+  List<String> get propertiesKeys => properties.keys.toList();
 }
 
 class FunctionCallProperty {
@@ -67,5 +61,13 @@ class FunctionCallProperty {
       description: map['description'],
       enumValues: map['enum'] != null ? List<String>.from(map['enum']) : null,
     );
+  }
+
+  static Map<String, FunctionCallProperty> propertiesFromMap(Map<String, dynamic> propertiesMap) {
+    Map<String, FunctionCallProperty> result = {};
+    propertiesMap.forEach((key, value) {
+      result[key] = FunctionCallProperty.fromMap(value);
+    });
+    return result;
   }
 }
