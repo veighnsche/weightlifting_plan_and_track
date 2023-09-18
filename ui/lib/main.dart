@@ -22,6 +22,8 @@ class MyApp extends StatelessWidget {
   final AuthService _authService = AuthService();
   final InitService _initService = InitService();
 
+  MyApp({super.key});
+
   void setInitData(BuildContext context, Map<String, dynamic>? data) {
     if (data != null && data.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -45,20 +47,21 @@ class MyApp extends StatelessWidget {
       create: (context) => FunctionCallsProvider(),
       child: StreamBuilder<User?>(
         stream: _authService.authStateChanges,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.active) {
+        builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState != ConnectionState.active) {
             return const CircularProgressIndicator();
           }
 
-          final isSignedIn = snapshot.data != null;
+          final isSignedIn = userSnapshot.data != null;
           return FutureBuilder<Map<String, dynamic>>(
             future: isSignedIn ? _initService.init() : Future.value({}),
-            builder: (context, futureSnapshot) {
-              if (futureSnapshot.connectionState != ConnectionState.done) {
+            builder: (context, initSnapshot) {
+              if (initSnapshot.connectionState != ConnectionState.done) {
                 return const CircularProgressIndicator();
               }
 
-              setInitData(context, futureSnapshot.data);
+              setInitData(context, initSnapshot.data);
+
               return MaterialApp(
                 title: 'Weightlifting Plan & Track',
                 theme: ThemeData(primarySwatch: Colors.blueGrey),

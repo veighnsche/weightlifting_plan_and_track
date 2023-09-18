@@ -41,6 +41,10 @@ class FunctionCallParameters {
     );
   }
 
+  FunctionCallProperty? getProperty(String key) {
+    return properties[key];
+  }
+
   List<String> get propertiesKeys => properties.keys.toList();
 }
 

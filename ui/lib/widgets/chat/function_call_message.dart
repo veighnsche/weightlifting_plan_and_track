@@ -8,6 +8,7 @@ import '../../models/function_call_model.dart';
 import '../../providers/function_calls_provider.dart';
 import '../../utils/strings.dart';
 import 'function_call_body.dart';
+import 'function_call_form.dart';
 
 class FunctionCallMessage extends StatelessWidget {
   final WPTChatMessage message;
@@ -57,11 +58,44 @@ class FunctionCallMessage extends StatelessWidget {
                 label: const Text("Approve"),
               ),
               OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () => _showEditDialog(context, functionCallInfo!),
                 icon: const Icon(Icons.edit),
                 label: const Text("Edit"),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditDialog(
+    BuildContext context,
+    FunctionCallInfo functionCallInfo,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(camelCaseToSpaceCase(functionCallInfo.name)),
+        content: SingleChildScrollView(
+          child: FunctionCallForm(
+            functionCallInfo: functionCallInfo,
+            functionCall: message.functionCall,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              // Handle save logic here
+              Navigator.of(context).pop();
+            },
+            child: const Text('Save'),
           ),
         ],
       ),
