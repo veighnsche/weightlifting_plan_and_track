@@ -16,77 +16,99 @@ class FunctionCallBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: RichText(
-        text: TextSpan(
-          style: DefaultTextStyle.of(context).style.copyWith(fontFamily: 'Courier New'),
-          children: _generateTextSpans(),
-        ),
+      child: Table(
+        columnWidths: const {
+          0: FlexColumnWidth(1),
+          1: FlexColumnWidth(1),
+        },
+        children: _generateTableRows(),
       ),
     );
   }
 
-  List<TextSpan> _generateTextSpans() {
-    List<TextSpan> spans = [];
+  List<TableRow> _generateTableRows() {
+    List<TableRow> rows = [];
 
     if (properties != null) {
-      spans.addAll(_processProperties());
+      rows.addAll(_processProperties());
     }
-    spans.addAll(_processDeprecatedParameters());
+    rows.addAll(_processDeprecatedParameters());
 
-    return spans;
+    return rows;
   }
 
-  List<TextSpan> _processProperties() {
-    List<TextSpan> spans = [];
+  List<TableRow> _processProperties() {
+    List<TableRow> rows = [];
     for (var property in properties!) {
       if (parameters.containsKey(property)) {
-        spans.add(_boldTextSpan("${camelCaseToSpaceCase(property)}:"));
-        spans.add(_normalTextSpan(' ${parameters[property].toString()}'));
+        rows.add(TableRow(children: [
+          _boldTableCell("${camelCaseToSpaceCase(property)}:"),
+          _normalTableCell(parameters[property].toString()),
+        ]));
       } else {
-        spans.add(_greyTextSpan("${camelCaseToSpaceCase(property)}:"));
-        spans.add(const TextSpan(text: ' -'));
+        rows.add(TableRow(children: [
+          _greyTableCell("${camelCaseToSpaceCase(property)}:"),
+          _normalTableCell('-'),
+        ]));
       }
-      spans.add(const TextSpan(text: '; '));
     }
-    return spans;
+    return rows;
   }
 
-  List<TextSpan> _processDeprecatedParameters() {
-    List<TextSpan> spans = [];
+  List<TableRow> _processDeprecatedParameters() {
+    List<TableRow> rows = [];
     for (var key in parameters.keys) {
       if (properties == null || !properties!.contains(key)) {
-        spans.add(_italicGreyTextSpan("${camelCaseToSpaceCase(key)}:"));
-        spans.add(_normalTextSpan(' ${parameters[key].toString()}'));
-        spans.add(const TextSpan(text: '; '));
+        rows.add(TableRow(children: [
+          _italicGreyTableCell("${camelCaseToSpaceCase(key)}:"),
+          _normalTableCell(parameters[key].toString()),
+        ]));
       }
     }
-    return spans;
+    return rows;
   }
 
-  TextSpan _boldTextSpan(String text) {
-    return TextSpan(
-      text: text,
-      style: const TextStyle(fontWeight: FontWeight.bold),
+  Widget _boldTableCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Text(
+        text,
+        style: const TextStyle(
+            fontWeight: FontWeight.bold, fontFamily: 'Courier New'),
+      ),
     );
   }
 
-  TextSpan _normalTextSpan(String text) {
-    return TextSpan(text: text);
-  }
-
-  TextSpan _greyTextSpan(String text) {
-    return TextSpan(
-      text: text,
-      style: const TextStyle(color: Colors.grey),
+  Widget _normalTableCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Text(
+        text,
+        style: const TextStyle(fontFamily: 'Courier New'),
+      ),
     );
   }
 
-  TextSpan _italicGreyTextSpan(String text) {
-    return TextSpan(
-      text: text,
-      style: TextStyle(
-        color: Colors.grey[600],
-        fontStyle: FontStyle.italic,
+  Widget _greyTableCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.grey, fontFamily: 'Courier New'),
+      ),
+    );
+  }
+
+  Widget _italicGreyTableCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.grey[600],
+          fontStyle: FontStyle.italic,
+          fontFamily: 'Courier New',
+        ),
       ),
     );
   }
