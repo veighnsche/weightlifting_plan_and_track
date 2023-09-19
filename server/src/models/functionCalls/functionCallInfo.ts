@@ -3,50 +3,50 @@ import { FunctionCallInfo } from "./functionCallUtils";
 export const functionCallInfos: FunctionCallInfo[] = [
   {
     name: "findExercise",
-    description: "Locate a specific workout.",
+    description: "Search for a specific workout by its name or the main muscle it targets.",
     parameters: {
       type: "object",
       properties: {
         exerciseName: {
           type: "string",
-          description: "Name of the workout, e.g., Deadlift.",
+          description: "The workout's name, like 'Deadlift'.",
         },
         muscleGroup: {
           type: "string",
           enum: ["chest", "legs", "back", "arms", "shoulders", "core"],
-          description: "Primary muscle targeted.",
+          description: "The main muscle the workout focuses on.",
         },
       },
-      required: ["exercise_name"],
+      required: ["exerciseName"],
     },
   },
   {
     name: "exerciseActions",
-    description: "Manage workout details.",
+    description: "Handle the details of a workout, such as adding, viewing, updating, or removing it.",
     parameters: {
       type: "object",
       properties: {
         action: {
           type: "string",
-          enum: ["create", "read", "update", "delete"],
-          description: "Desired operation.",
+          enum: ["add", "view", "change", "remove"],
+          description: "What you want to do: add, view, change, or remove a workout.",
         },
         exerciseID: {
           type: "integer",
-          description: "Unique workout ID. Required for read, update, and delete.",
+          description: "The unique ID for the workout. You'll need this to view, change, or remove a workout.",
         },
         exerciseName: {
           type: "string",
-          description: "Workout name. Needed for adding or modifying.",
+          description: "The name of the workout. Use this when you're adding or changing a workout.",
         },
         muscleGroup: {
           type: "string",
           enum: ["chest", "legs", "back", "arms", "shoulders", "core"],
-          description: "Primary muscle involved. Needed for adding or modifying.",
+          description: "The main muscle the workout targets. Use this when adding or changing a workout.",
         },
         description: {
           type: "string",
-          description: "Short description. Optional for adding or modifying.",
+          description: "A brief overview of the workout. You can add this when you're adding or changing a workout, but it's optional.",
         },
       },
       required: ["action"],

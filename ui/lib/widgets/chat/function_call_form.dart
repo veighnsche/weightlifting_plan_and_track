@@ -38,17 +38,7 @@ class _FunctionCallFormState extends State<FunctionCallForm> {
     return Form(
       key: _formKey,
       child: Column(
-        children: [
-          ..._buildFormFields(),
-          // Optional: Add action buttons here if you want them within the form widget
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: [
-          //     TextButton(onPressed: _cancel, child: Text('Cancel')),
-          //     TextButton(onPressed: _save, child: Text('Save')),
-          //   ],
-          // ),
-        ],
+        children: _buildFormFields(),
       ),
     );
   }
@@ -62,23 +52,80 @@ class _FunctionCallFormState extends State<FunctionCallForm> {
   }
 
   Widget _buildFormField(String key, FunctionCallProperty property) {
-    return TextFormField(
-      initialValue: _parsedParameters[key]?.toString(),
-      decoration: InputDecoration(
-        labelText: camelCaseToSpaceCase(key),
-        helperText: property.description,
-      ),
-      validator: (value) {
-        if (widget.functionCallInfo!.parameters.required.contains(key) &&
-            (value == null || value.isEmpty)) {
-          return '$key is required';
-        }
-        // Additional validation based on property.type can be added here
-        return null;
-      },
-      onSaved: (value) {
-        _parsedParameters[key] = value;
-      },
-    );
+    bool isRequired =
+        widget.functionCallInfo!.parameters.required.contains(key);
+
+    if (property.enumValues != null && property.enumValues!.isNotEmpty) {
+      String? dropdownValue = _parsedParameters[key]?.toString();
+
+      return Row(
+        children: [
+          Expanded(
+            child: DropdownButtonFormField<String>(
+              value: dropdownValue,
+              decoration: InputDecoration(
+                labelText: camelCaseToSpaceCase(key),
+                helperText: property.description,
+              ),
+              items: property.enumValues!.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              validator: (value) {
+                if (isRequired && (value == null || value.isEmpty)) {
+                  return '$key is required';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                setState(() {
+                  _parsedParameters[key] = value;
+                });
+              },
+            ),
+          ),
+          if (!isRequired)
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.clear, size: 18.0, color: Colors.grey[400]),
+                onPressed: () {
+                  setState(() {
+                    _parsedParameters[key] = null;
+                  });
+                },
+                tooltip: 'Clear selection',
+              ),
+            ),
+        ],
+      );
+    } else {
+      return TextFormField(
+        initialValue: _parsedParameters[key]?.toString(),
+        keyboardType: property.type == 'number' ? TextInputType.number : TextInputType.text,
+        decoration: InputDecoration(
+          labelText: camelCaseToSpaceCase(key),
+          helperText: property.description,
+        ),
+        validator: (value) {
+          if (isRequired && (value == null || value.isEmpty)) {
+            return '$key is required';
+          }
+          if (property.type == 'number' && value != null && value.isNotEmpty && !isNumeric(value)) {
+            return 'Please enter a valid number';
+          }
+          return null;
+        },
+        onSaved: (value) {
+          _parsedParameters[key] = value;
+        },
+      );
+    }
   }
+}
+
+bool isNumeric(String value) {
+  return num.tryParse(value) != null;
 }
