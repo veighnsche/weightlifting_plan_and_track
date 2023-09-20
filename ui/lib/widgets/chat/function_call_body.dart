@@ -73,8 +73,7 @@ class FunctionCallBody extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: Text(
         text,
-        style: const TextStyle(
-            fontWeight: FontWeight.bold, fontFamily: 'Courier New'),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -82,10 +81,7 @@ class FunctionCallBody extends StatelessWidget {
   Widget _normalTableCell(String text) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Text(
-        text,
-        style: const TextStyle(fontFamily: 'Courier New'),
-      ),
+      child: Text(text),
     );
   }
 
@@ -94,7 +90,7 @@ class FunctionCallBody extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: Text(
         text,
-        style: const TextStyle(color: Colors.grey, fontFamily: 'Courier New'),
+        style: const TextStyle(color: Colors.grey),
       ),
     );
   }
@@ -104,11 +100,7 @@ class FunctionCallBody extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: Text(
         text,
-        style: TextStyle(
-          color: Colors.grey[600],
-          fontStyle: FontStyle.italic,
-          fontFamily: 'Courier New',
-        ),
+        style: TextStyle(color: Colors.grey[600], fontStyle: FontStyle.italic),
       ),
     );
   }
