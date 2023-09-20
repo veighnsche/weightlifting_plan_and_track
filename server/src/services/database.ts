@@ -1,4 +1,5 @@
 import { DataSource, DataSourceOptions } from "typeorm";
+import { ChatEntity } from "../models/chat/chatEntity";
 import { UserEntity } from "../models/users/userEnitity";
 
 const options: DataSourceOptions = {
@@ -8,7 +9,7 @@ const options: DataSourceOptions = {
   username: "weightlifting_user",
   password: "J8f!2gH#1kP6wQr9",
   database: "weightlifting_db",
-  entities: [UserEntity],
+  entities: [UserEntity, ChatEntity],
   synchronize: true,
 };
 

@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/chat_provider.dart';
 import 'providers/function_calls_provider.dart';
 import 'screens/chat_screen.dart';
 import 'screens/login_screen.dart';
@@ -43,48 +44,51 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => FunctionCallsProvider(),
-      child: StreamBuilder<User?>(
-        stream: _authService.authStateChanges,
-        builder: (context, userSnapshot) {
-          if (userSnapshot.connectionState != ConnectionState.active) {
-            return const CircularProgressIndicator();
-          }
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => FunctionCallsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ChatProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Weightlifting Plan & Track',
+        theme: ThemeData(primarySwatch: Colors.blueGrey),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+        home: StreamBuilder<User?>(
+          stream: _authService.authStateChanges,
+          builder: (context, userSnapshot) {
+            if (userSnapshot.connectionState != ConnectionState.active) {
+              return const CircularProgressIndicator();
+            }
 
-          final isSignedIn = userSnapshot.data != null;
-          return FutureBuilder<Map<String, dynamic>>(
-            future: isSignedIn ? _initService.init() : Future.value({}),
-            builder: (context, initSnapshot) {
-              if (initSnapshot.connectionState != ConnectionState.done) {
-                return const CircularProgressIndicator();
-              }
+            final isSignedIn = userSnapshot.data != null;
+            return FutureBuilder<Map<String, dynamic>>(
+              future: isSignedIn ? _initService.init() : Future.value({}),
+              builder: (context, initSnapshot) {
+                if (initSnapshot.connectionState != ConnectionState.done) {
+                  return const CircularProgressIndicator();
+                }
 
-              setInitData(context, initSnapshot.data);
-
-              return MaterialApp(
-                title: 'Weightlifting Plan & Track',
-                theme: ThemeData(primarySwatch: Colors.blueGrey),
-                localizationsDelegates: const [
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: const [
-                  Locale('nl', 'NL'),
-                  Locale('en', 'US')
-                ],
-                home: isSignedIn ? const ChatScreen() : LoginScreen(),
-                routes: {
-                  '/chat': (context) => const ChatScreen(),
-                  '/onboarding': (context) => const OnboardingScreen(),
-                  '/user/edit': (context) => UserDetailsEditScreen(
-                      userDetails: ModalRoute.of(context)!.settings.arguments
-                          as Map<String, dynamic>),
-                },
-              );
-            },
-          );
+                setInitData(context, initSnapshot.data);
+                return isSignedIn ? ChatScreen() : LoginScreen();
+              },
+            );
+          },
+        ),
+        routes: {
+          '/chat': (context) => ChatScreen(),
+          '/onboarding': (context) => const OnboardingScreen(),
+          '/user/edit': (context) => UserDetailsEditScreen(
+              userDetails: ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>),
         },
       ),
     );
