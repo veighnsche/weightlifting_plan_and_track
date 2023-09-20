@@ -1,6 +1,6 @@
 import express from "express";
 import { AuthRequest } from "../../services/auth";
-import { functionCallInfos } from "../functionCalls/functionCallInfo";
+import { functionCallInfos } from "../../assistant/functionCallInfo";
 import { userExists } from "../users/userRepository";
 
 const router = express.Router();

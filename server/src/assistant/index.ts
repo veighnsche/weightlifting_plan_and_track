@@ -15,7 +15,7 @@ export const callAssistant = async (uid: string, chatId: string, message: string
   });
 
   if (!completion.choices[0].message.content) {
-    throw new Error("No response from OpenAI");
+    throw new Error("No content in assistant response. Maybe a function call?");
   }
 
   await addAssistantMessage(uid, chatId, completion.choices[0].message.content);
