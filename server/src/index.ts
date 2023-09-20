@@ -5,6 +5,7 @@ import { createServer } from "http";
 import "reflect-metadata";
 import initRouter from "./models/init/initEvents";
 import userRouter from "./models/users/userEvents";
+import chatRouter from "./models/chat/chatEvents";
 
 import { authenticateRequest } from "./services/auth";
 import { connectDatabase } from "./services/database";
@@ -33,6 +34,7 @@ app.use(getRateLimiter());
 app.use(authenticateRequest);
 app.use("/init", initRouter);
 app.use("/user", userRouter);
+app.use("/chat", chatRouter);
 
 connectDatabase().then(() => {
   httpServer.listen(PORT, () => {

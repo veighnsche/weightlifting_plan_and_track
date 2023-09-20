@@ -14,9 +14,17 @@ class ChatScreen extends StatelessWidget {
 
   ChatScreen({super.key});
 
-  void handleSend() {
-    // send message to the backend
-    // You can also use the ChatService to send messages to Firebase.
+  void handleSend(BuildContext context) {
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+
+    // Get the message content from the controller
+    final messageContent = _contentController.text;
+
+    // Send the message using the ChatService and update the chatId if a new one is returned
+    _chatService.sendMessage(chatProvider.chatId, messageContent, (newChatId) {
+      chatProvider.setChatId(newChatId);
+    });
+
     _contentController.clear();
   }
 
@@ -25,8 +33,6 @@ class ChatScreen extends StatelessWidget {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, _) {
         final chatId = chatProvider.chatId;
-
-        print('chatId: $chatId');
 
         return AppShell(
           title: 'Chat',
@@ -54,7 +60,10 @@ class ChatScreen extends StatelessWidget {
                   },
                 ),
               ),
-              MessageInput(controller: _contentController, onSend: handleSend),
+              MessageInput(
+                controller: _contentController,
+                onSend: () => handleSend(context),
+              ),
             ],
           ),
         );

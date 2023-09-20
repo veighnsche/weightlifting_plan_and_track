@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/chat_model.dart';
+import 'api_service.dart';
 
 class ChatService {
+  final ApiService _apiService = ApiService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   CollectionReference _getMessagesRef(String chatId) {
@@ -23,4 +28,32 @@ class ChatService {
     });
   }
 
+  Future<void> sendMessage(String? chatId, String message, Function(String chatId) updateChatId) async {
+    try {
+      final response = await _apiService.post(
+        'http://localhost:3000/chat',
+        {
+          'chatId': chatId,
+          'message': message,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        if (data.containsKey('chatId')) {
+          updateChatId(data['chatId']);
+        }
+        return;
+      } else if (response.statusCode == 204) {
+        return;
+      } else {
+        throw Exception('Failed to send message');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+    }
+  }
 }

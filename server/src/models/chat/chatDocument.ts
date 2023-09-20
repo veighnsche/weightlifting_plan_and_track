@@ -4,7 +4,7 @@ export interface WPTChatConversation {
 }
 
 export interface WPTChatMessage {
-  messageID: string;
+  messageID?: string;
   role: WPTMessageRole;
   content: string;
   functionCall?: WPTFunctionCall;
