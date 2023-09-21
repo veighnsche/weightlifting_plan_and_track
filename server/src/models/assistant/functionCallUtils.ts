@@ -1,14 +1,14 @@
-export interface FunctionCallInfo {
+export interface FunctionDefinition {
   name: string;
   description: string;
   parameters: {
     type: string;
-    properties: Record<string, FunctionCallProperty>;
+    properties: Record<string, FunctionDefinitionProperty>;
     required: string[];
   };
 }
 
-export interface FunctionCallProperty {
+export interface FunctionDefinitionProperty {
   type: string;
   description?: string;
   enum?: string[];
