@@ -9,6 +9,7 @@ import 'providers/function_definition_provider.dart';
 import 'screens/chat_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/settings_screen.dart';
 import 'screens/user_details_edit_screen.dart';
 import 'services/auth_service.dart';
 import 'services/init_service.dart';
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
             Provider.of<FunctionDefinitionProvider>(context, listen: false);
 
         if (data['functionDefinitions'] != null) {
-          functionCallsProvider.setFunctionDefinitions(data['functionDefinitions']);
+          functionCallsProvider
+              .setFunctionDefinitions(data['functionDefinitions']);
         }
 
         if (data['onboarded'] == false) {
@@ -89,6 +91,7 @@ class MyApp extends StatelessWidget {
           '/user/edit': (context) => UserDetailsEditScreen(
               userDetails: ModalRoute.of(context)!.settings.arguments
                   as Map<String, dynamic>),
+          '/settings': (context) => SettingsScreen(),
         },
       ),
     );

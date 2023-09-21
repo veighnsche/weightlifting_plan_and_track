@@ -2,6 +2,7 @@ import { OpenAI } from "openai";
 import { ChatCompletionMessage } from "openai/resources/chat";
 import { WPTChatMessage } from "../chat/chatDocument";
 import { addMessage, fetchAllMessages } from "../chat/chatRepository";
+import { findSettingsValue } from "../users/userSettingsRepository";
 import { functionCallInfosWithMetadata } from "./functionDefinitions";
 
 export const callAssistant = async (uid: string, chatId: string) => {
@@ -9,10 +10,13 @@ export const callAssistant = async (uid: string, chatId: string) => {
     apiKey: process.env.OPENAI_API_KEY,
   });
 
-  const wptChatMessages: WPTChatMessage[] = await fetchAllMessages(chatId);
+  const [wptChatMessages, instructions]: [WPTChatMessage[], string | null] = await Promise.all([
+    fetchAllMessages(chatId),
+    findSettingsValue(uid, "instructions"),
+  ]);
 
   const messages: ChatCompletionMessage[] = [
-    { role: "system", content: "I am a helpful gym assistant." },
+    { role: "system", content: `I am a helpful gym assistant. ${instructions}` },
     ...wptChatMessages.map((message) => {
       if (message.function_call) {
         return ({

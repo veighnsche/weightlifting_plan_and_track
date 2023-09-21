@@ -1,6 +1,7 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import { ChatEntity } from "../models/chat/chatEntity";
 import { UserEntity } from "../models/users/userEnitity";
+import { UserSettingsEntity } from "../models/users/userSettingsEntity";
 
 const options: DataSourceOptions = {
   type: "postgres",
@@ -9,7 +10,7 @@ const options: DataSourceOptions = {
   username: "weightlifting_user",
   password: "J8f!2gH#1kP6wQr9",
   database: "weightlifting_db",
-  entities: [UserEntity, ChatEntity],
+  entities: [UserEntity, ChatEntity, UserSettingsEntity],
   synchronize: true,
 };
 

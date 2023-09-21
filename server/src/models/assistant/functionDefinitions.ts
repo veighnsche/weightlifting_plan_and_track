@@ -1,4 +1,4 @@
-import { FunctionDefinition, FunctionDefinitionProperty } from "./functionCallUtils";
+import { FunctionDefinition, FunctionDefinitionProperty } from "./functionDefinitionUtils";
 
 export const functionDefinitions: FunctionDefinition[] = [
   {
