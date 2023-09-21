@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
           '/user/edit': (context) => UserDetailsEditScreen(
               userDetails: ModalRoute.of(context)!.settings.arguments
                   as Map<String, dynamic>),
-          '/settings': (context) => SettingsScreen(),
+          '/settings': (context) => const SettingsScreen(),
         },
       ),
     );
