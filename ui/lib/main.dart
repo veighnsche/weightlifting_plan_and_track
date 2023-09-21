@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:weightlifting_plan_and_track/screens/splash_screen.dart';
 
 import 'providers/chat_provider.dart';
 import 'providers/function_definition_provider.dart';
@@ -68,7 +69,7 @@ class MyApp extends StatelessWidget {
           stream: _authService.authStateChanges,
           builder: (context, userSnapshot) {
             if (userSnapshot.connectionState != ConnectionState.active) {
-              return const CircularProgressIndicator();
+              return const SplashScreen(splashText: "logging in...");
             }
 
             final isSignedIn = userSnapshot.data != null;
@@ -76,7 +77,7 @@ class MyApp extends StatelessWidget {
               future: isSignedIn ? _initService.init() : Future.value({}),
               builder: (context, initSnapshot) {
                 if (initSnapshot.connectionState != ConnectionState.done) {
-                  return const CircularProgressIndicator();
+                  return const SplashScreen(splashText: "initializing...");
                 }
 
                 setInitData(context, initSnapshot.data);
