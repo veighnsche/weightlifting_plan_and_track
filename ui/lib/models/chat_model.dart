@@ -30,7 +30,7 @@ class WPTChatMessage {
       messageID: id,
       role: WPTMessageRole.values.firstWhere((e) => e.toString() == 'WPTMessageRole.${map['role']}'),
       content: map['content'],
-      functionCall: map['functionCall'] != null ? WPTFunctionCall.fromMap(map['functionCall']) : null,
+      functionCall: map['function_call'] != null ? WPTFunctionCall.fromMap(map['function_call']) : null,
     );
   }
 }
@@ -39,25 +39,26 @@ enum WPTMessageRole {
   user,
   assistant,
   system,
+  function,
 }
 
 class WPTFunctionCall {
-  final String functionName;
-  final String args;
+  final String name;
+  final String arguments;
   final String? callback;
   final WPTFunctionStatus status;
 
   WPTFunctionCall({
-    required this.functionName,
-    required this.args,
+    required this.name,
+    required this.arguments,
     this.callback,
     required this.status,
   });
 
   static WPTFunctionCall fromMap(Map<String, dynamic> map) {
     return WPTFunctionCall(
-      functionName: map['functionName'],
-      args: map['args'],
+      name: map['name'],
+      arguments: map['arguments'],
       callback: map['callback'],
       status: WPTFunctionStatus.values.firstWhere((e) => e.toString() == 'WPTFunctionStatus.${map['status']}'),
     );

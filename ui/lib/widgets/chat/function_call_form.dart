@@ -27,7 +27,7 @@ class _FunctionCallFormState extends State<FunctionCallForm> {
   void initState() {
     super.initState();
     if (widget.functionCall != null) {
-      _parsedParameters = json.decode(widget.functionCall!.args);
+      _parsedParameters = json.decode(widget.functionCall!.arguments);
     } else {
       _parsedParameters = {};
     }

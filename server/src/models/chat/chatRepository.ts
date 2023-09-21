@@ -1,16 +1,17 @@
+import { ChatCompletionRole } from "openai/src/resources/chat/completions";
 import { dataSource } from "../../services/database";
 import { getDatabase } from "../../services/firebase";
-import { WPTChatMessage, WPTFunctionStatus, WPTMessageRole } from "./chatDocument";
+import { WPTChatMessage, WPTFunctionStatus } from "./chatDocument";
 import { ChatEntity } from "./chatEntity";
 
 interface BaseMessageParams {
   userUid: string;
   chatId?: string;
   content: string;
-  role?: WPTMessageRole;
+  role?: ChatCompletionRole;
   functionName?: string;
-  args?: Record<string, any>;
-  callback?: string;
+  functionArgs?: Record<string, any>;
+  functionCallback?: string;
 }
 
 const chatRepository = dataSource.getRepository(ChatEntity);
@@ -56,7 +57,7 @@ export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<
   await chatRepository.save(chatEntity);
 
   const wptChatMessage: WPTChatMessage = {
-    role: WPTMessageRole.User,
+    role: "user",
     content,
   };
 
@@ -69,8 +70,8 @@ export const addMessage = async ({
   chatId,
   content,
   functionName,
-  args,
-  callback,
+  functionArgs,
+  functionCallback,
   role,
   userUid,
 }: BaseMessageParams): Promise<void> => {
@@ -81,19 +82,19 @@ export const addMessage = async ({
   const chatEntity = await fetchAndUpdateChatEntity(userUid, chatId);
 
   const wptChatMessage: WPTChatMessage = {
-    role: role ?? WPTMessageRole.User,
+    role: role ?? "user",
     content: content,
   };
 
-  if (role === WPTMessageRole.Assistant && functionName && args) {
-    wptChatMessage.functionCall = {
-      functionName,
-      args: JSON.stringify(args),
+  if (role === "assistant" && functionName && functionArgs) {
+    wptChatMessage.function_call = {
+      name: functionName,
+      arguments: JSON.stringify(functionArgs),
       status: WPTFunctionStatus.Pending,
     };
 
-    if (callback) {
-      wptChatMessage.functionCall.callback = callback;
+    if (functionCallback) {
+      wptChatMessage.function_call!.callback = functionCallback;
     }
   }
 

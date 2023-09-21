@@ -1,24 +1,16 @@
+import { ChatCompletionMessage } from "openai/src/resources/chat/completions";
+
 export interface WPTChatConversation {
   conversationID: string;
   messages: WPTChatMessage[];
 }
 
-export interface WPTChatMessage {
+export interface WPTChatMessage extends ChatCompletionMessage {
   messageID?: string;
-  role: WPTMessageRole;
-  content: string;
-  functionCall?: WPTFunctionCall;
+  function_call?: WPTFunctionCall;
 }
 
-export enum WPTMessageRole {
-  User = 'user',
-  Assistant = 'assistant',
-  System = 'system',
-}
-
-export interface WPTFunctionCall {
-  functionName: string;
-  args: string;
+export interface WPTFunctionCall extends ChatCompletionMessage.FunctionCall {
   callback?: string;  // Making callback optional as per the database table
   status: WPTFunctionStatus;
 }

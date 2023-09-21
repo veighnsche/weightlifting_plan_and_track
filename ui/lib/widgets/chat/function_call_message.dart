@@ -19,7 +19,7 @@ class FunctionCallMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final functionDefinition = Provider.of<FunctionDefinitionProvider>(context)
-        .getFunctionDefinition(message.functionCall!.functionName);
+        .getFunctionDefinition(message.functionCall!.name);
     final statusAttributes = _getStatusAttributes(message.functionCall!.status);
 
     return Card(
@@ -65,7 +65,7 @@ class FunctionCallMessage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: FunctionCallBody(
-              arguments: json.decode(message.functionCall?.args ?? '{}'),
+              arguments: json.decode(message.functionCall?.arguments ?? '{}'),
               properties: functionDefinition?.parameters.propertiesKeys,
             ),
           ),
@@ -85,7 +85,7 @@ class FunctionCallMessage extends StatelessWidget {
     WPTChatMessage message,
   ) {
     return camelCaseToSpaceCase(
-        functionDefinition?.name ?? message.functionCall?.functionName ?? '');
+        functionDefinition?.name ?? message.functionCall?.name ?? '');
   }
 
   // Helper method to build the button bar

@@ -57,11 +57,11 @@ export const functionDefinitions: FunctionCallInfo[] = [
 export const functionCallMetadataProperties: Record<string, FunctionCallProperty> = {
   content: {
     type: "string",
-    description: "Tell the user what the function call is about in an active voice.",
+    description: "From the assistants perspective, what is the purpose of this function call? (eg. Adding squats to your [exercise list/workout plan])",
   },
   callback: {
     type: "string",
-    description: "What to do with the result of the function call.",
+    description: "What to do with the result of the function call. (eg. If the exercise is already in the database then edit it, otherwise add it to the database)",
   },
 };
 
