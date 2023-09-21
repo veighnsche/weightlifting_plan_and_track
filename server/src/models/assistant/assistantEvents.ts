@@ -79,8 +79,9 @@ const removeMetaData = (parameters: Record<string, any>): Record<string, any> =>
 const toChatCompletionFunctionCall = (message: WPTChatMessage): ChatCompletionMessage.FunctionCall => {
   const json = JSON.parse(message.function_call!.arguments);
 
-  // add content and callback from the message to the json
-  json.content = message.content;
+  if (message.content) {
+    json.content = message.content;
+  }
   if (message.function_call!.callback) {
     json.callback = message.function_call!.callback;
   }

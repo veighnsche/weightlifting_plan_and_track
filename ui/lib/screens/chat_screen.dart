@@ -10,6 +10,8 @@ import '../widgets/chat/message_widgets.dart';
 
 class ChatScreen extends StatelessWidget {
   final TextEditingController _contentController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
   final ChatService _chatService = ChatService();
 
   ChatScreen({super.key});
@@ -49,8 +51,15 @@ class ChatScreen extends StatelessWidget {
                       return const Center(child: Text('No messages yet.'));
                     }
                     List<WPTChatMessage> messages = snapshot.data!;
-                    print("ChatScreen: ${messages.length} messages");
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _scrollController.animateTo(
+                        _scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
+                    });
                     return ListView.builder(
+                      controller: _scrollController,
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
                         WPTChatMessage message = messages[index];
