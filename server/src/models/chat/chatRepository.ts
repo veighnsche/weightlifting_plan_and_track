@@ -7,7 +7,7 @@ import { ChatEntity } from "./chatEntity";
 interface BaseMessageParams {
   userUid: string;
   chatId?: string;
-  content: string;
+  content?: string;
   role?: ChatCompletionRole;
   functionName?: string;
   functionArgs?: Record<string, any>;
@@ -58,7 +58,7 @@ export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<
 
   const wptChatMessage: WPTChatMessage = {
     role: "user",
-    content,
+    content: content!,
   };
 
   await saveMessageToFirestore(conversationRef.id, wptChatMessage);
@@ -75,15 +75,15 @@ export const addMessage = async ({
   role,
   userUid,
 }: BaseMessageParams): Promise<void> => {
-  if (!userUid || !chatId || !content) {
-    throw new Error(`Invalid parameters provided. userUid: ${userUid}, chatId: ${chatId}, content: ${content}`);
+  if (!userUid || !chatId) {
+    throw new Error(`Invalid parameters provided. userUid: ${userUid}, chatId: ${chatId}`);
   }
 
   const chatEntity = await fetchAndUpdateChatEntity(userUid, chatId);
 
   const wptChatMessage: WPTChatMessage = {
     role: role ?? "user",
-    content: content,
+    content: content ?? null,
   };
 
   if (role === "assistant" && functionName && functionArgs) {

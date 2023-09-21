@@ -15,13 +15,13 @@ class WPTChatConversation {
 class WPTChatMessage {
   final String messageID;
   final WPTMessageRole role;
-  final String content;
+  final String? content;
   final WPTFunctionCall? functionCall;
 
   WPTChatMessage({
     required this.messageID,
     required this.role,
-    required this.content,
+    this.content,
     this.functionCall,
   });
 

@@ -30,7 +30,7 @@ class UserMessage extends StatelessWidget {
           ],
         ),
         child: Text(
-          message.content,
+          message.content!,
           style: const TextStyle(fontSize: 18.0, color: Colors.white),
         ),
       ),

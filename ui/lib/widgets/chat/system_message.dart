@@ -18,7 +18,7 @@ class SystemMessage extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.0),
         ),
         child: Text(
-          message.content,
+          message.content!,
           style: TextStyle(
             fontStyle: FontStyle.italic,
             color: Colors.grey[800],
