@@ -1,5 +1,6 @@
 import { OpenAI } from "openai";
-import { addAssistantMessage } from "../models/chat/chatRepository";
+import { WPTMessageRole } from "../models/chat/chatDocument";
+import { addMessage } from "../models/chat/chatRepository";
 
 export const callAssistant = async (uid: string, chatId: string, message: string) => {
   const openai = new OpenAI({
@@ -18,5 +19,10 @@ export const callAssistant = async (uid: string, chatId: string, message: string
     throw new Error("No content in assistant response. Maybe a function call?");
   }
 
-  await addAssistantMessage(uid, chatId, completion.choices[0].message.content);
+  await addMessage({
+    userUid: uid,
+    chatId: chatId,
+    content: completion.choices[0].message.content,
+    role: WPTMessageRole.Assistant,
+  });
 };
