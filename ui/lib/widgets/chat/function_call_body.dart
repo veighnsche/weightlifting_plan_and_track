@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../../utils/strings.dart';
 
 class FunctionCallBody extends StatelessWidget {
-  final Map<String, dynamic> parameters;
+  final Map<String, dynamic> arguments;
   final List<String>? properties;
 
   const FunctionCallBody({
     super.key,
-    required this.parameters,
+    required this.arguments,
     this.properties,
   });
 
@@ -40,10 +40,10 @@ class FunctionCallBody extends StatelessWidget {
   List<TableRow> _processProperties() {
     List<TableRow> rows = [];
     for (var property in properties!) {
-      if (parameters.containsKey(property)) {
+      if (arguments.containsKey(property)) {
         rows.add(TableRow(children: [
           _boldTableCell("${camelCaseToSpaceCase(property)}:"),
-          _normalTableCell(parameters[property].toString()),
+          _normalTableCell(arguments[property].toString()),
         ]));
       } else {
         rows.add(TableRow(children: [
@@ -57,11 +57,11 @@ class FunctionCallBody extends StatelessWidget {
 
   List<TableRow> _processDeprecatedParameters() {
     List<TableRow> rows = [];
-    for (var key in parameters.keys) {
+    for (var key in arguments.keys) {
       if (properties == null || !properties!.contains(key)) {
         rows.add(TableRow(children: [
           _italicGreyTableCell("${camelCaseToSpaceCase(key)}:"),
-          _normalTableCell(parameters[key].toString()),
+          _normalTableCell(arguments[key].toString()),
         ]));
       }
     }

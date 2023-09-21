@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
 import '../../models/function_call_model.dart';
-import '../../providers/function_calls_provider.dart';
+import '../../providers/function_definition_provider.dart';
 import '../../utils/strings.dart';
 import 'function_call_body.dart';
 import 'function_call_form.dart';
@@ -18,8 +18,8 @@ class FunctionCallMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final functionCallInfo = Provider.of<FunctionCallsProvider>(context)
-        .getFunctionCallInfo(message.functionCall!.functionName);
+    final functionDefinition = Provider.of<FunctionDefinitionProvider>(context)
+        .getFunctionDefinition(message.functionCall!.functionName);
     final statusAttributes = _getStatusAttributes(message.functionCall!.status);
 
     return Card(
@@ -42,7 +42,7 @@ class FunctionCallMessage extends StatelessWidget {
                 size: 24.0,
               ),
               title: Text(
-                _getFunctionDisplayName(functionCallInfo, message),
+                _getFunctionDisplayName(functionDefinition, message),
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
@@ -52,7 +52,7 @@ class FunctionCallMessage extends StatelessWidget {
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  functionCallInfo?.description ?? '',
+                  functionDefinition?.description ?? '',
                   style: TextStyle(
                     fontSize: 14.0,
                     color: statusAttributes.textColor,
@@ -65,12 +65,12 @@ class FunctionCallMessage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: FunctionCallBody(
-              parameters: json.decode(message.functionCall?.parameters ?? '{}'),
-              properties: functionCallInfo?.parameters.propertiesKeys,
+              arguments: json.decode(message.functionCall?.args ?? '{}'),
+              properties: functionDefinition?.parameters.propertiesKeys,
             ),
           ),
           if (message.functionCall?.status == WPTFunctionStatus.pending)
-            _buildButtonBar(context, functionCallInfo),
+            _buildButtonBar(context, functionDefinition),
           if (message.functionCall?.callback != null &&
               message.functionCall!.callback!.isNotEmpty)
             _buildCallbackSection(statusAttributes.textColor, message),
@@ -81,16 +81,16 @@ class FunctionCallMessage extends StatelessWidget {
 
   // Helper method to get the function display name
   String _getFunctionDisplayName(
-    FunctionCallInfo? functionCallInfo,
+    FunctionDefinition? functionDefinition,
     WPTChatMessage message,
   ) {
     return camelCaseToSpaceCase(
-        functionCallInfo?.name ?? message.functionCall?.functionName ?? '');
+        functionDefinition?.name ?? message.functionCall?.functionName ?? '');
   }
 
   // Helper method to build the button bar
   Widget _buildButtonBar(
-      BuildContext context, FunctionCallInfo? functionCallInfo) {
+      BuildContext context, FunctionDefinition? functionDefinition) {
     return ButtonBar(
       alignment: MainAxisAlignment.end,
       children: [
@@ -99,12 +99,12 @@ class FunctionCallMessage extends StatelessWidget {
           icon: Icon(Icons.close, size: 20.0, color: Colors.grey.shade600),
         ),
         _buildOutlinedButton(
-          onPressed: () => _showEditDialog(context, functionCallInfo),
+          onPressed: () => _showEditDialog(context, functionDefinition),
           icon: Icon(Icons.check, size: 20.0, color: Colors.grey.shade600),
           label: "Approve",
         ),
         _buildOutlinedButton(
-          onPressed: () => _showEditDialog(context, functionCallInfo),
+          onPressed: () => _showEditDialog(context, functionDefinition),
           icon: Icon(Icons.edit, size: 20.0, color: Colors.grey.shade600),
           label: "Edit",
         ),
@@ -185,7 +185,7 @@ class FunctionCallMessage extends StatelessWidget {
 
   // Helper method to show the edit dialog
   void _showEditDialog(
-      BuildContext context, FunctionCallInfo? functionCallInfo) {
+      BuildContext context, FunctionDefinition? functionCallInfo) {
     if (functionCallInfo == null) return;
 
     showDialog(

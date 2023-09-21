@@ -1,5 +1,5 @@
 import express from "express";
-import { callAssistant } from "../../assistant";
+import { callAssistant } from "../assistant/assistantEvents";
 import { AuthRequest } from "../../services/auth";
 import { addMessage, newChat } from "./chatRepository";
 
@@ -13,6 +13,7 @@ router.post("/", async (req: AuthRequest<{ chatId?: string, message: string }>, 
   }
 
   let { chatId, message } = req.body;
+  console.log(chatId, message)
 
   if (!chatId) {
     chatId = await newChat({ userUid, content: message });

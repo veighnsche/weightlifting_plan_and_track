@@ -5,7 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/chat_provider.dart';
-import 'providers/function_calls_provider.dart';
+import 'providers/function_definition_provider.dart';
 import 'screens/chat_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
@@ -29,10 +29,10 @@ class MyApp extends StatelessWidget {
     if (data != null && data.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final functionCallsProvider =
-            Provider.of<FunctionCallsProvider>(context, listen: false);
+            Provider.of<FunctionDefinitionProvider>(context, listen: false);
 
-        if (data['functionCallInfos'] != null) {
-          functionCallsProvider.setFunctionCallsInfo(data['functionCallInfos']);
+        if (data['functionDefinitions'] != null) {
+          functionCallsProvider.setFunctionDefinitions(data['functionDefinitions']);
         }
 
         if (data['onboarded'] == false) {
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => FunctionCallsProvider(),
+          create: (context) => FunctionDefinitionProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => ChatProvider(),

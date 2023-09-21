@@ -9,7 +9,7 @@ interface BaseMessageParams {
   content: string;
   role?: WPTMessageRole;
   functionName?: string;
-  parameters?: Record<string, any>;
+  args?: Record<string, any>;
   callback?: string;
 }
 
@@ -69,13 +69,13 @@ export const addMessage = async ({
   chatId,
   content,
   functionName,
-  parameters,
+  args,
+  callback,
   role,
   userUid,
-  callback,
 }: BaseMessageParams): Promise<void> => {
   if (!userUid || !chatId || !content) {
-    throw new Error("Invalid parameters provided.");
+    throw new Error(`Invalid parameters provided. userUid: ${userUid}, chatId: ${chatId}, content: ${content}`);
   }
 
   const chatEntity = await fetchAndUpdateChatEntity(userUid, chatId);
@@ -85,10 +85,10 @@ export const addMessage = async ({
     content: content,
   };
 
-  if (role === WPTMessageRole.Assistant && functionName && parameters) {
+  if (role === WPTMessageRole.Assistant && functionName && args) {
     wptChatMessage.functionCall = {
       functionName,
-      parameters: JSON.stringify(parameters),
+      args: JSON.stringify(args),
       status: WPTFunctionStatus.Pending,
     };
 

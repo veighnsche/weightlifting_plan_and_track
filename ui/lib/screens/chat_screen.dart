@@ -41,7 +41,6 @@ class ChatScreen extends StatelessWidget {
               Expanded(
                 child: StreamBuilder<List<WPTChatMessage>>(
                   stream: _chatService.getMessagesStream(chatId),
-                  // This creates a new stream when chatId changes
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -50,6 +49,7 @@ class ChatScreen extends StatelessWidget {
                       return const Center(child: Text('No messages yet.'));
                     }
                     List<WPTChatMessage> messages = snapshot.data!;
+                    print("ChatScreen: ${messages.length} messages");
                     return ListView.builder(
                       itemCount: messages.length,
                       itemBuilder: (context, index) {

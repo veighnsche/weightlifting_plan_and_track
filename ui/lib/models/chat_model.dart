@@ -43,13 +43,13 @@ enum WPTMessageRole {
 
 class WPTFunctionCall {
   final String functionName;
-  final String parameters;
+  final String args;
   final String? callback;
   final WPTFunctionStatus status;
 
   WPTFunctionCall({
     required this.functionName,
-    required this.parameters,
+    required this.args,
     this.callback,
     required this.status,
   });
@@ -57,7 +57,7 @@ class WPTFunctionCall {
   static WPTFunctionCall fromMap(Map<String, dynamic> map) {
     return WPTFunctionCall(
       functionName: map['functionName'],
-      parameters: map['parameters'],
+      args: map['args'],
       callback: map['callback'],
       status: WPTFunctionStatus.values.firstWhere((e) => e.toString() == 'WPTFunctionStatus.${map['status']}'),
     );

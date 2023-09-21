@@ -1,8 +1,8 @@
 import { OpenAI } from "openai";
 import { ChatCompletionMessage } from "openai/resources/chat";
-import { WPTChatMessage, WPTMessageRole } from "../models/chat/chatDocument";
-import { addMessage, fetchAllMessages } from "../models/chat/chatRepository";
-import { functionCallInfosWithMetadata } from "./functionCallInfo";
+import { WPTChatMessage, WPTMessageRole } from "../chat/chatDocument";
+import { addMessage, fetchAllMessages } from "../chat/chatRepository";
+import { functionCallInfosWithMetadata } from "./functionDefinitions";
 
 export const callAssistant = async (uid: string, chatId: string) => {
   const openai = new OpenAI({
@@ -37,15 +37,15 @@ export const callAssistant = async (uid: string, chatId: string) => {
 
     console.log(functionCall)
 
-    const parameters = JSON.parse(functionCall.arguments);
+    const args = JSON.parse(functionCall.arguments);
 
     await addMessage({
       userUid: uid,
       chatId: chatId,
-      content: parameters.content,
+      content: args.content,
       role: WPTMessageRole.Assistant,
       functionName: functionCall.name,
-      parameters: removeMetaData(parameters),
+      args: removeMetaData(args),
     });
   }
 };

@@ -1,24 +1,24 @@
-class FunctionCallInfo {
+class FunctionDefinition {
   final String name;
   final String description;
   final FunctionCallParameters parameters;
 
-  FunctionCallInfo({
+  FunctionDefinition({
     required this.name,
     required this.description,
     required this.parameters,
   });
 
-  factory FunctionCallInfo.fromMap(Map<String, dynamic> map) {
-    return FunctionCallInfo(
+  factory FunctionDefinition.fromMap(Map<String, dynamic> map) {
+    return FunctionDefinition(
       name: map['name'],
       description: map['description'],
       parameters: FunctionCallParameters.fromMap(map['parameters']),
     );
   }
 
-  static List<FunctionCallInfo> fromMapList(List<dynamic> mapList) {
-    return mapList.map((map) => FunctionCallInfo.fromMap(map)).toList();
+  static List<FunctionDefinition> fromMapList(List<dynamic> mapList) {
+    return mapList.map((map) => FunctionDefinition.fromMap(map)).toList();
   }
 }
 

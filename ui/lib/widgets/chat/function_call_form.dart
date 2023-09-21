@@ -6,7 +6,7 @@ import 'package:weightlifting_plan_and_track/models/function_call_model.dart';
 import 'package:weightlifting_plan_and_track/utils/strings.dart';
 
 class FunctionCallForm extends StatefulWidget {
-  final FunctionCallInfo? functionCallInfo;
+  final FunctionDefinition? functionCallInfo;
   final WPTFunctionCall? functionCall;
 
   const FunctionCallForm({
@@ -27,7 +27,7 @@ class _FunctionCallFormState extends State<FunctionCallForm> {
   void initState() {
     super.initState();
     if (widget.functionCall != null) {
-      _parsedParameters = json.decode(widget.functionCall!.parameters);
+      _parsedParameters = json.decode(widget.functionCall!.args);
     } else {
       _parsedParameters = {};
     }

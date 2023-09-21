@@ -1,6 +1,6 @@
 import { FunctionCallInfo, FunctionCallProperty } from "./functionCallUtils";
 
-export const functionCallInfos: FunctionCallInfo[] = [
+export const functionDefinitions: FunctionCallInfo[] = [
   {
     name: "findExercise",
     description: "Search for a specific workout by its name or the main muscle it targets.",
@@ -65,17 +65,17 @@ export const functionCallMetadataProperties: Record<string, FunctionCallProperty
   },
 };
 
-export const functionCallInfosWithMetadata: FunctionCallInfo[] = functionCallInfos.map((functionCallInfo) => {
+export const functionCallInfosWithMetadata: FunctionCallInfo[] = functionDefinitions.map((functionCallInfo) => {
   // Merge the original properties with the metadata properties
   const mergedProperties = {
-    ...functionCallInfo.parameters.properties,
     ...functionCallMetadataProperties,
+    ...functionCallInfo.parameters.properties,
   };
 
   // Merge the original required properties with the metadata properties
   const mergedRequired = [
-    ...functionCallInfo.parameters.required,
     "content",
+    ...functionCallInfo.parameters.required,
   ];
 
   // Return the updated function call info with the merged properties

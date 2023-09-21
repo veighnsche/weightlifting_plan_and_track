@@ -12,6 +12,8 @@ class ChatMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print("ChatMessageWidget: ${message.content}");
+
     switch (message.role) {
       case WPTMessageRole.user:
         return UserMessage(message: message);

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class ChatProvider extends ChangeNotifier {
-  String? _chatId = 'MkgFHF6GnFSC9emhKrRh';
+  String? _chatId;
 
   String? get chatId => _chatId;
 

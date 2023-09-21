@@ -18,7 +18,7 @@ export enum WPTMessageRole {
 
 export interface WPTFunctionCall {
   functionName: string;
-  parameters: string;
+  args: string;
   callback?: string;  // Making callback optional as per the database table
   status: WPTFunctionStatus;
 }
