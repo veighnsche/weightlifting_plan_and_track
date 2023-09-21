@@ -9,7 +9,8 @@ interface BaseMessageParams {
   content: string;
   role?: WPTMessageRole;
   functionName?: string;
-  parameters?: Record<string, any> & { content: string, callback?: string };
+  parameters?: Record<string, any>;
+  callback?: string;
 }
 
 const chatRepository = dataSource.getRepository(ChatEntity);
@@ -56,7 +57,7 @@ export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<
 
   const wptChatMessage: WPTChatMessage = {
     role: WPTMessageRole.User,
-    content
+    content,
   };
 
   await saveMessageToFirestore(conversationRef.id, wptChatMessage);
@@ -64,29 +65,57 @@ export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<
   return conversationRef.id;
 };
 
-export const addMessage = async (params: BaseMessageParams): Promise<void> => {
-  if (!params.userUid || !params.chatId || !params.content) {
+export const addMessage = async ({
+  chatId,
+  content,
+  functionName,
+  parameters,
+  role,
+  userUid,
+  callback,
+}: BaseMessageParams): Promise<void> => {
+  if (!userUid || !chatId || !content) {
     throw new Error("Invalid parameters provided.");
   }
 
-  const chatEntity = await fetchAndUpdateChatEntity(params.userUid, params.chatId);
+  const chatEntity = await fetchAndUpdateChatEntity(userUid, chatId);
 
   const wptChatMessage: WPTChatMessage = {
-    role: params.role ?? WPTMessageRole.User,
-    content: params.content
+    role: role ?? WPTMessageRole.User,
+    content: content,
   };
 
-  if (params.role === WPTMessageRole.Assistant && params.functionName && params.parameters) {
+  if (role === WPTMessageRole.Assistant && functionName && parameters) {
     wptChatMessage.functionCall = {
-      functionName: params.functionName,
-      parameters: params.parameters,
-      status: WPTFunctionStatus.Pending
+      functionName,
+      parameters: JSON.stringify(parameters),
+      status: WPTFunctionStatus.Pending,
     };
 
-    if (params.parameters.callback) {
-      wptChatMessage.functionCall.callback = params.parameters.callback;
+    if (callback) {
+      wptChatMessage.functionCall.callback = callback;
     }
   }
 
   await saveMessageToFirestore(chatEntity.chatId, wptChatMessage);
+};
+
+/**
+ * Fetch all messages from Firestore for a given chat.
+ *
+ * @param chatId The ID of the chat (conversation) whose messages need to be fetched.
+ * @returns An array of WPTChatMessage.
+ */
+export const fetchAllMessages = async (chatId: string): Promise<WPTChatMessage[]> => {
+  const db = getDatabase();
+  const conversationsRef = db.collection("conversations");
+  const conversationRef = conversationsRef.doc(chatId);
+
+  const snapshot = await conversationRef.collection("messages").get();
+
+  if (snapshot.empty) {
+    return [];
+  }
+
+  return snapshot.docs.map(doc => doc.data() as WPTChatMessage);
 };

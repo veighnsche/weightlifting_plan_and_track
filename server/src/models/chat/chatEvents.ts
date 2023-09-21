@@ -6,23 +6,23 @@ import { addMessage, newChat } from "./chatRepository";
 const router = express.Router();
 
 router.post("/", async (req: AuthRequest<{ chatId?: string, message: string }>, res) => {
-  const uid = req.user?.uid;
+  const userUid = req.user?.uid;
 
-  if (!uid) {
+  if (!userUid) {
     return res.status(400).send("UID not found.");
   }
 
   let { chatId, message } = req.body;
 
   if (!chatId) {
-    chatId = await newChat({ userUid: uid, content: message });
+    chatId = await newChat({ userUid, content: message });
     res.status(200).json({ chatId });
   } else {
-    await addMessage({ userUid: uid, chatId: chatId, content: message });
+    await addMessage({ userUid, chatId, content: message });
     res.sendStatus(204);
   }
 
-  await callAssistant(uid, chatId, message);
+  await callAssistant(userUid, chatId);
 });
 
 

@@ -1,4 +1,4 @@
-import { FunctionCallInfo } from "./functionCallUtils";
+import { FunctionCallInfo, FunctionCallProperty } from "./functionCallUtils";
 
 export const functionCallInfos: FunctionCallInfo[] = [
   {
@@ -53,3 +53,38 @@ export const functionCallInfos: FunctionCallInfo[] = [
     },
   },
 ];
+
+export const functionCallMetadataProperties: Record<string, FunctionCallProperty> = {
+  content: {
+    type: "string",
+    description: "Tell the user what the function call is about in an active voice.",
+  },
+  callback: {
+    type: "string",
+    description: "What to do with the result of the function call.",
+  },
+};
+
+export const functionCallInfosWithMetadata: FunctionCallInfo[] = functionCallInfos.map((functionCallInfo) => {
+  // Merge the original properties with the metadata properties
+  const mergedProperties = {
+    ...functionCallInfo.parameters.properties,
+    ...functionCallMetadataProperties,
+  };
+
+  // Merge the original required properties with the metadata properties
+  const mergedRequired = [
+    ...functionCallInfo.parameters.required,
+    "content",
+  ];
+
+  // Return the updated function call info with the merged properties
+  return {
+    ...functionCallInfo,
+    parameters: {
+      ...functionCallInfo.parameters,
+      properties: mergedProperties,
+      required: mergedRequired,
+    },
+  };
+});
