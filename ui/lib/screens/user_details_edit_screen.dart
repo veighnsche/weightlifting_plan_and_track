@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/core/app_shell.dart';
-import 'package:weightlifting_plan_and_track/services/user_details_service.dart';
+
+import '../services/user_details_service.dart';
 import '../widgets/user_details_form.dart';
 
 class UserDetailsEditScreen extends StatefulWidget {
@@ -29,12 +29,6 @@ class _UserDetailsEditScreenState extends State<UserDetailsEditScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit user details"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

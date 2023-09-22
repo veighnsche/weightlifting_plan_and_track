@@ -19,12 +19,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,7 +32,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // Return an error widget
               return const Center(child: Text('Error loading settings'));
             } else {
-              _instructionsController.text = snapshot.data?['settings']['instructions'] ?? '';
+              _instructionsController.text =
+                  snapshot.data?['settings']['instructions'] ?? '';
               return _buildForm(
                 context,
                 _formKey,

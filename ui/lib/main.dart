@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:weightlifting_plan_and_track/screens/history_screen.dart';
 import 'package:weightlifting_plan_and_track/screens/splash_screen.dart';
 
 import 'providers/chat_provider.dart';
@@ -14,6 +15,7 @@ import 'screens/settings_screen.dart';
 import 'screens/user_details_edit_screen.dart';
 import 'services/auth_service.dart';
 import 'services/init_service.dart';
+import 'themes/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +60,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Weightlifting Plan & Track',
-        theme: ThemeData(primarySwatch: Colors.blueGrey),
+        theme: chatAppTheme,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -93,6 +95,7 @@ class MyApp extends StatelessWidget {
               userDetails: ModalRoute.of(context)!.settings.arguments
                   as Map<String, dynamic>),
           '/settings': (context) => const SettingsScreen(),
+          '/history': (context) => const HistoryScreen(),
         },
       ),
     );

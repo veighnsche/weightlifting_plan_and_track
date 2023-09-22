@@ -101,12 +101,6 @@ export const addMessage = async ({
   await saveMessageToFirestore(chatEntity.chatId, wptChatMessage);
 };
 
-/**
- * Fetch all messages from Firestore for a given chat.
- *
- * @param chatId The ID of the chat (conversation) whose messages need to be fetched.
- * @returns An array of WPTChatMessage.
- */
 export const fetchAllMessages = async (chatId: string): Promise<WPTChatMessage[]> => {
   const db = getDatabase();
   const conversationsRef = db.collection("conversations");
@@ -119,4 +113,8 @@ export const fetchAllMessages = async (chatId: string): Promise<WPTChatMessage[]
   }
 
   return snapshot.docs.map(doc => doc.data() as WPTChatMessage);
+};
+
+export const fetchChatHistory = async (userUid: string): Promise<ChatEntity[]> => {
+  return chatRepository.findBy({ userUid });
 };
