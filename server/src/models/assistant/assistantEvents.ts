@@ -23,9 +23,7 @@ export const callAssistant = async (uid: string, chatId: string, wptChatMessages
 `;
 
   const messages: ChatCompletionMessage[] = [
-    {
-      role: "system", content: fullSystemInstructions,
-    },
+    { role: "system", content: fullSystemInstructions },
     ...wptChatMessages.map((message) => {
       if (message.function_call) {
         return ({
