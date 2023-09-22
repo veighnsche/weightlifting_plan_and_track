@@ -2,6 +2,7 @@ import { OpenAI } from "openai";
 import { ChatCompletionMessage } from "openai/resources/chat";
 import { WPTChatMessage } from "../chat/chatDocument";
 import { addMessage, updateChatName } from "../chat/chatRepository";
+import { findByUid } from "../users/userRepository";
 import { findSettingsValue } from "../users/userSettingsRepository";
 import { removeMetaData, toChatCompletionFunctionCall } from "./assistantUtils";
 import { functionCallInfosWithMetadata } from "./functionDefinitions";
@@ -11,10 +12,20 @@ const openai = () => new OpenAI({
 });
 
 export const callAssistant = async (uid: string, chatId: string, wptChatMessages: WPTChatMessage[]): Promise<ChatCompletionMessage> => {
-  const instructions = await findSettingsValue(uid, "instructions");
+  const [extraInstructions, userDetails] = await Promise.all([
+    findSettingsValue(uid, "instructions"),
+    findByUid(uid),
+  ]);
+
+  const fullSystemInstructions = `
+    As a digital gym assistant, your core responsibility is to efficiently manage data for a gym app. This encompasses handling function calls related to gym activities, tracking user progress, and addressing general app inquiries. Furthermore, ${extraInstructions}. In all your interactions, prioritize accuracy, deliver prompt responses, and ensure the experience is consistently user-friendly. Your guidance is vital as gym-goers rely on your diligence to navigate their fitness journey.
+    Meet ${userDetails?.name}, a dedicated fitness enthusiast who is ${userDetails?.age} years old. At a weight of ${userDetails?.weight} kg and standing tall at ${userDetails?.height} cm, they are currently focusing on maintaining a body fat percentage of ${userDetails?.fatPercentage}%. When they're not working out or pushing their limits, they spend their time at their preferred fitness spot, a gym described as ${userDetails?.gymDescription}.
+`;
 
   const messages: ChatCompletionMessage[] = [
-    { role: "system", content: `I am a helpful gym assistant. ${instructions}` },
+    {
+      role: "system", content: fullSystemInstructions,
+    },
     ...wptChatMessages.map((message) => {
       if (message.function_call) {
         return ({

@@ -36,8 +36,8 @@ class _ChatScreenState extends State<ChatScreen> {
     _chatService.sendMessage(chatProvider.chatId, messageContent, messages,
         (newChatId) {
       chatProvider.setChatId(newChatId);
-      // wait 5 seconds and update the chat name
-      Future.delayed(const Duration(seconds: 5), () {
+      // wait 10 seconds and update the chat name
+      Future.delayed(const Duration(seconds: 10), () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (chatProvider.chatId == null) return;
           _chatService.fetchChatName(chatProvider.chatId!).then((name) {
@@ -69,6 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      _messagesCache = [];
                       return const Center(
                           child: AppLogo(
                         iconSize: 60,

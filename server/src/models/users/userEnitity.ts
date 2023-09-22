@@ -1,8 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("users")
 export class UserEntity {
@@ -21,7 +17,7 @@ export class UserEntity {
   gender?: string;
 
   @Column({ type: "date", nullable: true })
-  dateOfBirth?: Date;  // New dateOfBirth field
+  dateOfBirth?: string;  // New dateOfBirth field
 
   @Column({ type: "float", nullable: true })
   weight?: number; // in kg
@@ -34,4 +30,29 @@ export class UserEntity {
 
   @Column({ type: "text", nullable: true })
   gymDescription?: string;
+
+  get age(): number | null {
+    return calculateAge(this.dateOfBirth);
+  }
+}
+
+function calculateAge(dateOfBirth: string | null | undefined): number | null {
+  if (!dateOfBirth) return null;
+
+  const dateOfBirthString = dateOfBirth.split("-");
+  const dateOfBirthYear = parseInt(dateOfBirthString[0]);
+  const dateOfBirthMonth = parseInt(dateOfBirthString[1]);
+  const dateOfBirthDay = parseInt(dateOfBirthString[2]);
+
+  const dateOfBirthDate = new Date(dateOfBirthYear, dateOfBirthMonth - 1, dateOfBirthDay);
+
+  const today = new Date();
+  let age = today.getFullYear() - dateOfBirthDate.getFullYear();
+  const monthDiff = today.getMonth() - dateOfBirthDate.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dateOfBirthDate.getDate())) {
+    age--;
+  }
+
+  return age;
 }

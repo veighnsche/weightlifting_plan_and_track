@@ -93,9 +93,7 @@ class MyApp extends StatelessWidget {
           '/chat': (context) => const ChatScreen(),
           '/history': (context) => HistoryScreen(),
           '/settings': (context) => const SettingsScreen(),
-          '/user/edit': (context) => UserDetailsEditScreen(
-              userDetails: ModalRoute.of(context)!.settings.arguments
-                  as Map<String, dynamic>),
+          '/user/edit': (context) => UserDetailsEditScreen(),
         },
       ),
     );

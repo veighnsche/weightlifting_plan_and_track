@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/login_screen.dart';
 import '../services/auth_service.dart';
 import '../services/user_details_service.dart';
 
@@ -35,30 +34,26 @@ class UserProfile extends StatelessWidget {
             onSelected: (value) async {
               if (value == 'logout') {
                 await _authService.signOut();
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (Route<dynamic> route) => false,
-                  );
-                });
               } else if (value == 'edit') {
-                final userDetails = await _userDetailsService.read();
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).pushNamed(
-                    '/user/edit',
-                    arguments: userDetails,
-                  );
+                  Navigator.of(context).pushNamed('/user/edit');
                 });
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
                 value: 'logout',
-                child: Text('Logout'),
+                child: ListTile(
+                  leading: Icon(Icons.logout), // Icon for Logout
+                  title: Text('Logout'),
+                ),
               ),
               const PopupMenuItem<String>(
                 value: 'edit',
-                child: Text('Edit User'),
+                child: ListTile(
+                  leading: Icon(Icons.edit), // Icon for Edit User
+                  title: Text('Edit User'),
+                ),
               ),
             ],
           ),

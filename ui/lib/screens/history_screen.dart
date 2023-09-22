@@ -96,7 +96,11 @@ class HistoryScreen extends StatelessWidget {
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
                 value: 'delete_all',
-                child: Text('Delete all conversations'),
+                child: ListTile(
+                  leading: Icon(Icons.delete_sweep),
+                  // Icon for Delete all conversations
+                  title: Text('Delete all conversations'),
+                ),
               ),
             ],
           ),
@@ -134,7 +138,8 @@ class HistoryScreen extends StatelessWidget {
                 final conversation = snapshot.data![index];
 
                 // Format the updatedAt timestamp into a more readable format.
-                final formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(conversation.updatedAt);
+                final formattedDate = DateFormat('yyyy-MM-dd HH:mm')
+                    .format(conversation.updatedAt);
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -151,9 +156,7 @@ class HistoryScreen extends StatelessWidget {
                   ),
                 );
               },
-
             );
-
           }
         },
       ),
