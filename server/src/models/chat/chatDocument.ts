@@ -11,8 +11,7 @@ export interface WPTChatMessage extends ChatCompletionMessage {
 }
 
 export interface WPTFunctionCall extends ChatCompletionMessage.FunctionCall {
-  callback?: string;  // Making callback optional as per the database table
-  status: WPTFunctionStatus;
+  callback?: string;
 }
 
 export enum WPTFunctionStatus {

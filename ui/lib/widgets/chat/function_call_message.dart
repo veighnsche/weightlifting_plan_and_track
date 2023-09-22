@@ -10,17 +10,27 @@ import '../../utils/strings.dart';
 import 'function_call_body.dart';
 import 'function_call_form.dart';
 
+enum WPTFunctionStatus {
+  pending,
+  expired,
+  approved,
+  rejected,
+  none,
+}
+
 class FunctionCallMessage extends StatelessWidget {
   final WPTChatMessage message;
 
   const FunctionCallMessage({Key? key, required this.message})
       : super(key: key);
 
+  final WPTFunctionStatus _functionStatus = WPTFunctionStatus.pending;
+
   @override
   Widget build(BuildContext context) {
     final functionDefinition = Provider.of<FunctionDefinitionProvider>(context)
         .getFunctionDefinition(message.functionCall!.name);
-    final statusAttributes = _getStatusAttributes(message.functionCall!.status);
+    final statusAttributes = _getStatusAttributes(_functionStatus);
 
     return Card(
       margin: const EdgeInsets.all(8.0),
@@ -69,7 +79,7 @@ class FunctionCallMessage extends StatelessWidget {
               properties: functionDefinition?.parameters.propertiesKeys,
             ),
           ),
-          if (message.functionCall?.status == WPTFunctionStatus.pending)
+          if (_functionStatus == WPTFunctionStatus.pending)
             _buildButtonBar(context, functionDefinition),
           if (message.functionCall?.callback != null &&
               message.functionCall!.callback!.isNotEmpty)

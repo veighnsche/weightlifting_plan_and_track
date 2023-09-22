@@ -83,14 +83,14 @@ class MyApp extends StatelessWidget {
                 }
 
                 setInitData(context, initSnapshot.data);
-                return isSignedIn ? ChatScreen() : LoginScreen();
+                return isSignedIn ? const ChatScreen() : LoginScreen();
               },
             );
           },
         ),
         routes: {
           '/onboarding': (context) => const OnboardingScreen(),
-          '/chat': (context) => ChatScreen(),
+          '/chat': (context) => const ChatScreen(),
           '/history': (context) => HistoryScreen(),
           '/settings': (context) => const SettingsScreen(),
           '/user/edit': (context) => UserDetailsEditScreen(

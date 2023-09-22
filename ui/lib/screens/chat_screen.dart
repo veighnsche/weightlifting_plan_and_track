@@ -9,22 +9,32 @@ import '../widgets/app_logo.dart';
 import '../widgets/chat/message_input.dart';
 import '../widgets/chat/message_widgets.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+
+  const ChatScreen({super.key});
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _contentController = TextEditingController();
+
   final ScrollController _scrollController = ScrollController();
 
   final ChatService _chatService = ChatService();
 
-  ChatScreen({super.key});
+  List<WPTChatMessage> _messagesCache = [];
 
-  void handleSend(BuildContext context) {
+  void handleSend(BuildContext context, List<WPTChatMessage> messages) {
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
 
     // Get the message content from the controller
     final messageContent = _contentController.text;
 
     // Send the message using the ChatService and update the chatId if a new one is returned
-    _chatService.sendMessage(chatProvider.chatId, messageContent, (newChatId) {
+    _chatService.sendMessage(chatProvider.chatId, messageContent, messages,
+        (newChatId) {
       chatProvider.setChatId(newChatId);
       // wait 5 seconds and update the chat name
       Future.delayed(const Duration(seconds: 5), () {
@@ -66,6 +76,7 @@ class ChatScreen extends StatelessWidget {
                       ));
                     }
                     List<WPTChatMessage> messages = snapshot.data!;
+                    _messagesCache = messages;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       _scrollController.animateTo(
                         _scrollController.position.maxScrollExtent,
@@ -73,20 +84,28 @@ class ChatScreen extends StatelessWidget {
                         curve: Curves.easeOut,
                       );
                     });
-                    return ListView.builder(
-                      controller: _scrollController,
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        WPTChatMessage message = messages[index];
-                        return ChatMessageWidget(message: message);
-                      },
+                    final showLoadingBar = messages.last.isFromUser;
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: messages.length,
+                            itemBuilder: (context, index) {
+                              WPTChatMessage message = messages[index];
+                              return ChatMessageWidget(message: message);
+                            },
+                          ),
+                        ),
+                        if (showLoadingBar) const LinearProgressIndicator(),
+                      ],
                     );
                   },
                 ),
               ),
               MessageInput(
                 controller: _contentController,
-                onSend: () => handleSend(context),
+                onSend: () => handleSend(context, _messagesCache),
               ),
             ],
           ),

@@ -28,13 +28,14 @@ class ChatService {
     });
   }
 
-  Future<void> sendMessage(String? chatId, String message, Function(String chatId) updateChatId) async {
+  Future<void> sendMessage(String? chatId, String message, List<WPTChatMessage> messages, Function(String chatId) updateChatId) async {
     try {
       final response = await _apiService.post(
         'http://localhost:3000/chat',
         {
           'chatId': chatId,
           'message': message,
+          'messages': messages.map((message) => message.toMap()).toList(),
         },
       );
 

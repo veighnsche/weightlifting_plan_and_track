@@ -19,6 +19,8 @@ class WPTChatMessage {
   final String? content;
   final WPTFunctionCall? functionCall;
 
+  bool get isFromUser => role == WPTMessageRole.user;
+
   WPTChatMessage({
     required this.messageID,
     required this.role,
@@ -37,6 +39,14 @@ class WPTChatMessage {
           : null,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'role': role.toString().split('.').last,
+      'content': content,
+      'function_call': functionCall?.toMap(),
+    };
+  }
 }
 
 enum WPTMessageRole {
@@ -50,13 +60,11 @@ class WPTFunctionCall {
   final String name;
   final String arguments;
   final String? callback;
-  final WPTFunctionStatus status;
 
   WPTFunctionCall({
     required this.name,
     required this.arguments,
     this.callback,
-    required this.status,
   });
 
   static WPTFunctionCall fromMap(Map<String, dynamic> map) {
@@ -64,18 +72,16 @@ class WPTFunctionCall {
       name: map['name'],
       arguments: map['arguments'],
       callback: map['callback'],
-      status: WPTFunctionStatus.values.firstWhere(
-          (e) => e.toString() == 'WPTFunctionStatus.${map['status']}'),
     );
   }
-}
 
-enum WPTFunctionStatus {
-  pending,
-  expired,
-  approved,
-  rejected,
-  none,
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'arguments': arguments,
+      'callback': callback,
+    };
+  }
 }
 
 class WPTChatConversation {

@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import { ChatCompletionMessage } from "openai/resources/chat";
 import { WPTChatMessage } from "../chat/chatDocument";
-import { addMessage, fetchAllMessages, updateChatName } from "../chat/chatRepository";
+import { addMessage, updateChatName } from "../chat/chatRepository";
 import { findSettingsValue } from "../users/userSettingsRepository";
 import { removeMetaData, toChatCompletionFunctionCall } from "./assistantUtils";
 import { functionCallInfosWithMetadata } from "./functionDefinitions";
@@ -10,11 +10,8 @@ const openai = () => new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const callAssistant = async (uid: string, chatId: string): Promise<ChatCompletionMessage> => {
-  const [wptChatMessages, instructions]: [WPTChatMessage[], string | null] = await Promise.all([
-    fetchAllMessages(chatId),
-    findSettingsValue(uid, "instructions"),
-  ]);
+export const callAssistant = async (uid: string, chatId: string, wptChatMessages: WPTChatMessage[]): Promise<ChatCompletionMessage> => {
+  const instructions = await findSettingsValue(uid, "instructions");
 
   const messages: ChatCompletionMessage[] = [
     { role: "system", content: `I am a helpful gym assistant. ${instructions}` },
@@ -70,7 +67,10 @@ export const callNamingAssistant = async (userUid: string, chatId: string, conte
     messages: [
       { role: "user", content },
       assistantMessage,
-      { role: "user", content: "Summarize our discussion in 3 words. No punctuation needed. Only display the summary, omit any context." },
+      {
+        role: "user",
+        content: "Summarize our discussion in three (3) short and simple words. No punctuation needed. Only display the summary, omit any context.",
+      },
     ],
     model: "gpt-3.5-turbo",
     max_tokens: 20,

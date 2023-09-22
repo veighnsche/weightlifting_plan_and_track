@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/chat_model.dart';
@@ -21,17 +22,74 @@ class HistoryScreen extends StatelessWidget {
           PopupMenuButton<String>(
             onSelected: (value) async {
               if (value == 'delete_all') {
-                bool success = await _chatService.deleteHistory();
-                if (success) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Chat history deleted.'),
+                final bool? confirmDelete = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirm Deletion'),
+                      content: const SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Are you sure you want to delete all conversations?',
+                            ),
+                            SizedBox(height: 12.0),
+                            Text(
+                              'Disclaimer: Once conversations are deleted, they cannot be processed for fine-tuning the assistant.',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      actions: <Widget>[
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.red.shade300,
+                          ),
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                        OutlinedButton(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                      ],
                     );
-                    chatProvider.newChat();
-                    Navigator.pop(context);
-                  });
+                  },
+                );
+
+                if (confirmDelete == true) {
+                  bool success = await _chatService.deleteHistory();
+                  if (success) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Chat history deleted.'),
+                        ),
+                      );
+                      chatProvider.newChat();
+                      Navigator.pop(context);
+                    });
+                  }
                 }
               }
             },
@@ -53,25 +111,49 @@ class HistoryScreen extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No chat history found.'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No chat history found.'),
+                  const SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      chatProvider.newChat();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Go to Chat'),
+                  ),
+                ],
+              ),
+            );
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
                 final conversation = snapshot.data![index];
-                return ListTile(
-                  title: Text(conversation.name),
-                  subtitle: Text(conversation.updatedAt.toString()),
-                  onTap: () {
-                    chatProvider.setChatIdAndName(
-                      conversation.chatID,
-                      conversation.name,
-                    );
-                    Navigator.pop(context);
-                  },
+
+                // Format the updatedAt timestamp into a more readable format.
+                final formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(conversation.updatedAt);
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: ListTile(
+                    title: Text(conversation.name),
+                    subtitle: Text(formattedDate),
+                    onTap: () {
+                      chatProvider.setChatIdAndName(
+                        conversation.chatID,
+                        conversation.name,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
                 );
               },
+
             );
+
           }
         },
       ),

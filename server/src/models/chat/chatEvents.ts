@@ -1,32 +1,36 @@
 import express from "express";
 import { ChatCompletionMessage } from "openai/resources/chat";
-import { callAssistant, callNamingAssistant } from "../assistant/assistantEvents";
 import { AuthRequest } from "../../services/auth";
+import { callAssistant, callNamingAssistant } from "../assistant/assistantEvents";
+import { WPTChatMessage } from "./chatDocument";
 import { addMessage, deleteChatHistory, fetchChatHistory, getChatName, newChat } from "./chatRepository";
 
 const router = express.Router();
 
-router.post("/", async (req: AuthRequest<{ chatId?: string, message: string }>, res) => {
+router.post("/", async (req: AuthRequest<{ chatId?: string, message: string, messages: WPTChatMessage[] }>, res) => {
   const userUid = req.user?.uid;
 
   if (!userUid) {
     return res.status(400).send("UID not found.");
   }
 
-  const { chatId, message: content } = req.body;
+  const { chatId, message: content, messages } = req.body;
 
   try {
     if (!chatId) {
-      const newChatId = await newChat({ userUid, content });
-      res.status(200).json({ chatId: newChatId });
+      const {
+        chatId: newChatId,
+        wptChatMessage,
+      } = await newChat({ userUid, content });
+      res.status(200).json({ chatId: newChatId, message: wptChatMessage });
 
-      const assistantMessage: ChatCompletionMessage = await callAssistant(userUid, newChatId);
+      const assistantMessage: ChatCompletionMessage = await callAssistant(userUid, newChatId, [...messages, wptChatMessage]);
       await callNamingAssistant(userUid, newChatId, content, assistantMessage);
     } else {
-      await addMessage({ userUid, chatId, content });
-      res.sendStatus(204);
+      const wptChatMessage = await addMessage({ userUid, chatId, content });
+      res.status(200).json({ message: wptChatMessage });
 
-      await callAssistant(userUid, chatId);
+      await callAssistant(userUid, chatId, [...messages, wptChatMessage]);
     }
   } catch (err) {
     // Handle any unexpected errors.
