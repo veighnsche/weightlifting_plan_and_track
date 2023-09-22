@@ -13,22 +13,25 @@ router.post("/", async (req: AuthRequest<{ chatId?: string, message: string }>, 
     return res.status(400).send("UID not found.");
   }
 
-  let { chatId, message } = req.body;
+  const { chatId, message: content } = req.body;
 
-  const isNewChat = !chatId;
+  try {
+    if (!chatId) {
+      const newChatId = await newChat({ userUid, content });
+      res.status(200).json({ chatId: newChatId });
 
-  if (!chatId) {
-    chatId = await newChat({ userUid, content: message });
-    res.status(200).json({ chatId });
-  } else {
-    await addMessage({ userUid, chatId, content: message });
-    res.sendStatus(204);
-  }
+      const assistantMessage: ChatCompletionMessage = await callAssistant(userUid, newChatId);
+      await callNamingAssistant(userUid, newChatId, content, assistantMessage);
+    } else {
+      await addMessage({ userUid, chatId, content });
+      res.sendStatus(204);
 
-  const assistantMessage: ChatCompletionMessage = await callAssistant(userUid, chatId);
-
-  if (isNewChat) {
-    await callNamingAssistant(userUid, chatId, message, assistantMessage);
+      await callAssistant(userUid, chatId);
+    }
+  } catch (err) {
+    // Handle any unexpected errors.
+    console.error(err);
+    res.status(500).send("Internal server error.");
   }
 });
 

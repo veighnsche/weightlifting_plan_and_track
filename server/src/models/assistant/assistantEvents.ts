@@ -65,12 +65,12 @@ export const callAssistant = async (uid: string, chatId: string): Promise<ChatCo
   return completion.choices[0].message;
 };
 
-export const callNamingAssistant = async (userUid: string, chatId: string, message: string, assistantMessage: ChatCompletionMessage) => {
+export const callNamingAssistant = async (userUid: string, chatId: string, content: string, assistantMessage: ChatCompletionMessage) => {
   const completion = await openai().chat.completions.create({
     messages: [
-      { role: "user", content: message },
+      { role: "user", content },
       assistantMessage,
-      { role: "user", content: "Summarize our discussion in 3 words or up to 6 short words. No punctuation needed. Omit any context, only display the summary." },
+      { role: "user", content: "Summarize our discussion in 3 words. No punctuation needed. Only display the summary, omit any context." },
     ],
     model: "gpt-3.5-turbo",
     max_tokens: 20,
