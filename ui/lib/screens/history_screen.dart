@@ -63,7 +63,10 @@ class HistoryScreen extends StatelessWidget {
                   title: Text(conversation.name),
                   subtitle: Text(conversation.updatedAt.toString()),
                   onTap: () {
-                    chatProvider.setChatId(conversation.chatID);
+                    chatProvider.setChatIdAndName(
+                      conversation.chatID,
+                      conversation.name,
+                    );
                     Navigator.pop(context);
                   },
                 );

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weightlifting_plan_and_track/widgets/app_logo.dart';
 
 import '../core/app_shell.dart';
 import '../models/chat_model.dart';
 import '../providers/chat_provider.dart';
 import '../services/chat_service.dart';
+import '../widgets/app_logo.dart';
 import '../widgets/chat/message_input.dart';
 import '../widgets/chat/message_widgets.dart';
 
@@ -26,6 +26,15 @@ class ChatScreen extends StatelessWidget {
     // Send the message using the ChatService and update the chatId if a new one is returned
     _chatService.sendMessage(chatProvider.chatId, messageContent, (newChatId) {
       chatProvider.setChatId(newChatId);
+      // wait 5 seconds and update the chat name
+      Future.delayed(const Duration(seconds: 5), () {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (chatProvider.chatId == null) return;
+          _chatService.fetchChatName(chatProvider.chatId!).then((name) {
+            chatProvider.setName(name);
+          });
+        });
+      });
     });
 
     _contentController.clear();
@@ -36,9 +45,10 @@ class ChatScreen extends StatelessWidget {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, _) {
         final chatId = chatProvider.chatId;
+        final chatName = chatProvider.name;
 
         return AppShell(
-          title: 'Chat',
+          title: chatName,
           body: Column(
             children: [
               Expanded(
@@ -49,7 +59,11 @@ class ChatScreen extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: AppLogo(iconSize: 60, textSize: 16,));
+                      return const Center(
+                          child: AppLogo(
+                        iconSize: 60,
+                        textSize: 16,
+                      ));
                     }
                     List<WPTChatMessage> messages = snapshot.data!;
                     WidgetsBinding.instance.addPostFrameCallback((_) {

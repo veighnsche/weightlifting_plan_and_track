@@ -92,4 +92,23 @@ class ChatService {
       return false;
     }
   }
+
+  Future<String> fetchChatName(String chatId) async {
+    try {
+      final response = await _apiService.get('http://localhost:3000/chat/$chatId/name');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        return data['name'];
+      } else {
+        throw Exception('Failed to fetch chat name');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return '';
+    }
+  }
 }

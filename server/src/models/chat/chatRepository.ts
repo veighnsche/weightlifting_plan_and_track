@@ -52,7 +52,7 @@ export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<
   const chatEntity = new ChatEntity();
   chatEntity.userUid = userUid;
   chatEntity.chatId = conversationRef.id;
-  chatEntity.name = "Test User";
+  chatEntity.name = "New Chat";
   chatEntity.updatedAt = new Date();
   await chatRepository.save(chatEntity);
 
@@ -127,8 +127,6 @@ export const deleteChatHistory = async (userUid: string): Promise<void> => {
 
   const chatIds = chatEntities.map(chatEntity => chatEntity.chatId);
 
-  console.log(chatIds)
-
   const batch = db.batch();
 
   chatIds.forEach(chatId => {
@@ -140,3 +138,16 @@ export const deleteChatHistory = async (userUid: string): Promise<void> => {
 
   await chatRepository.delete({ userUid });
 };
+
+export const updateChatName = async (userUid: string, chatId: string, name: string): Promise<void> => {
+  const chatEntity = await fetchAndUpdateChatEntity(userUid, chatId);
+
+  chatEntity.name = name;
+  await chatRepository.save(chatEntity);
+}
+
+export const getChatName = async (userUid: string, chatId: string): Promise<string> => {
+  const chatEntity = await fetchAndUpdateChatEntity(userUid, chatId);
+
+  return chatEntity.name;
+}

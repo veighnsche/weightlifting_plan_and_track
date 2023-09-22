@@ -1,15 +1,16 @@
 import { OpenAI } from "openai";
 import { ChatCompletionMessage } from "openai/resources/chat";
 import { WPTChatMessage } from "../chat/chatDocument";
-import { addMessage, fetchAllMessages } from "../chat/chatRepository";
+import { addMessage, fetchAllMessages, updateChatName } from "../chat/chatRepository";
 import { findSettingsValue } from "../users/userSettingsRepository";
+import { removeMetaData, toChatCompletionFunctionCall } from "./assistantUtils";
 import { functionCallInfosWithMetadata } from "./functionDefinitions";
 
-export const callAssistant = async (uid: string, chatId: string) => {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+const openai = () => new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
+export const callAssistant = async (uid: string, chatId: string): Promise<ChatCompletionMessage> => {
   const [wptChatMessages, instructions]: [WPTChatMessage[], string | null] = await Promise.all([
     fetchAllMessages(chatId),
     findSettingsValue(uid, "instructions"),
@@ -33,7 +34,7 @@ export const callAssistant = async (uid: string, chatId: string) => {
     }),
   ];
 
-  const completion = await openai.chat.completions.create({
+  const completion = await openai().chat.completions.create({
     messages,
     model: "gpt-3.5-turbo-0613",
     functions: functionCallInfosWithMetadata,
@@ -60,32 +61,22 @@ export const callAssistant = async (uid: string, chatId: string) => {
       functionArgs: removeMetaData(args),
     });
   }
+
+  return completion.choices[0].message;
 };
 
-const removeMetaData = (parameters: Record<string, any>): Record<string, any> => {
-  const newParameters: Record<string, any> = {};
-
-  Object.keys(parameters).forEach((key) => {
-    if (key !== "content" && key !== "callback") {
-      newParameters[key] = parameters[key];
-    }
+export const callNamingAssistant = async (userUid: string, chatId: string, message: string, assistantMessage: ChatCompletionMessage) => {
+  const completion = await openai().chat.completions.create({
+    messages: [
+      { role: "user", content: message },
+      assistantMessage,
+      { role: "user", content: "Summarize our discussion in 3 words or up to 6 short words. No punctuation needed. Omit any context, only display the summary." },
+    ],
+    model: "gpt-3.5-turbo",
+    max_tokens: 20,
   });
 
-  return newParameters;
-};
-
-const toChatCompletionFunctionCall = (message: WPTChatMessage): ChatCompletionMessage.FunctionCall => {
-  const json = JSON.parse(message.function_call!.arguments);
-
-  if (message.content) {
-    json.content = message.content;
+  if (completion.choices[0].message.content) {
+    await updateChatName(userUid, chatId, completion.choices[0].message.content);
   }
-  if (message.function_call!.callback) {
-    json.callback = message.function_call!.callback;
-  }
-
-  return ({
-    name: message.function_call!.name,
-    arguments: JSON.stringify(json),
-  });
 };

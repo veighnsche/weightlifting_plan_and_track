@@ -1,7 +1,8 @@
 import express from "express";
-import { callAssistant } from "../assistant/assistantEvents";
+import { ChatCompletionMessage } from "openai/resources/chat";
+import { callAssistant, callNamingAssistant } from "../assistant/assistantEvents";
 import { AuthRequest } from "../../services/auth";
-import { addMessage, deleteChatHistory, fetchChatHistory, newChat } from "./chatRepository";
+import { addMessage, deleteChatHistory, fetchChatHistory, getChatName, newChat } from "./chatRepository";
 
 const router = express.Router();
 
@@ -14,6 +15,8 @@ router.post("/", async (req: AuthRequest<{ chatId?: string, message: string }>, 
 
   let { chatId, message } = req.body;
 
+  const isNewChat = !chatId;
+
   if (!chatId) {
     chatId = await newChat({ userUid, content: message });
     res.status(200).json({ chatId });
@@ -22,7 +25,20 @@ router.post("/", async (req: AuthRequest<{ chatId?: string, message: string }>, 
     res.sendStatus(204);
   }
 
-  await callAssistant(userUid, chatId);
+  const assistantMessage: ChatCompletionMessage = await callAssistant(userUid, chatId);
+
+  if (isNewChat) {
+    await callNamingAssistant(userUid, chatId, message, assistantMessage);
+  }
+});
+
+router.get("/:chatId/name", async (req: AuthRequest, res) => {
+  const userUid: string = req.user!.uid;
+  const chatId: string = req.params.chatId;
+
+  const name = await getChatName(userUid, chatId);
+
+  res.status(200).json({ name });
 });
 
 router.get("/history", async (req: AuthRequest, res) => {
