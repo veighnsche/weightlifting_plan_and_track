@@ -15,6 +15,7 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(Icons.fitness_center, size: iconSize, color: Colors.blueGrey),
         SizedBox(height: spacing),

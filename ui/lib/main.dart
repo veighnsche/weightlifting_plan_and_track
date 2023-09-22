@@ -3,15 +3,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:weightlifting_plan_and_track/screens/history_screen.dart';
-import 'package:weightlifting_plan_and_track/screens/splash_screen.dart';
 
 import 'providers/chat_provider.dart';
 import 'providers/function_definition_provider.dart';
 import 'screens/chat_screen.dart';
+import 'screens/history_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/splash_screen.dart';
 import 'screens/user_details_edit_screen.dart';
 import 'services/auth_service.dart';
 import 'services/init_service.dart';
@@ -89,13 +89,13 @@ class MyApp extends StatelessWidget {
           },
         ),
         routes: {
-          '/chat': (context) => ChatScreen(),
           '/onboarding': (context) => const OnboardingScreen(),
+          '/chat': (context) => ChatScreen(),
+          '/history': (context) => HistoryScreen(),
+          '/settings': (context) => const SettingsScreen(),
           '/user/edit': (context) => UserDetailsEditScreen(
               userDetails: ModalRoute.of(context)!.settings.arguments
                   as Map<String, dynamic>),
-          '/settings': (context) => const SettingsScreen(),
-          '/history': (context) => const HistoryScreen(),
         },
       ),
     );

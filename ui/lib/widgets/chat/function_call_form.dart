@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/models/chat_model.dart';
-import 'package:weightlifting_plan_and_track/models/function_call_model.dart';
-import 'package:weightlifting_plan_and_track/utils/strings.dart';
+
+import '../../models/chat_model.dart';
+import '../../models/function_call_model.dart';
+import '../../utils/strings.dart';
 
 class FunctionCallForm extends StatefulWidget {
   final FunctionDefinition? functionCallInfo;

@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/services/user_details_service.dart';
 
 import '../screens/login_screen.dart';
 import '../services/auth_service.dart';
+import '../services/user_details_service.dart';
 
 class UserProfile extends StatelessWidget {
   final AuthService _authService = AuthService();

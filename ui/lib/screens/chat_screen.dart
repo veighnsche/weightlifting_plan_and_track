@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weightlifting_plan_and_track/providers/chat_provider.dart';
+import 'package:weightlifting_plan_and_track/widgets/app_logo.dart';
 
 import '../core/app_shell.dart';
 import '../models/chat_model.dart';
-import '../services/chat_service.dart'; // Import the service class
+import '../providers/chat_provider.dart';
+import '../services/chat_service.dart';
 import '../widgets/chat/message_input.dart';
 import '../widgets/chat/message_widgets.dart';
 
@@ -48,7 +49,7 @@ class ChatScreen extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No messages yet.'));
+                      return const Center(child: AppLogo(iconSize: 60, textSize: 16,));
                     }
                     List<WPTChatMessage> messages = snapshot.data!;
                     WidgetsBinding.instance.addPostFrameCallback((_) {

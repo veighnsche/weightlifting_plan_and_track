@@ -56,4 +56,23 @@ class ChatService {
       }
     }
   }
+
+  Future<List<WPTChatConversation>> fetchHistory() async {
+    try {
+      final response = await _apiService.get('http://localhost:3000/chat/history');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        return WPTChatConversation.fromMapList(data['history']);
+      } else {
+        throw Exception('Failed to fetch chat history');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return [];
+    }
+  }
 }

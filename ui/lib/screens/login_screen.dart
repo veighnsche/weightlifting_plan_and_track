@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/screens/chat_screen.dart';
-import 'package:weightlifting_plan_and_track/widgets/app_logo.dart';
 
 import '../services/auth_service.dart';
+import '../widgets/app_logo.dart';
+import 'chat_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});

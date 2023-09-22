@@ -1,13 +1,14 @@
-class WPTChatConversation {
+class WPTChatMessages {
   final String conversationID;
   final List<WPTChatMessage> messages;
 
-  WPTChatConversation({required this.conversationID, required this.messages});
+  WPTChatMessages({required this.conversationID, required this.messages});
 
-  static WPTChatConversation fromMap(Map<String, dynamic> map) {
-    return WPTChatConversation(
+  static WPTChatMessages fromMap(Map<String, dynamic> map) {
+    return WPTChatMessages(
       conversationID: map['conversationID'],
-      messages: List<WPTChatMessage>.from(map['messages'].map((messageMap) => WPTChatMessage.fromMap('', messageMap))),
+      messages: List<WPTChatMessage>.from(map['messages']
+          .map((messageMap) => WPTChatMessage.fromMap('', messageMap))),
     );
   }
 }
@@ -28,9 +29,12 @@ class WPTChatMessage {
   static WPTChatMessage fromMap(String id, Map<String, dynamic> map) {
     return WPTChatMessage(
       messageID: id,
-      role: WPTMessageRole.values.firstWhere((e) => e.toString() == 'WPTMessageRole.${map['role']}'),
+      role: WPTMessageRole.values
+          .firstWhere((e) => e.toString() == 'WPTMessageRole.${map['role']}'),
       content: map['content'],
-      functionCall: map['function_call'] != null ? WPTFunctionCall.fromMap(map['function_call']) : null,
+      functionCall: map['function_call'] != null
+          ? WPTFunctionCall.fromMap(map['function_call'])
+          : null,
     );
   }
 }
@@ -60,7 +64,8 @@ class WPTFunctionCall {
       name: map['name'],
       arguments: map['arguments'],
       callback: map['callback'],
-      status: WPTFunctionStatus.values.firstWhere((e) => e.toString() == 'WPTFunctionStatus.${map['status']}'),
+      status: WPTFunctionStatus.values.firstWhere(
+          (e) => e.toString() == 'WPTFunctionStatus.${map['status']}'),
     );
   }
 }
@@ -71,4 +76,31 @@ enum WPTFunctionStatus {
   approved,
   rejected,
   none,
+}
+
+class WPTChatConversation {
+  final String chatID;
+  final String name;
+  final DateTime updatedAt;
+
+  WPTChatConversation({
+    required this.chatID,
+    required this.name,
+    required this.updatedAt,
+  });
+
+  static WPTChatConversation fromMap(Map<String, dynamic> map) {
+    return WPTChatConversation(
+      chatID: map['chatId'],
+      name: map['name'],
+      updatedAt: DateTime.parse(map['updatedAt']),
+    );
+  }
+
+  static List<WPTChatConversation> fromMapList(List<dynamic> mapList) {
+    List<WPTChatConversation> chats = List<WPTChatConversation>.from(
+      mapList.map((map) => WPTChatConversation.fromMap(map)),
+    )..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return chats;
+  }
 }
