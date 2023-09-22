@@ -75,4 +75,21 @@ class ChatService {
       return [];
     }
   }
+
+  Future<bool> deleteHistory() async {
+    try {
+      final response = await _apiService.delete('http://localhost:3000/chat/history');
+
+      if (response.statusCode == 204) {
+        return true;
+      } else {
+        throw Exception('Failed to delete chat history');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
+  }
 }

@@ -118,3 +118,25 @@ export const fetchAllMessages = async (chatId: string): Promise<WPTChatMessage[]
 export const fetchChatHistory = async (userUid: string): Promise<ChatEntity[]> => {
   return chatRepository.findBy({ userUid });
 };
+
+export const deleteChatHistory = async (userUid: string): Promise<void> => {
+  const chatEntities = await fetchChatHistory(userUid);
+
+  const db = getDatabase();
+  const conversationsRef = db.collection("conversations");
+
+  const chatIds = chatEntities.map(chatEntity => chatEntity.chatId);
+
+  console.log(chatIds)
+
+  const batch = db.batch();
+
+  chatIds.forEach(chatId => {
+    const conversationRef = conversationsRef.doc(chatId);
+    batch.delete(conversationRef);
+  });
+
+  await batch.commit();
+
+  await chatRepository.delete({ userUid });
+};

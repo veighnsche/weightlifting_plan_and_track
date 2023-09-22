@@ -38,4 +38,19 @@ class ApiService {
       body: json.encode(body),
     );
   }
+
+  Future<http.Response> delete(String url) async {
+    final token = await _authService.token;
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    return http.delete(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+      }
+    );
+  }
 }

@@ -17,6 +17,32 @@ class HistoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('History'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'delete_all') {
+                bool success = await _chatService.deleteHistory();
+                if (success) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Chat history deleted.'),
+                      ),
+                    );
+                    chatProvider.newChat();
+                    Navigator.pop(context);
+                  });
+                }
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'delete_all',
+                child: Text('Delete all conversations'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: FutureBuilder<List<WPTChatConversation>>(
         future: _chatService.fetchHistory(),

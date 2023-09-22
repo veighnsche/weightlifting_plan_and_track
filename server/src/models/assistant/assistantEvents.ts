@@ -49,8 +49,6 @@ export const callAssistant = async (uid: string, chatId: string) => {
   } else if (completion.choices[0].message.function_call) {
     const functionCall = completion.choices[0].message.function_call;
 
-    console.log(functionCall);
-
     const args = JSON.parse(functionCall.arguments);
 
     await addMessage({
