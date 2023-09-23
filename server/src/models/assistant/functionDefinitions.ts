@@ -2,25 +2,6 @@ import { FunctionDefinition, FunctionDefinitionProperty } from "./functionDefini
 
 export const functionDefinitions: FunctionDefinition[] = [
   {
-    name: "findExercise",
-    description: "Search for a specific workout by its name or the main muscle it targets.",
-    parameters: {
-      type: "object",
-      properties: {
-        exerciseName: {
-          type: "string",
-          description: "The workout's name, like 'Deadlift'.",
-        },
-        muscleGroup: {
-          type: "string",
-          enum: ["chest", "legs", "back", "arms", "shoulders", "core"],
-          description: "The main muscle the workout focuses on.",
-        },
-      },
-      required: ["exerciseName"],
-    },
-  },
-  {
     name: "exerciseActions",
     description: "Handle the details of a workout, such as adding, viewing, updating, or removing it.",
     parameters: {
