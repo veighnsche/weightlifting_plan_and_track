@@ -31,7 +31,7 @@ class _AppShellState extends State<AppShell> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isBottomSheetOpen = false;
 
-  void _showBottomSheet() {
+  void _showBottomSheet(Map<String, dynamic> arguments) {
     _scaffoldKey.currentState!
         .showBottomSheet((context) {
           return ChatSheet();
@@ -56,14 +56,7 @@ class _AppShellState extends State<AppShell> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title),
-        actions: [
-          if (widget.showChat)
-            IconButton(
-              icon: const Icon(Icons.chat),
-              onPressed: _showBottomSheet,
-            ),
-          ...widget.actions
-        ],
+        actions: widget.actions,
       ),
       drawer: const Drawer(child: DrawerContent()),
       body: widget.body,
@@ -73,7 +66,7 @@ class _AppShellState extends State<AppShell> {
           : null,
       // Only show floatingActionButton if _isBottomSheetOpen is false
       floatingActionButton:
-          !_isBottomSheetOpen && widget.showFab ? const AppSpeedDial() : null,
+          !_isBottomSheetOpen && widget.showFab ? AppSpeedDial(showBottomSheet: _showBottomSheet,) : null,
     );
   }
 }

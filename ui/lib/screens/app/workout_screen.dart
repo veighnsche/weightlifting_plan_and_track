@@ -7,12 +7,19 @@ class AppWorkoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppShell(
+    return AppShell(
       title: 'Workouts',
       showBottomNavigationBar: true,
       showFab: true,
-      showChat: true,
-      body: Center(
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () {
+            Navigator.pushNamed(context, '/app/workouts/create');
+          },
+        ),
+      ],
+      body: const Center(
         child: Text('Workouts'),
       ),
     );

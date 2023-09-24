@@ -124,8 +124,18 @@ class HistoryScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       chatProvider.newChat();
-                      Navigator.pop(context);
+
+                      // Check the current route name
+                      String? currentRouteName = ModalRoute.of(context)?.settings.name;
+
+                      // If the current route is not the chat route, navigate to it
+                      if (currentRouteName != '/chat') {
+                        Navigator.popAndPushNamed(context, '/chat');
+                      } else {
+                        Navigator.pop(context);
+                      }
                     },
+
                     child: const Text('Go to Chat'),
                   ),
                 ],
@@ -151,8 +161,18 @@ class HistoryScreen extends StatelessWidget {
                         conversation.chatID,
                         conversation.name,
                       );
-                      Navigator.pop(context);
+
+                      // Check the current route name
+                      String? currentRouteName = ModalRoute.of(context)?.settings.name;
+
+                      // If the current route is not the chat route, navigate to it
+                      if (currentRouteName != '/chat') {
+                        Navigator.popAndPushNamed(context, '/chat');
+                      } else {
+                        Navigator.pop(context);
+                      }
                     },
+
                   ),
                 );
               },

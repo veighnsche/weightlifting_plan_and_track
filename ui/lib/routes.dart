@@ -15,5 +15,5 @@ Map<String, Widget Function(BuildContext)> routes = {
   '/settings': (context) => const SettingsScreen(),
   '/user/edit': (context) => UserDetailsEditScreen(),
   '/app/workouts': (context) => const AppWorkoutScreen(),
-  '/app/workouts/add': (context) => const AppWorkoutFormScreen(),
+  '/app/workouts/create': (context) => const AppWorkoutFormScreen(),
 };

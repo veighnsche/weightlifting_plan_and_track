@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
                 }
 
                 setInitData(context, initSnapshot.data);
-                return isSignedIn ? const AppWorkoutScreen() : LoginScreen();
+                return isSignedIn ? const AppWorkoutScreen() : const LoginScreen();
               },
             );
           },

@@ -26,6 +26,13 @@ class DrawerContent extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   chatProvider.newChat();
+
+                  String? currentRouteName =
+                      ModalRoute.of(context)?.settings.name;
+
+                  if (currentRouteName != '/chat') {
+                    Navigator.pushNamed(context, '/chat');
+                  }
                 },
               ),
               ListTile(

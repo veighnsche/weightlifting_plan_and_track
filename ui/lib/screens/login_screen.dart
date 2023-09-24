@@ -6,7 +6,7 @@ import '../widgets/app_logo.dart';
 import 'chat_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
