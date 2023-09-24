@@ -10,7 +10,6 @@ import '../widgets/chat/message_input.dart';
 import '../widgets/chat/message_widgets.dart';
 
 class ChatScreen extends StatefulWidget {
-
   const ChatScreen({super.key});
 
   @override
@@ -19,9 +18,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _contentController = TextEditingController();
-
   final ScrollController _scrollController = ScrollController();
-
   final ChatService _chatService = ChatService();
 
   List<WPTChatMessage> _messagesCache = [];
@@ -59,6 +56,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
         return AppShell(
           title: chatName,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/app/workouts');
+              },
+              icon: const Icon(Icons.view_week),
+            ),
+          ],
           body: Column(
             children: [
               Expanded(
@@ -71,10 +76,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       _messagesCache = [];
                       return const Center(
-                          child: AppLogo(
-                        iconSize: 60,
-                        textSize: 16,
-                      ));
+                        child: AppLogo(
+                          iconSize: 60,
+                          textSize: 16,
+                          title: 'Chat with your assistant',
+                        ),
+                      );
                     }
                     List<WPTChatMessage> messages = snapshot.data!;
                     _messagesCache = messages;

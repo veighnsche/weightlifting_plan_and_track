@@ -3,16 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:weightlifting_plan_and_track/providers/app_provider.dart';
+import 'package:weightlifting_plan_and_track/screens/app/workout_screen.dart';
 
 import 'providers/chat_provider.dart';
 import 'providers/function_definition_provider.dart';
-import 'screens/chat_screen.dart';
-import 'screens/history_screen.dart';
+import 'routes.dart';
 import 'screens/login_screen.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
-import 'screens/user_details_edit_screen.dart';
 import 'services/auth_service.dart';
 import 'services/init_service.dart';
 import 'themes/theme.dart';
@@ -52,11 +50,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => FunctionDefinitionProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ChatProvider(),
-        ),
+            create: (context) => FunctionDefinitionProvider()),
+        ChangeNotifierProvider(create: (context) => ChatProvider()),
+        ChangeNotifierProvider(create: (context) => AppProvider()),
       ],
       child: MaterialApp(
         title: 'Weightlifting Plan & Track',
@@ -67,6 +63,7 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+        routes: routes,
         home: StreamBuilder<User?>(
           stream: _authService.authStateChanges,
           builder: (context, userSnapshot) {
@@ -83,18 +80,11 @@ class MyApp extends StatelessWidget {
                 }
 
                 setInitData(context, initSnapshot.data);
-                return isSignedIn ? const ChatScreen() : LoginScreen();
+                return isSignedIn ? const AppWorkoutScreen() : LoginScreen();
               },
             );
           },
         ),
-        routes: {
-          '/onboarding': (context) => const OnboardingScreen(),
-          '/chat': (context) => const ChatScreen(),
-          '/history': (context) => HistoryScreen(),
-          '/settings': (context) => const SettingsScreen(),
-          '/user/edit': (context) => UserDetailsEditScreen(),
-        },
       ),
     );
   }

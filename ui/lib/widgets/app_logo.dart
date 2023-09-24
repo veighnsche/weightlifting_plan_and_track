@@ -5,11 +5,14 @@ class AppLogo extends StatelessWidget {
   final double spacing;
   final double textSize;
 
+  final String? title;
+
   const AppLogo({
     super.key,
     this.iconSize = 100.0,
     this.spacing = 20.0,
     this.textSize = 24.0,
+    this.title,
   });
 
   @override
@@ -27,6 +30,18 @@ class AppLogo extends StatelessWidget {
             color: Colors.blueGrey,
           ),
         ),
+        ...title != null
+            ? [
+                SizedBox(height: spacing),
+                Text(
+                  title!,
+                  style: TextStyle(
+                    color: Colors.blueGrey,
+                    fontSize: textSize,
+                  ),
+                )
+              ]
+            : [],
       ],
     );
   }
