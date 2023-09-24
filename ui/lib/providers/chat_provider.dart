@@ -19,9 +19,9 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void newChat() {
+  void newChat([String name = 'New Chat']) {
     _chatId = null;
-    _name = 'New Chat';
+    _name = name;
     notifyListeners();
   }
 
