@@ -3,7 +3,7 @@ import 'set_model.dart';
 import 'workout_model.dart';
 
 class AppExerciseModel {
-  final String exerciseId;
+  final int exerciseId;
   final String userUid;
   final String name;
   final String? note;

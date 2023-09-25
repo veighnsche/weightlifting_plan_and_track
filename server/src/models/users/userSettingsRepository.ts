@@ -13,16 +13,16 @@ export const findSettingsValue = async (userId: string, settingKey: string): Pro
   return setting?.settingValue ?? null;
 };
 
-export const upsertSettingsValue = async (userId: string, settings: Record<string, string>): Promise<void> => {
+export const upsertSettingsValue = async (userUid: string, settings: Record<string, string>): Promise<void> => {
   await dataSource.transaction(async (transactionalEntityManager) => {
     const userSettingsRepository = transactionalEntityManager.getRepository(UserSettingsEntity);
 
-    const existingSettings = await userSettingsRepository.findBy({ userId });
+    const existingSettings = await userSettingsRepository.findBy({ userId: userUid });
     const newSettings = Object.entries(settings).map(([settingKey, settingValue]) => {
       const existingSetting = existingSettings.find((s) => s.settingKey === settingKey);
       return existingSetting
         ? userSettingsRepository.merge(existingSetting, { settingValue })
-        : userSettingsRepository.create({ userId, settingKey, settingValue });
+        : userSettingsRepository.create({ userId: userUid, settingKey, settingValue });
     });
 
     await userSettingsRepository.save(newSettings);

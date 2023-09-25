@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/services/app/workout_service.dart';
 
+import '../../models/app/workout_model.dart';
 import '../../themes/input_decorations.dart';
 
 class AppWorkoutFormScreen extends StatefulWidget {
@@ -10,9 +12,11 @@ class AppWorkoutFormScreen extends StatefulWidget {
 }
 
 class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
+  final AppWorkoutService _appWorkoutService = AppWorkoutService();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   final List<String> _daysOfWeek = [
+    'None',
     'Monday',
     'Tuesday',
     'Wednesday',
@@ -22,6 +26,23 @@ class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
     'Sunday'
   ];
   String? _selectedDay;
+
+  void _submitForm() async {
+    final Map<String, dynamic> data = {
+      'name': _nameController.text,
+      'dayOfWeek':
+          _selectedDay == null ? null : _daysOfWeek.indexOf(_selectedDay!) - 1,
+      'note': _noteController.text,
+    };
+
+    final AppWorkoutModel? workout = await _appWorkoutService.upsert(data);
+
+    if (workout != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pop(workout);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +61,6 @@ class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
                 decoration: blueInputDecoration(label: "Name"),
               ),
               const SizedBox(height: 16.0),
-
-              // Day of Week Dropdown
               DropdownButtonFormField<String>(
                 value: _selectedDay,
                 decoration: blueInputDecoration(label: "Day of the Week"),
@@ -53,22 +72,17 @@ class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
                 }).toList(),
                 onChanged: (String? value) {
                   setState(() {
-                    _selectedDay = value;
+                    _selectedDay = value == 'None' ? null : value;
                   });
                 },
               ),
               const SizedBox(height: 16.0),
-
-              // Note
               TextFormField(
                 controller: _noteController,
                 decoration: blueInputDecoration(label: "Note"),
                 maxLines: 5,
               ),
               const SizedBox(height: 16.0),
-
-              // ... your other form fields ...
-
               ElevatedButton(
                 onPressed: _submitForm,
                 child: const Text("Submit"),
@@ -78,17 +92,5 @@ class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
         ),
       ),
     );
-  }
-
-  void _submitForm() {
-    // TODO: Handle the form submission
-    // For instance, you can create an AppWorkoutModel object from the inputs.
-    // AppWorkoutModel model = AppWorkoutModel(
-    //   workoutId: SOME_GENERATED_ID,  // Generate or fetch an ID as needed
-    //   name: _nameController.text,
-    //   dayOfWeek: _daysOfWeek.indexOf(_selectedDay),  // Convert day string to int
-    //   note: _noteController.text,
-    //   exercises: [],  // Handle exercises list as needed
-    // );
   }
 }

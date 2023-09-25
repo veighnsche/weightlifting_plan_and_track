@@ -1,8 +1,8 @@
 import 'exercise_model.dart';
 
 class AppSetModel {
-  final String setId;
-  final String exerciseId;
+  final int setId;
+  final int exerciseId;
   final int? orderNumber;
   final int repCount;
   final double? weight;

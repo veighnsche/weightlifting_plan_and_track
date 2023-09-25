@@ -3,7 +3,7 @@ import 'exercise_model.dart';
 class AppCompletedSetModel {
   final String completedSetId;
   final DateTime completedAt;
-  final String exerciseId;
+  final int exerciseId;
   final int repCount;
   final double? weight;
   final String? weightText;

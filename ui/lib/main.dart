@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:weightlifting_plan_and_track/providers/app/workouts_provider.dart';
 import 'package:weightlifting_plan_and_track/providers/app_provider.dart';
 import 'package:weightlifting_plan_and_track/screens/app/workout_screen.dart';
 
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
             create: (context) => FunctionDefinitionProvider()),
         ChangeNotifierProvider(create: (context) => ChatProvider()),
         ChangeNotifierProvider(create: (context) => AppProvider()),
+        ChangeNotifierProvider(create: (context) => AppWorkoutsProvider()),
       ],
       child: MaterialApp(
         title: 'Weightlifting Plan & Track',

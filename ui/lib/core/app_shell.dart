@@ -13,16 +13,18 @@ class AppShell extends StatefulWidget {
   final bool showBottomNavigationBar;
   final bool showFab;
   final bool showChat;
+  final PreferredSizeWidget? bottomWidget;
 
   const AppShell({
-    Key? key,
+    super.key,
     required this.body,
     this.title = 'Weightlifting Plan and Track',
     this.actions = const [],
     this.showBottomNavigationBar = false,
     this.showFab = false,
     this.showChat = false,
-  }) : super(key: key);
+    this.bottomWidget,
+  });
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -33,7 +35,10 @@ class _AppShellState extends State<AppShell> {
   bool _isBottomSheetOpen = false;
 
   void _showBottomSheet() {
-    final currentRoute = ModalRoute.of(context)?.settings.name;
+    final currentRoute = ModalRoute
+        .of(context)
+        ?.settings
+        .name;
     Map<String, String> routeNames = {
       '/app/workouts': 'Chatting about workouts',
       '/app/exercises': 'Chatting about exercises',
@@ -70,6 +75,7 @@ class _AppShellState extends State<AppShell> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: widget.actions,
+        bottom: widget.bottomWidget,
       ),
       drawer: const Drawer(child: DrawerContent()),
       body: widget.body,

@@ -13,7 +13,7 @@ class ChatSheet extends StatelessWidget {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, _) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.975,
+          initialChildSize: 1,
           builder: (BuildContext context, ScrollController sheetController) {
             return SafeArea(
               child: Material(

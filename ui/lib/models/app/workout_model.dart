@@ -1,7 +1,7 @@
 import 'exercise_model.dart';
 
 class AppWorkoutModel {
-  final String workoutId;
+  final int workoutId;
   final String name;
   final int? dayOfWeek;
   final String? note;
@@ -12,20 +12,22 @@ class AppWorkoutModel {
     required this.name,
     this.dayOfWeek,
     this.note,
-    required this.exercises,
+    this.exercises = const [],
   });
-  
+
   factory AppWorkoutModel.fromMap(Map<String, dynamic> map) {
     return AppWorkoutModel(
       workoutId: map['workoutId'],
       name: map['name'],
       dayOfWeek: map['dayOfWeek'],
       note: map['note'],
-      exercises: map['exercises'],
+      exercises: map['exercises'] != null
+          ? AppExerciseModel.fromMapList(map['exercises'])
+          : [],
     );
   }
 
-  static List<AppWorkoutModel> fromMapList(List<Map<String, dynamic>> maps) {
+  static List<AppWorkoutModel> fromMapList(List<dynamic> maps) {
     return maps.map((map) => AppWorkoutModel.fromMap(map)).toList();
   }
 
@@ -39,8 +41,3 @@ class AppWorkoutModel {
     };
   }
 }
-
-
-
-
-
