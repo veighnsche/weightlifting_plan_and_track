@@ -67,20 +67,16 @@ class _AppWorkoutScreenState extends State<AppWorkoutScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(Icons.arrow_back, size: 16),
-                  SizedBox(width: 4.0),
-                  Text('Slide right to start'),
-                ],
-              ),
-              Row(
-                children: [
-                  Text('Slide left to edit'),
-                  SizedBox(width: 4.0),
-                  Icon(Icons.arrow_forward, size: 16),
-                ],
-              ),
+              Row(children: [
+                Icon(Icons.arrow_back, size: 16),
+                SizedBox(width: 4.0),
+                Text('Slide right to start'),
+              ]),
+              Row(children: [
+                Text('Slide left to edit'),
+                SizedBox(width: 4.0),
+                Icon(Icons.arrow_forward, size: 16),
+              ]),
             ],
           ),
         ),
