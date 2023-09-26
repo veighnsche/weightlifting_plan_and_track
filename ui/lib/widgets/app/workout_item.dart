@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../models/app/workout_model.dart';
 
@@ -23,29 +22,39 @@ class WorkoutItem extends StatelessWidget {
     final today = (DateTime.now().weekday - 1) % 7;
     final isToday = workout.dayOfWeek == today;
 
-    return Slidable(
-      key: ValueKey(workout.workoutId),
-      startActionPane: _buildStartActionPane(),
-      endActionPane: _buildEndActionPane(),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      // padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: ClipPath(
+              clipper: DiagonalClipper(),
+              child: Container(
+                width: 48, // Adjust as necessary
+                height: 48, // Adjust as necessary
+                color: Colors.blueGrey.shade400,
+              ),
             ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Column(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (isToday) _buildTodayIndicator(),
@@ -57,13 +66,21 @@ class WorkoutItem extends StatelessWidget {
                 if (workout.exercises.length > 3) _buildExerciseOverflow(),
               ],
             ),
-            Positioned(
-              top: 0,
-              right: 0,
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: _buildDayOfWeek(days),
             ),
-          ],
-        ),
+          ),
+          const Positioned(
+            bottom: 2,
+            right: 2,
+            child: Icon(Icons.play_arrow, color: Colors.white, size: 24),
+          ),
+        ],
       ),
     );
   }
@@ -150,36 +167,25 @@ class WorkoutItem extends StatelessWidget {
       );
     }).toList();
   }
-
-  ActionPane _buildStartActionPane() {
-    return ActionPane(
-      motion: const ScrollMotion(),
-      extentRatio: 0.2,
-      children: [
-        SlidableAction(
-          onPressed: (context) {},
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          icon: Icons.edit,
-          label: 'Edit',
-        ),
-      ],
-    );
-  }
-
-  ActionPane _buildEndActionPane() {
-    return ActionPane(
-      motion: const ScrollMotion(),
-      extentRatio: 0.2,
-      children: [
-        SlidableAction(
-          onPressed: (context) {},
-          backgroundColor: Colors.green,
-          foregroundColor: Colors.white,
-          icon: Icons.play_arrow,
-          label: 'Start',
-        ),
-      ],
-    );
-  }
 }
+
+class DiagonalClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path()
+      ..moveTo(0, size.height)
+      ..lineTo(size.width - 12, size.height)
+      ..quadraticBezierTo(
+        size.width, size.height,
+        size.width, size.height - 12,
+      )
+      ..lineTo(size.width, 0)
+      ..lineTo(0, size.height)
+      ..close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+

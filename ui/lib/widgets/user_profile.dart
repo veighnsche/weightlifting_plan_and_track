@@ -6,7 +6,6 @@ import '../services/user_details_service.dart';
 
 class UserProfile extends StatelessWidget {
   final AuthService _authService = AuthService();
-  final UserDetailsService _userDetailsService = UserDetailsService();
 
   UserProfile({super.key});
 
