@@ -11,6 +11,7 @@
   - Express
   - TypeORM
   - PostgreSQL
+  - Hasura
 
 
 # Entities
@@ -62,7 +63,7 @@
 - `note`: _string_ **(Optional)** Natural language for the assistant about the set reference (e.g. "warm up set", "super set")
 - `is_archived`: _bool_
 - get `workout_exercise`: where `wpt_workout_exercises.workout_exercise_id = workout_exercise_id`
-- get list `setDetails`: where `wpt_set_details.set_reference_id = set_reference_id`
+- get list `set_details`: where `wpt_set_details.set_reference_id = set_reference_id`
 
 ## 5. SetDetailEntity
 
@@ -78,8 +79,8 @@
 - `rest_time_before`: _number_ **(Optional)** Time in seconds to rest before the set
 - `note`: _string_ **(Optional)** Natural language for the assistant about the set details
 - `is_archived`: _bool_
-- get `setReference`: Retrieves the set reference where `wpt_set_references.set_reference_id = set_reference_id`
-- get list `completedSets`: Retrieves completed sets where `wpt_completed_sets.set_detail_id = set_detail_id`
+- get `set_reference`: Retrieves the set reference where `wpt_set_references.set_reference_id = set_reference_id`
+- get list `completed_sets`: Retrieves completed sets where `wpt_completed_sets.set_detail_id = set_detail_id`
 
 ## 6. CompletedWorkoutEntity
 
@@ -93,11 +94,11 @@
 - `is_active`: _bool_
 - `is_archived`: _bool_
 - get `workout`: where `wpt_workouts.workout_id = workout_id`
-- get list `completedSets`: where `wpt_completed_sets.completed_workout_id = completed_workout_id`
+- get list `completed_sets`: where `wpt_completed_sets.completed_workout_id = completed_workout_id`
 
 ## 7. CompletedSetEntity
 
-### Overview`wpt-completed_sets`
+### Overview`wpt_completed_sets`
 
 - `completed_set_id`: _uuid_ **(Primary Key)**
 - `completed_workout_id`: _uuid_ **(Foreign Key)** Connects to a `completed_workout_id` from `wpt_completed_workouts`

@@ -52,12 +52,12 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
 
     widget.onSubmit({
       'user': {
-        'gender': gender,
+        'gender': gender == '' ? null : gender,
         'dateOfBirth': dateOfBirth?.toIso8601String(),
-        'weight': weight,
-        'height': height,
-        'fatPercentage': fatPercentage,
-        'gymDescription': gymDescription,
+        'weight': weight == '' ? null : double.parse(weight!),
+        'height': height == '' ? null : double.parse(height!),
+        'fatPercentage': fatPercentage == '' ? null : double.parse(fatPercentage!),
+        'gymDescription': gymDescription == '' ? null : gymDescription,
       }
     });
   }
