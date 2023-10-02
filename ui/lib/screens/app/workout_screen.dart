@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_shell.dart';
 import '../../models/app/screens/workout_list_screen_model.dart';
-import '../../models/app/workout_model.dart';
 import '../../services/app/workout_service.dart';
 import '../../widgets/app/workout_item.dart';
 
@@ -21,12 +20,7 @@ class AppWorkoutScreen extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () async {
-            final Object? createdWorkout =
-                await Navigator.pushNamed(context, '/app/workouts/create');
-            if (createdWorkout is AppWorkoutModel) {
-              // TODO: Send workout to backend
-              // No need to reinitialize the stream. The Hasura subscription will handle updates.
-            }
+            await Navigator.pushNamed(context, '/app/workouts/create');
           },
         ),
       ],

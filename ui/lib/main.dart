@@ -20,28 +20,39 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final AuthService _authService = AuthService();
   final InitService _initService = InitService();
 
-  MyApp({super.key});
+  User? _user;
+  Map<String, dynamic>? _initData;
 
-  void setInitData(BuildContext context, Map<String, dynamic>? data) {
-    if (data != null && data.isNotEmpty) {
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() {
+    _authService.authStateChanges.listen((user) async {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final functionCallsProvider =
-            Provider.of<FunctionDefinitionProvider>(context, listen: false);
-
-        if (data['functionDefinitions'] != null) {
-          functionCallsProvider
-              .setFunctionDefinitions(data['functionDefinitions']);
-        }
-
-        if (data['onboarded'] == false) {
-          Navigator.pushReplacementNamed(context, '/onboarding');
-        }
+        setState(() {
+          _user = user;
+        });
       });
-    }
+      if (user != null) {
+        var data = await _initService.init();
+
+        setState(() {
+          _initData = data;
+        });
+      }
+    });
   }
 
   @override
@@ -62,28 +73,18 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
         routes: routes,
-        home: StreamBuilder<User?>(
-          stream: _authService.authStateChanges,
-          builder: (context, userSnapshot) {
-            if (userSnapshot.connectionState != ConnectionState.active) {
-              return const SplashScreen(splashText: "logging in...");
-            }
-
-            final isSignedIn = userSnapshot.data != null;
-            return FutureBuilder<Map<String, dynamic>>(
-              future: isSignedIn ? _initService.init() : Future.value({}),
-              builder: (context, initSnapshot) {
-                if (initSnapshot.connectionState != ConnectionState.done) {
-                  return const SplashScreen(splashText: "initializing...");
-                }
-
-                setInitData(context, initSnapshot.data);
-                return isSignedIn ? AppWorkoutScreen() : const LoginScreen();
-              },
-            );
-          },
-        ),
+        home: _buildHome(),
       ),
     );
+  }
+
+  Widget _buildHome() {
+    if (_user == null) {
+      return const LoginScreen();
+    } else if (_initData == null) {
+      return const SplashScreen(splashText: "initializing...");
+    } else {
+      return AppWorkoutScreen();
+    }
   }
 }

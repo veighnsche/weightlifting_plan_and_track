@@ -17,11 +17,8 @@ export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
     return res.status(401).send("Authentication required.");
   }
 
-  console.log(token)
-
   try {
     req.user = await admin.auth().verifyIdToken(token);
-    console.log("Authenticated user:", req.user)
     next();
   } catch (error) {
     res.status(401).send("Invalid token.");

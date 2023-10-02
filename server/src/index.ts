@@ -3,9 +3,10 @@ import { config } from "dotenv";
 import express from "express";
 import { createServer } from "http";
 import "reflect-metadata";
+import workoutRouter from "./models/app/workouts/workoutsEvents";
+import chatRouter from "./models/chat/chatEvents";
 import initRouter from "./models/init/initEvents";
 import userRouter from "./models/users/userEvents";
-import chatRouter from "./models/chat/chatEvents";
 
 import { authenticateRequest } from "./services/auth";
 import { connectDatabase } from "./services/database";
@@ -35,6 +36,7 @@ app.use(authenticateRequest);
 app.use("/init", initRouter);
 app.use("/user", userRouter);
 app.use("/chat", chatRouter);
+app.use("/workouts", workoutRouter);
 
 connectDatabase().then(() => {
   httpServer.listen(PORT, () => {
