@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
+
 import 'auth_service.dart';
 
 class GraphQLService {
@@ -29,7 +31,7 @@ class GraphQLService {
     });
 
     final link = Link.split(
-          (request) => request.isSubscription,
+      (request) => request.isSubscription,
       websocketLink,
       authLink.concat(httpLink),
     );
@@ -42,9 +44,10 @@ class GraphQLService {
 
   Stream<QueryResult> subscribe(SubscriptionOptions options) {
     return _connect().subscribe(options).map((event) {
-      print("Subscription event: $event");
       if (event.hasException) {
-        print("Subscription error: ${event.exception}");
+        if (kDebugMode) {
+          print(event.exception);
+        }
         throw event.exception!;
       }
       return event;

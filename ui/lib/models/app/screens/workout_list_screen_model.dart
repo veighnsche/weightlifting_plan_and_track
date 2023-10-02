@@ -34,8 +34,6 @@ class WorkoutListScreenWorkoutModel {
   });
 
   factory WorkoutListScreenWorkoutModel.fromJson(Map<String, dynamic> json) {
-    print("json: $json");
-
     int getTotalCount(Map<String, dynamic> json, String key) {
       var value = json[key];
       if (value is List && value.isEmpty) {
