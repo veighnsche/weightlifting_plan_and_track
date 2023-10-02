@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../../models/app/workout_model.dart';
+import 'package:weightlifting_plan_and_track/models/app/screens/workout_list_screen_model.dart';
 
 class WorkoutItem extends StatelessWidget {
-  final AppWorkoutModel workout;
+  final WorkoutListScreenWorkoutModel workout;
 
   const WorkoutItem({super.key, required this.workout});
 
@@ -176,8 +175,10 @@ class DiagonalClipper extends CustomClipper<Path> {
       ..moveTo(0, size.height)
       ..lineTo(size.width - 12, size.height)
       ..quadraticBezierTo(
-        size.width, size.height,
-        size.width, size.height - 12,
+        size.width,
+        size.height,
+        size.width,
+        size.height - 12,
       )
       ..lineTo(size.width, 0)
       ..lineTo(0, size.height)
@@ -188,4 +189,3 @@ class DiagonalClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-

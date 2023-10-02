@@ -1,17 +1,23 @@
 # Tech Stack
 
-- Front end
+- Mobile Client
   - Dart
   - Flutter
   - Provider
-  - GraphQL
-- Back end
+  - GraphQL (only real-time subscriptions to Hasura Server)
+- General Server
   - Node.js
   - TypeScript
   - Express
   - TypeORM
-  - PostgreSQL
-  - Hasura
+  - PostgreSQL (for saving the user data)
+  - GraphQL (client for Hasura Server, manages the workout data)
+- Hasura Server
+  - PostgreSQL (for saving the workout data)
+  - GraphQL
+- Firebase
+  - Authentication
+  - Firestore (for saving the chat data)
 
 
 # Entities
@@ -134,24 +140,24 @@ Each workout is represented by a card with the following details:
 ### Query
 
 ```graphql
-query GetWorkouts {
-  workouts {
+subscription GetWorkouts {
+  wpt_workouts {
     workout_id
     name
     day_of_week
     note
-    workout_exercises(limit: 3) {
-      exercise {
+    wpt_workout_exercises(limit: 3) {
+      wpt_exercise {
         name
       }
     }
-    totalExercises: workout_exercises_aggregate {
+    totalExercises: wpt_workout_exercises_aggregate {
       aggregate {
         count
       }
     }
-    totalSets: workout_exercises {
-      set_references_aggregate {
+    totalSets: wpt_workout_exercises {
+      wpt_set_references_aggregate {
         aggregate {
           count
         }

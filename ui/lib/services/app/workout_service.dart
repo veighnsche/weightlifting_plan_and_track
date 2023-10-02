@@ -1,38 +1,59 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:hasura_connect/hasura_connect.dart';
-
+import 'package:graphql/client.dart';
 
 import '../../models/app/workout_model.dart';
 import '../api_service.dart';
+import '../graphql_service.dart';
 
 class AppWorkoutService {
   final ApiService _apiService = ApiService();
+  final GraphQLService _graphQLService = GraphQLService();
 
-  Future<List<AppWorkoutModel>> getAll() async {
-    // try {
-    //   final response = await _apiService.get('http://localhost:3000/app/workouts');
-    //
-    //   if (response.statusCode == 200) {
-    //     return AppWorkoutModel.fromMapList(json.decode(response.body)['workouts']);
-    //   } else {
-    //     throw Exception('Failed to get workouts');
-    //   }
-    // } catch (error) {
-    //   if (kDebugMode) {
-    //     print(error);
-    //   }
-    // }
-    return [];
+  Stream<QueryResult> subscribeToWorkouts() {
+    const String getWorkoutsSubscription = r"""
+      subscription GetWorkouts {
+        wpt_workouts {
+          workout_id
+          name
+          day_of_week
+          note
+          wpt_workout_exercises(limit: 3) {
+            wpt_exercise {
+              name
+            }
+          }
+          totalExercises: wpt_workout_exercises_aggregate {
+            aggregate {
+              count
+            }
+          }
+          totalSets: wpt_workout_exercises {
+            wpt_set_references_aggregate {
+              aggregate {
+                count
+              }
+            }
+          }
+        }
+      }
+    """;
+
+    return _graphQLService.subscribe(
+        SubscriptionOptions(document: gql(getWorkoutsSubscription))
+    );
   }
 
   Future<AppWorkoutModel?> upsert(Map<String, dynamic> workout) async {
     try {
-      final response =
-          await _apiService.post('http://localhost:3000/app/workouts', {
-            'workout': workout,
-          });
+      final response = await _apiService.post(
+        'http://localhost:3000/app/workouts',
+        {
+          'workout': workout,
+        },
+      );
 
       if (response.statusCode == 200) {
         return AppWorkoutModel.fromMap(json.decode(response.body)['workout']);
