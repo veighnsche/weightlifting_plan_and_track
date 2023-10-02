@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graphql/client.dart';
 
 import '../../core/app_shell.dart';
 import '../../models/app/screens/workout_list_screen_model.dart';
@@ -36,7 +35,7 @@ class AppWorkoutScreen extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return StreamBuilder<QueryResult>(
+    return StreamBuilder<WorkoutListScreenModel>(
       stream: _workoutService.subscribeToWorkouts(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -48,18 +47,12 @@ class AppWorkoutScreen extends StatelessWidget {
           return const Center(child: Text('Error loading workouts'));
         }
 
-        if (!snapshot.hasData || snapshot.data!.hasException) {
-          print(snapshot.data);
+        if (!snapshot.hasData) {
           return const Center(child: Text('No workouts available'));
         }
 
-
-        final List<dynamic> workoutData = snapshot.data!.data!['wpt_workouts'];
-        final List<WorkoutListScreenWorkoutModel> workouts = workoutData
-            .map((workout) => WorkoutListScreenWorkoutModel.fromJson(workout))
-            .toList();
-
-        return _buildWorkoutsList(workouts);
+        final WorkoutListScreenModel workoutListScreenModel = snapshot.data!;
+        return _buildWorkoutsList(workoutListScreenModel.workouts);
       },
     );
   }

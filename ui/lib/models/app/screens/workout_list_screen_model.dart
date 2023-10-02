@@ -5,7 +5,7 @@ class WorkoutListScreenModel {
 
   factory WorkoutListScreenModel.fromJson(Map<String, dynamic> json) {
     return WorkoutListScreenModel(
-      workouts: (json['workouts'] as List)
+      workouts: (json['wpt_workouts'] as List)
           .map((data) => WorkoutListScreenWorkoutModel.fromJson(data))
           .toList(),
     );

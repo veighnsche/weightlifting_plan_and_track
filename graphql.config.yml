@@ -1,2 +1,12 @@
-schema: schema.graphql
-documents: '**/*.graphql'
+schema: "./schema.graphql"
+documents: "**/*.graphql"
+extensions:
+  endpoints:
+    default:
+      url: "http://localhost:8080/v1/graphql"
+      headers:
+        x-hasura-admin-secret: "Pwh8682W9tfx"
+    subscriptions:
+      url: "ws://localhost:8080/v1/graphql"
+      headers:
+        x-hasura-admin-secret: "Pwh8682W9tfx"

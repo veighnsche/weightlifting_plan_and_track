@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
+import 'package:weightlifting_plan_and_track/models/app/screens/workout_list_screen_model.dart';
 
 import '../../models/app/workout_model.dart';
 import '../api_service.dart';
@@ -12,7 +13,8 @@ class AppWorkoutService {
   final ApiService _apiService = ApiService();
   final GraphQLService _graphQLService = GraphQLService();
 
-  Stream<QueryResult> subscribeToWorkouts() {
+  Stream<WorkoutListScreenModel> subscribeToWorkouts() {
+    // language=GraphQL
     const String getWorkoutsSubscription = r"""
       subscription GetWorkouts {
         wpt_workouts {
@@ -42,8 +44,14 @@ class AppWorkoutService {
     """;
 
     return _graphQLService.subscribe(
-        SubscriptionOptions(document: gql(getWorkoutsSubscription))
-    );
+      SubscriptionOptions(document: gql(getWorkoutsSubscription)),
+    ).map((QueryResult<Object?> queryResult) {
+      if (queryResult.hasException) {
+        throw queryResult.exception!;
+      }
+
+      return WorkoutListScreenModel.fromJson(queryResult.data!);
+    });
   }
 
   Future<AppWorkoutModel?> upsert(Map<String, dynamic> workout) async {
