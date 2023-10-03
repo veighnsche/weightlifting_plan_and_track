@@ -32,7 +32,6 @@ class _AppScreenState extends State<AppScreen> {
       bottomNavigationBar: AppBottomNavigationBar(
         selectedIndex: _selectedIndex,
         onItemSelected: (index) {
-          print('Item selected: $index');
           _pageController.animateToPage(
             index,
             duration: const Duration(milliseconds: 200),
