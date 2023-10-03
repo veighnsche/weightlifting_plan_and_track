@@ -59,10 +59,9 @@ class WorkoutItem extends StatelessWidget {
                 if (isToday) _buildTodayIndicator(),
                 _buildName(),
                 const SizedBox(height: 8.0),
-                if (workout.note != null) _buildNote(),
+                _buildExerciseList(),
                 const SizedBox(height: 8.0),
-                ..._buildExerciseList(),
-                if (workout.exercises.length > 3) _buildExerciseOverflow(),
+                if (workout.note != null) _buildNote(),
               ],
             ),
           ),
@@ -104,8 +103,8 @@ class WorkoutItem extends StatelessWidget {
         fontWeight: FontWeight.bold,
         color: Colors.blueGrey[800],
       ),
-      maxLines: 1,  // Set a maximum of one line.
-      overflow: TextOverflow.ellipsis,  // Add ellipsis when overflow happens.
+      maxLines: 1, // Set a maximum of one line.
+      overflow: TextOverflow.ellipsis, // Add ellipsis when overflow happens.
     );
   }
 
@@ -139,34 +138,74 @@ class WorkoutItem extends StatelessWidget {
     );
   }
 
-  Padding _buildExerciseOverflow() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Text(
-        '+${workout.exercises.length - 3} more',
-        style: TextStyle(
-          color: Colors.blueGrey[600],
-          fontStyle: FontStyle.italic,
+  Widget _buildExerciseList() {
+    // Check if there are any exercises.
+    if (workout.exercises.isEmpty) {
+      return _buildNoExercisesText();
+    }
+
+    String exercisesText = _generateExercisesText();
+
+    return Row(
+      children: [
+        Icon(
+          Icons.fitness_center,
+          color: Colors.blueGrey[700],
+          size: 18.0,
         ),
-      ),
+        const SizedBox(width: 8.0), // Spacing between icon and text.
+        Expanded(
+          // To ensure the text does not overflow.
+          child: Text(
+            exercisesText,
+            style: TextStyle(
+              color: Colors.blueGrey[700],
+              fontWeight: FontWeight.bold,  // Bold font weight
+            ),
+            overflow: TextOverflow.ellipsis, // Handle potential overflow.
+          ),
+        ),
+      ],
     );
   }
 
-  List<ListTile> _buildExerciseList() {
-    return workout.exercises.take(3).map((exercise) {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: Icon(
-          Icons.fitness_center,
-          color: Colors.blueGrey[700],
-        ),
-        title: Text(
-          exercise.name,
-          style: TextStyle(color: Colors.blueGrey[700]),
-        ),
-      );
-    }).toList();
+
+  String _generateExercisesText() {
+    // Combine the names of the first 3 exercises (or fewer) into a single string.
+    String combinedExercises =
+        workout.exercises.take(3).map((e) => e.name).join(', ');
+
+    // If there are more than 3 exercises, append "+X more" to the string.
+    if (workout.exercises.length > 3) {
+      combinedExercises += ', +${workout.exercises.length - 3} more';
+    }
+
+    return combinedExercises;
   }
+
+  Widget _buildNoExercisesText() {
+    return Row(
+      children: [
+        Icon(
+          Icons.add_circle_outline,
+          color: Colors.blueGrey[700],
+          size: 18.0,
+        ),
+        const SizedBox(width: 8.0),
+        Expanded(
+          child: Text(
+            'No exercises added yet. Tap to add!',
+            style: TextStyle(
+              color: Colors.blueGrey[700],
+              fontWeight: FontWeight.bold,  // Bold font weight
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
 }
 
 class DiagonalClipper extends CustomClipper<Path> {

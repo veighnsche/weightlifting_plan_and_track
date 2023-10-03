@@ -1,0 +1,71 @@
+<form>
+    <!-- From the first form -->
+    <label for="root_field_name">Native Query Name</label>
+    <input id="root_field_name" type="text" placeholder="Name that exposes this model in GraphQL API" name="root_field_name">
+
+    <label for="comment">Comment</label>
+    <input id="comment" type="text" placeholder="A description of this logical model" name="comment">
+
+    <label for="source">Database</label>
+    <select id="source" name="source">
+        <option value="" hidden>Select a database...</option>
+        <option value="default">default</option>
+    </select>
+
+    <label>Query Parameters</label>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Nullable</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td colspan="5">Select a data source to add query arguments</td></tr>
+        </tbody>
+    </table>
+
+    <label>Native Query Statement</label>
+    <div id="code"></div>
+
+    <label for="returns">Query Return Type</label>
+    <select id="returns" name="returns">
+        <option value="" hidden>Select a database first...</option>
+    </select>
+
+    <button type="button">Add Logical Model</button>
+
+    <!-- From the second form -->
+    <label for="dataSourceName">Select a source</label>
+    <select id="dataSourceName" name="dataSourceName">
+        <option value="" hidden>Pick a database...</option>
+        <option value="default">default</option>
+    </select>
+
+    <label for="name">Logical Model Name</label>
+    <input id="name" type="text" placeholder="Enter a name for your Logical Model" name="name">
+
+    <label>Fields</label>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Nullable</th>
+            <th>ARRAY</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td colspan="5">No fields added</td></tr>
+        </tbody>
+    </table>
+
+    <div class="footer-buttons">
+        <button type="button">Cancel</button>
+        <button type="submit">Create</button>
+    </div>
+</form>

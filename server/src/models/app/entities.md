@@ -110,6 +110,7 @@
 - `completed_set_id`: _uuid_ **(Primary Key)**
 - `completed_workout_id`: _uuid_ **(Foreign Key)** Connects to a `completed_workout_id` from `wpt_completed_workouts`
 - `set_detail_id`: _uuid_ **(Foreign Key)** Connects to a `set_detail_id` from `wpt_set_details`
+- `exercise_id`: _uuid_ **(Foreign Key)** Connects to an `exercise_id` from `wpt_exercises`
 - `completed_at`: _timestamp_
 - `rep_count`: _number_ **(Optional)** Actual reps done
 - `weight`: _number_ **(Optional)** Actual weight used
@@ -232,33 +233,32 @@ Each exercise is represented by a card with the following details:
 
 - Exercise name
 - Note (if applicable)
-- Number of sets
-- The highest weight used for the exercise
-- Names of the active workouts that the exercise is in
+- Names of the workouts that the exercise is in and the day of the week (if applicable)
 
 ### Query
 
 ```graphql
-query GetExercises {
-  exercises {
+subscription GetExercises {
+  wpt_exercises {
     exercise_id
     name
     note
-    totalSets: workout_exercises_aggregate {
-      aggregate {
-        count
+    workouts: wpt_workout_exercises {
+      wpt_workout {
+        name
+        day_of_week
       }
-    }
-    maxWeight: set_details_aggregate {
-      aggregate {
-        max {
-          weight
+      wpt_set_references(limit: 1, order_by: {wpt_set_details_aggregate: {max: {weight: desc}}}) {
+        wpt_set_details(order_by: {created_at: desc}, limit: 1) {
+          workingWeight: weight
         }
       }
     }
-    workouts: workout_exercises(where: {is_archived: {_eq: false}}) {
-      workout {
-        name
+    wpt_completed_sets_aggregate {
+      aggregate {
+        max {
+          personalRecord: weight
+        }
       }
     }
   }

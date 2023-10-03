@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CompletedWorkoutEntity } from "../completedWorkouts/completedWorkoutEntity";
+import { ExerciseEntity } from "../exercises/exerciseEntity";
 import { SetDetailEntity } from "../setDetails/setDetailEntity";
 
 @Entity("wpt_completed_sets")
@@ -12,6 +13,9 @@ export class CompletedSetEntity {
 
   @Column()
   set_detail_id!: string;
+
+  @Column()
+  exercise_id!: string;
 
   @CreateDateColumn()
   completed_at!: Date;
@@ -47,4 +51,10 @@ export class CompletedSetEntity {
   @ManyToOne(() => SetDetailEntity, setDetail => setDetail.completedSets)
   @JoinColumn({ name: "set_detail_id" })
   setDetail!: SetDetailEntity;
+
+  @ManyToOne(() => ExerciseEntity, exercise => exercise.completedSets, {
+    nullable: true
+  })
+  @JoinColumn({ name: "exercise_id" })
+  exercise!: ExerciseEntity;
 }

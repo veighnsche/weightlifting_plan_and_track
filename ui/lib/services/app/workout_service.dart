@@ -42,6 +42,7 @@ class AppWorkoutService {
         }
       }
     """;
+    // language=None
 
     return _graphQLService
         .subscribe(
@@ -50,7 +51,7 @@ class AppWorkoutService {
         .map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
         if (kDebugMode) {
-          print(queryResult.exception);
+          print("error ${queryResult.exception}");
         }
         throw queryResult.exception!;
       }

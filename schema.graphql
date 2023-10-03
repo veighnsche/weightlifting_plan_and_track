@@ -817,6 +817,7 @@ type wpt_completed_sets {
     completed_at: timestamp!
     completed_set_id: uuid!
     completed_workout_id: uuid!
+    exercise_id: uuid!
     is_active: Boolean!
     is_archived: Boolean!
     note: String
@@ -831,6 +832,8 @@ type wpt_completed_sets {
     weight_text: String
     "An object relationship"
     wpt_completed_workout: wpt_completed_workouts!
+    "An object relationship"
+    wpt_exercise: wpt_exercises!
     "An object relationship"
     wpt_set_detail: wpt_set_details!
 }
@@ -868,6 +871,7 @@ type wpt_completed_sets_max_fields {
     completed_at: timestamp
     completed_set_id: uuid
     completed_workout_id: uuid
+    exercise_id: uuid
     note: String
     rep_count: Int
     rest_time_before: Int
@@ -881,6 +885,7 @@ type wpt_completed_sets_min_fields {
     completed_at: timestamp
     completed_set_id: uuid
     completed_workout_id: uuid
+    exercise_id: uuid
     note: String
     rep_count: Int
     rest_time_before: Int
@@ -1034,6 +1039,32 @@ type wpt_exercises {
     name: String!
     note: String
     user_uid: String!
+    "An array relationship"
+    wpt_completed_sets(
+        "distinct select on columns"
+        distinct_on: [wpt_completed_sets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [wpt_completed_sets_order_by!],
+        "filter the rows returned"
+        where: wpt_completed_sets_bool_exp
+    ): [wpt_completed_sets!]!
+    "An aggregate relationship"
+    wpt_completed_sets_aggregate(
+        "distinct select on columns"
+        distinct_on: [wpt_completed_sets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [wpt_completed_sets_order_by!],
+        "filter the rows returned"
+        where: wpt_completed_sets_bool_exp
+    ): wpt_completed_sets_aggregate!
     "An array relationship"
     wpt_workout_exercises(
         "distinct select on columns"
@@ -1690,6 +1721,8 @@ enum wpt_completed_sets_select_column {
     "column name"
     completed_workout_id
     "column name"
+    exercise_id
+    "column name"
     is_active
     "column name"
     is_archived
@@ -1781,6 +1814,8 @@ enum wpt_completed_sets_update_column {
     completed_set_id
     "column name"
     completed_workout_id
+    "column name"
+    exercise_id
     "column name"
     is_active
     "column name"
@@ -2422,6 +2457,7 @@ input wpt_completed_sets_bool_exp {
     completed_at: timestamp_comparison_exp
     completed_set_id: uuid_comparison_exp
     completed_workout_id: uuid_comparison_exp
+    exercise_id: uuid_comparison_exp
     is_active: Boolean_comparison_exp
     is_archived: Boolean_comparison_exp
     note: String_comparison_exp
@@ -2432,6 +2468,7 @@ input wpt_completed_sets_bool_exp {
     weight_adjustment: jsonb_comparison_exp
     weight_text: String_comparison_exp
     wpt_completed_workout: wpt_completed_workouts_bool_exp
+    wpt_exercise: wpt_exercises_bool_exp
     wpt_set_detail: wpt_set_details_bool_exp
 }
 
@@ -2462,6 +2499,7 @@ input wpt_completed_sets_insert_input {
     completed_at: timestamp
     completed_set_id: uuid
     completed_workout_id: uuid
+    exercise_id: uuid
     is_active: Boolean
     is_archived: Boolean
     note: String
@@ -2472,6 +2510,7 @@ input wpt_completed_sets_insert_input {
     weight_adjustment: jsonb
     weight_text: String
     wpt_completed_workout: wpt_completed_workouts_obj_rel_insert_input
+    wpt_exercise: wpt_exercises_obj_rel_insert_input
     wpt_set_detail: wpt_set_details_obj_rel_insert_input
 }
 
@@ -2480,6 +2519,7 @@ input wpt_completed_sets_max_order_by {
     completed_at: order_by
     completed_set_id: order_by
     completed_workout_id: order_by
+    exercise_id: order_by
     note: order_by
     rep_count: order_by
     rest_time_before: order_by
@@ -2493,6 +2533,7 @@ input wpt_completed_sets_min_order_by {
     completed_at: order_by
     completed_set_id: order_by
     completed_workout_id: order_by
+    exercise_id: order_by
     note: order_by
     rep_count: order_by
     rest_time_before: order_by
@@ -2513,6 +2554,7 @@ input wpt_completed_sets_order_by {
     completed_at: order_by
     completed_set_id: order_by
     completed_workout_id: order_by
+    exercise_id: order_by
     is_active: order_by
     is_archived: order_by
     note: order_by
@@ -2523,6 +2565,7 @@ input wpt_completed_sets_order_by {
     weight_adjustment: order_by
     weight_text: order_by
     wpt_completed_workout: wpt_completed_workouts_order_by
+    wpt_exercise: wpt_exercises_order_by
     wpt_set_detail: wpt_set_details_order_by
 }
 
@@ -2541,6 +2584,7 @@ input wpt_completed_sets_set_input {
     completed_at: timestamp
     completed_set_id: uuid
     completed_workout_id: uuid
+    exercise_id: uuid
     is_active: Boolean
     is_archived: Boolean
     note: String
@@ -2586,6 +2630,7 @@ input wpt_completed_sets_stream_cursor_value_input {
     completed_at: timestamp
     completed_set_id: uuid
     completed_workout_id: uuid
+    exercise_id: uuid
     is_active: Boolean
     is_archived: Boolean
     note: String
@@ -2819,6 +2864,8 @@ input wpt_exercises_bool_exp {
     name: String_comparison_exp
     note: String_comparison_exp
     user_uid: String_comparison_exp
+    wpt_completed_sets: wpt_completed_sets_bool_exp
+    wpt_completed_sets_aggregate: wpt_completed_sets_aggregate_bool_exp
     wpt_workout_exercises: wpt_workout_exercises_bool_exp
     wpt_workout_exercises_aggregate: wpt_workout_exercises_aggregate_bool_exp
 }
@@ -2830,6 +2877,7 @@ input wpt_exercises_insert_input {
     name: String
     note: String
     user_uid: String
+    wpt_completed_sets: wpt_completed_sets_arr_rel_insert_input
     wpt_workout_exercises: wpt_workout_exercises_arr_rel_insert_input
 }
 
@@ -2854,6 +2902,7 @@ input wpt_exercises_order_by {
     name: order_by
     note: order_by
     user_uid: order_by
+    wpt_completed_sets_aggregate: wpt_completed_sets_aggregate_order_by
     wpt_workout_exercises_aggregate: wpt_workout_exercises_aggregate_order_by
 }
 
