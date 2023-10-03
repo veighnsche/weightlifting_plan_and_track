@@ -1,7 +1,7 @@
 import 'exercise_model.dart';
 
 class AppWorkoutModel {
-  final int workoutId;
+  final String workoutId;
   final String name;
   final int? dayOfWeek;
   final String? note;
@@ -17,9 +17,11 @@ class AppWorkoutModel {
 
   factory AppWorkoutModel.fromMap(Map<String, dynamic> map) {
     return AppWorkoutModel(
-      workoutId: map['workoutId'],
+      workoutId: map['workout_id'],
       name: map['name'],
-      dayOfWeek: map['dayOfWeek'],
+      dayOfWeek: map['day_of_week'] == null
+          ? null
+          : int.parse(map['day_of_week'].toString()),
       note: map['note'],
       exercises: map['exercises'] != null
           ? AppExerciseModel.fromMapList(map['exercises'])
@@ -33,9 +35,9 @@ class AppWorkoutModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'workoutId': workoutId,
+      'workout_id': workoutId,
       'name': name,
-      'dayOfWeek': dayOfWeek,
+      'day_of_week': dayOfWeek,
       'note': note,
       'exercises': exercises,
     };

@@ -17,50 +17,19 @@ import 'themes/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final AuthService _authService = AuthService();
-  final InitService _initService = InitService();
-
-  User? _user;
-  Map<String, dynamic>? _initData;
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  void _init() {
-    _authService.authStateChanges.listen((user) async {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          _user = user;
-        });
-      });
-      if (user != null) {
-        var data = await _initService.init();
-
-        setState(() {
-          _initData = data;
-        });
-      }
-    });
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (context) => FunctionDefinitionProvider()),
+          create: (context) => FunctionDefinitionProvider(),
+        ),
         ChangeNotifierProvider(create: (context) => ChatProvider()),
       ],
       child: MaterialApp(
@@ -71,20 +40,36 @@ class _MyAppState extends State<MyApp> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+        supportedLocales: const [
+          Locale('nl', 'NL'),
+          Locale('en', 'US'),
+        ],
         routes: routes,
-        home: _buildHome(),
+        home: StreamBuilder<User?>(
+          stream: AuthService().authStateChanges,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const SplashScreen(splashText: "Loading...");
+            }
+            if (snapshot.data == null) {
+              return const LoginScreen();
+            }
+            return FutureBuilder<Map<String, dynamic>>(
+              future: InitService().init(),
+              builder: (context, futureSnapshot) {
+                if (futureSnapshot.connectionState == ConnectionState.waiting) {
+                  return const SplashScreen(splashText: "initializing...");
+                }
+                if (futureSnapshot.hasError) {
+                  return const Center(
+                      child: Text('Error loading initialization data.'));
+                }
+                return const AppWorkoutScreen();
+              },
+            );
+          },
+        ),
       ),
     );
-  }
-
-  Widget _buildHome() {
-    if (_user == null) {
-      return const LoginScreen();
-    } else if (_initData == null) {
-      return const SplashScreen(splashText: "initializing...");
-    } else {
-      return AppWorkoutScreen();
-    }
   }
 }

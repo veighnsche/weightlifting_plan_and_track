@@ -100,11 +100,12 @@ class WorkoutItem extends StatelessWidget {
     return Text(
       workout.name,
       style: TextStyle(
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.blueGrey[800],
       ),
-      overflow: TextOverflow.ellipsis,
+      maxLines: 1,  // Set a maximum of one line.
+      overflow: TextOverflow.ellipsis,  // Add ellipsis when overflow happens.
     );
   }
 

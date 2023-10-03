@@ -94,6 +94,7 @@
 
 - `completed_workout_id`: _uuid_ **(Primary Key)**
 - `workout_id`: _uuid_ **(Foreign Key)** Connects to a `workout_id` from `wpt_workouts`
+- `user_uid`: _string_ User who completed the workout
 - `started_at`: _timestamp_
 - `completed_at`: _timestamp_
 - `note`: _string_ **(Optional)** Natural language for the assistant about the workout (e.g. "felt good", "felt tired")

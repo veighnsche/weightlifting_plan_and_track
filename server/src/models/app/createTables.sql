@@ -6,7 +6,7 @@ CREATE TABLE wpt_workouts
     name        TEXT    NOT NULL,
     day_of_week INTEGER,
     note        TEXT,
-    is_archived BOOLEAN NOT NULL
+    is_archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- ExerciseEntity
@@ -16,7 +16,7 @@ CREATE TABLE wpt_exercises
     user_uid    TEXT    NOT NULL,
     name        TEXT    NOT NULL,
     note        TEXT,
-    is_archived BOOLEAN NOT NULL
+    is_archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- WorkoutExerciseEntity
@@ -27,7 +27,7 @@ CREATE TABLE wpt_workout_exercises
     exercise_id         UUID    NOT NULL,
     order_number        INTEGER,
     note                TEXT,
-    is_archived         BOOLEAN NOT NULL
+    is_archived         BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- SetReferenceEntity
@@ -37,7 +37,7 @@ CREATE TABLE wpt_set_references
     workout_exercise_id UUID    NOT NULL,
     order_number        INTEGER NOT NULL,
     note                TEXT,
-    is_archived         BOOLEAN NOT NULL
+    is_archived         BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- SetDetailEntity
@@ -52,7 +52,7 @@ CREATE TABLE wpt_set_details
     weight_adjustment JSONB,
     rest_time_before  INTEGER,
     note              TEXT,
-    is_archived       BOOLEAN   NOT NULL
+    is_archived       BOOLEAN   NOT NULL DEFAULT FALSE
 );
 
 -- CompletedWorkoutEntity
@@ -60,11 +60,12 @@ CREATE TABLE wpt_completed_workouts
 (
     completed_workout_id UUID PRIMARY KEY,
     workout_id           UUID      NOT NULL,
+    user_uid             TEXT      NOT NULL,
     started_at           TIMESTAMP NOT NULL,
     completed_at         TIMESTAMP,
     note                 TEXT,
     is_active            BOOLEAN   NOT NULL,
-    is_archived          BOOLEAN   NOT NULL
+    is_archived          BOOLEAN   NOT NULL DEFAULT FALSE
 );
 
 -- CompletedSetEntity
@@ -81,7 +82,7 @@ CREATE TABLE wpt_completed_sets
     rest_time_before     INTEGER,
     note                 TEXT,
     is_active            BOOLEAN   NOT NULL,
-    is_archived          BOOLEAN   NOT NULL
+    is_archived          BOOLEAN   NOT NULL DEFAULT FALSE
 );
 
 -- Add Foreign Key Constraints

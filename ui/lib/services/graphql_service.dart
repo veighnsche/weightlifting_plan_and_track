@@ -1,18 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
-
 import 'auth_service.dart';
 
 class GraphQLService {
   final AuthService _authService = AuthService();
 
-  GraphQLClient _connect() {
-    final httpLink = HttpLink('http://localhost:8080/v1/graphql');
+  GraphQLClient? _client;
 
+  GraphQLClient get client {
+    _client ??= _connect();
+    return _client!;
+  }
+
+  GraphQLClient _connect() {
     final websocketLink = WebSocketLink(
       'ws://localhost:8080/v1/graphql',
       config: SocketClientConfig(
-        autoReconnect: false,
+        autoReconnect: true,
         inactivityTimeout: const Duration(seconds: 30),
         initialPayload: () async {
           final token = await _authService.token;
@@ -25,15 +29,9 @@ class GraphQLService {
       ),
     );
 
-    final authLink = AuthLink(getToken: () async {
-      final token = await _authService.token;
-      return 'Bearer $token';
-    });
-
     final link = Link.split(
-      (request) => request.isSubscription,
+          (request) => request.isSubscription,
       websocketLink,
-      authLink.concat(httpLink),
     );
 
     return GraphQLClient(
@@ -43,10 +41,10 @@ class GraphQLService {
   }
 
   Stream<QueryResult> subscribe(SubscriptionOptions options) {
-    return _connect().subscribe(options).map((event) {
+    return client.subscribe(options).map((event) {
       if (event.hasException) {
         if (kDebugMode) {
-          print(event.exception);
+          print("GraphQL Exception: ${event.exception}");
         }
         throw event.exception!;
       }

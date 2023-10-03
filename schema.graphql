@@ -948,7 +948,7 @@ type wpt_completed_sets_variance_fields {
 
 "columns and relationships of \"wpt_completed_workouts\""
 type wpt_completed_workouts {
-    completed_at: timestamp
+    completed_at: timestamp!
     completed_workout_id: uuid!
     is_active: Boolean!
     is_archived: Boolean!
@@ -1678,7 +1678,7 @@ enum order_by {
 "unique or primary key constraints on table \"wpt_completed_sets\""
 enum wpt_completed_sets_constraint {
     "unique or primary key constraint on columns \"completed_set_id\""
-    wpt_completed_sets_pkey
+    PK_148b5f49cf45c0095693d28e6a2
 }
 
 "select columns of table \"wpt_completed_sets\""
@@ -1804,7 +1804,7 @@ enum wpt_completed_sets_update_column {
 "unique or primary key constraints on table \"wpt_completed_workouts\""
 enum wpt_completed_workouts_constraint {
     "unique or primary key constraint on columns \"completed_workout_id\""
-    wpt_completed_workouts_pkey
+    PK_ab1c2cb29a19dec7055bf093129
 }
 
 "select columns of table \"wpt_completed_workouts\""
@@ -1866,7 +1866,7 @@ enum wpt_completed_workouts_update_column {
 "unique or primary key constraints on table \"wpt_exercises\""
 enum wpt_exercises_constraint {
     "unique or primary key constraint on columns \"exercise_id\""
-    wpt_exercises_pkey
+    PK_be1e54d1c2d007ef7e17e52803a
 }
 
 "select columns of table \"wpt_exercises\""
@@ -1900,7 +1900,7 @@ enum wpt_exercises_update_column {
 "unique or primary key constraints on table \"wpt_set_details\""
 enum wpt_set_details_constraint {
     "unique or primary key constraint on columns \"set_detail_id\""
-    wpt_set_details_pkey
+    PK_b0fbcef57c93115bac7fdda7301
 }
 
 "select columns of table \"wpt_set_details\""
@@ -2014,7 +2014,7 @@ enum wpt_set_details_update_column {
 "unique or primary key constraints on table \"wpt_set_references\""
 enum wpt_set_references_constraint {
     "unique or primary key constraint on columns \"set_reference_id\""
-    wpt_set_references_pkey
+    PK_8e18870ef4d67f9672b1ece4098
 }
 
 "select columns of table \"wpt_set_references\""
@@ -2060,7 +2060,7 @@ enum wpt_set_references_update_column {
 "unique or primary key constraints on table \"wpt_workout_exercises\""
 enum wpt_workout_exercises_constraint {
     "unique or primary key constraint on columns \"workout_exercise_id\""
-    wpt_workout_exercises_pkey
+    PK_04c52a0759f4cf9974ce44e1b59
 }
 
 "select columns of table \"wpt_workout_exercises\""
@@ -2110,7 +2110,7 @@ enum wpt_workout_exercises_update_column {
 "unique or primary key constraints on table \"wpt_workouts\""
 enum wpt_workouts_constraint {
     "unique or primary key constraint on columns \"workout_id\""
-    wpt_workouts_pkey
+    PK_3beb3ecc72b6c94869ef3ac0122
 }
 
 "select columns of table \"wpt_workouts\""

@@ -3,13 +3,14 @@ import { config } from "dotenv";
 import express from "express";
 import { createServer } from "http";
 import "reflect-metadata";
-import workoutRouter from "./models/app/workouts/workoutsEvents";
+import workoutRouter from "./models/app/workouts/workoutEvents";
 import chatRouter from "./models/chat/chatEvents";
 import initRouter from "./models/init/initEvents";
 import userRouter from "./models/users/userEvents";
 
 import { authenticateRequest } from "./services/auth";
 import { connectDatabase } from "./services/database";
+import { connectDatabaseHasura } from "./services/databaseHasura";
 import { initializeFirebase } from "./services/firebase";
 import { getRateLimiter } from "./services/rateLimiter";
 
@@ -36,9 +37,12 @@ app.use(authenticateRequest);
 app.use("/init", initRouter);
 app.use("/user", userRouter);
 app.use("/chat", chatRouter);
-app.use("/workouts", workoutRouter);
+app.use("/app/workouts", workoutRouter);
 
-connectDatabase().then(() => {
+Promise.all([
+  connectDatabase(),
+  connectDatabaseHasura(),
+]).then(() => {
   httpServer.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });

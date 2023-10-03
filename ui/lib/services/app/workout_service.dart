@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
-import 'package:weightlifting_plan_and_track/models/app/screens/workout_list_screen_model.dart';
 
+import '../../models/app/screens/workout_list_screen_model.dart';
 import '../../models/app/workout_model.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
@@ -43,10 +43,15 @@ class AppWorkoutService {
       }
     """;
 
-    return _graphQLService.subscribe(
+    return _graphQLService
+        .subscribe(
       SubscriptionOptions(document: gql(getWorkoutsSubscription)),
-    ).map((QueryResult<Object?> queryResult) {
+    )
+        .map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
+        if (kDebugMode) {
+          print(queryResult.exception);
+        }
         throw queryResult.exception!;
       }
 
@@ -63,14 +68,21 @@ class AppWorkoutService {
         },
       );
 
+      print(response.statusCode);
+      print(json.decode(response.body));
+
       if (response.statusCode == 200) {
         return AppWorkoutModel.fromMap(json.decode(response.body)['workout']);
       } else {
+        if (kDebugMode) {
+          print("error ${response.statusCode} ${response.body}");
+        }
         throw Exception('Failed to upsert workout');
       }
     } catch (error) {
       if (kDebugMode) {
-        print(error);
+        // explain where we are when the error occurs
+        print("error $error, ${StackTrace.current}");
       }
     }
     return null;

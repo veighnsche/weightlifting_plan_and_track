@@ -44,8 +44,6 @@ router.post("/settings", async (req: AuthRequest<{ settings: Record<string, stri
   const { settings } = req.body;
   const { uid } = req.user!;
 
-  console.log("settings", settings)
-
   if (!settings) {
     return res.status(400).send("Settings not found.");
   }
