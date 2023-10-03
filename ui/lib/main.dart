@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'providers/chat_provider.dart';
 import 'providers/function_definition_provider.dart';
 import 'routes.dart';
-import 'screens/app/workout_screen.dart';
+import 'screens/app/workout_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/splash_screen.dart';
 import 'services/auth_service.dart';
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
                   return const Center(
                       child: Text('Error loading initialization data.'));
                 }
-                return const AppWorkoutScreen();
+                return const AppWorkoutListScreen();
               },
             );
           },

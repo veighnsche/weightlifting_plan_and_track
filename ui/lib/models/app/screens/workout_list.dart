@@ -1,12 +1,12 @@
-class WorkoutListScreenModel {
-  final List<WorkoutListScreenWorkoutModel> workouts;
+class ScrWorkoutList {
+  final List<ScrWorkoutItem> workouts;
 
-  WorkoutListScreenModel({required this.workouts});
+  ScrWorkoutList({required this.workouts});
 
-  factory WorkoutListScreenModel.fromJson(Map<String, dynamic> json) {
-    return WorkoutListScreenModel(
+  factory ScrWorkoutList.fromJson(Map<String, dynamic> json) {
+    return ScrWorkoutList(
       workouts: (json['wpt_workouts'] as List)
-          .map((data) => WorkoutListScreenWorkoutModel.fromJson(data))
+          .map((data) => ScrWorkoutItem.fromJson(data))
           .toList(),
     );
   }
@@ -14,16 +14,16 @@ class WorkoutListScreenModel {
   bool get isEmpty => workouts.isEmpty;
 }
 
-class WorkoutListScreenWorkoutModel {
+class ScrWorkoutItem {
   final String workoutId;
   final String name;
   final int? dayOfWeek;
   final String? note;
-  final List<WorkoutListScreenExerciseModel> exercises;
+  final List<ScrExerciseItem> exercises;
   final int totalExercises;
   final int totalSets;
 
-  WorkoutListScreenWorkoutModel({
+  ScrWorkoutItem({
     required this.workoutId,
     required this.name,
     this.dayOfWeek,
@@ -33,7 +33,7 @@ class WorkoutListScreenWorkoutModel {
     required this.totalSets,
   });
 
-  factory WorkoutListScreenWorkoutModel.fromJson(Map<String, dynamic> json) {
+  factory ScrWorkoutItem.fromJson(Map<String, dynamic> json) {
     int getTotalCount(Map<String, dynamic> json, String key) {
       var value = json[key];
       if (value is List && value.isEmpty) {
@@ -43,13 +43,13 @@ class WorkoutListScreenWorkoutModel {
       }
     }
 
-    return WorkoutListScreenWorkoutModel(
+    return ScrWorkoutItem(
       workoutId: json['workout_id'],
       name: json['name'],
       dayOfWeek: json['day_of_week'],
       note: json['note'],
       exercises: (json['wpt_workout_exercises'] as List)
-          .map((data) => WorkoutListScreenExerciseModel.fromJson(data))
+          .map((data) => ScrExerciseItem.fromJson(data))
           .toList(),
       totalExercises: getTotalCount(json, 'totalExercises'),
       totalSets: getTotalCount(json, 'totalSets'),
@@ -58,12 +58,12 @@ class WorkoutListScreenWorkoutModel {
 
 }
 
-class WorkoutListScreenExerciseModel {
+class ScrExerciseItem {
   final String name;
 
-  WorkoutListScreenExerciseModel({required this.name});
+  ScrExerciseItem({required this.name});
 
-  factory WorkoutListScreenExerciseModel.fromJson(Map<String, dynamic> json) {
-    return WorkoutListScreenExerciseModel(name: json['exercise']['name']);
+  factory ScrExerciseItem.fromJson(Map<String, dynamic> json) {
+    return ScrExerciseItem(name: json['exercise']['name']);
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/models/app/screens/workout_list_screen_model.dart';
+import 'package:weightlifting_plan_and_track/models/app/screens/workout_list.dart';
 
 class WorkoutItem extends StatelessWidget {
-  final WorkoutListScreenWorkoutModel workout;
+  final ScrWorkoutItem workout;
 
   const WorkoutItem({super.key, required this.workout});
 

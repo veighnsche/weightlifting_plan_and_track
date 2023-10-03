@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 import '../../animations/card_animation.dart';
 import '../../core/app_shell.dart';
-import '../../models/app/screens/workout_list_screen_model.dart';
+import '../../models/app/screens/workout_list.dart';
 import '../../services/app/workout_service.dart';
 import '../../widgets/app/workout_item.dart';
 
-class AppWorkoutScreen extends StatelessWidget {
-  const AppWorkoutScreen({super.key});
+class AppWorkoutListScreen extends StatelessWidget {
+  const AppWorkoutListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class AppWorkoutScreen extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return StreamBuilder<WorkoutListScreenModel>(
+    return StreamBuilder<ScrWorkoutList>(
       stream: AppWorkoutService().subscribeToWorkouts(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -47,13 +47,13 @@ class AppWorkoutScreen extends StatelessWidget {
           return const Center(child: Text('No workouts available'));
         }
 
-        final WorkoutListScreenModel workoutListScreenModel = snapshot.data!;
+        final ScrWorkoutList workoutListScreenModel = snapshot.data!;
         return _buildWorkoutsList(workoutListScreenModel.workouts);
       },
     );
   }
 
-  Widget _buildWorkoutsList(List<WorkoutListScreenWorkoutModel> workouts) {
+  Widget _buildWorkoutsList(List<ScrWorkoutItem> workouts) {
     return ListView.builder(
       itemCount: workouts.length,
       addAutomaticKeepAlives: true,

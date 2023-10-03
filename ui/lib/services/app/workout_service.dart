@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/screens/workout_list_screen_model.dart';
+import '../../models/app/screens/workout_list.dart';
 import '../../models/app/workout_model.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
@@ -13,7 +13,7 @@ class AppWorkoutService {
   final ApiService _apiService = ApiService();
   final GraphQLService _graphQLService = GraphQLService();
 
-  Stream<WorkoutListScreenModel> subscribeToWorkouts() {
+  Stream<ScrWorkoutList> subscribeToWorkouts() {
     // language=GraphQL
     const String getWorkoutsSubscription = r"""
       subscription GetWorkouts {
@@ -55,7 +55,7 @@ class AppWorkoutService {
         throw queryResult.exception!;
       }
 
-      return WorkoutListScreenModel.fromJson(queryResult.data!);
+      return ScrWorkoutList.fromJson(queryResult.data!);
     });
   }
 
