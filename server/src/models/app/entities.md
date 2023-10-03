@@ -234,6 +234,7 @@ Each exercise is represented by a card with the following details:
 - Exercise name
 - Note (if applicable)
 - Names of the workouts that the exercise is in and the day of the week (if applicable)
+- The personal record for the exercise
 
 ### Query
 
