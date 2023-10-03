@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../animations/card_animation.dart';
 import '../../core/app_shell.dart';
+import '../../models/app/screens/exercise_list.dart';
+import '../../services/app/exercise_service.dart';
+import '../../widgets/app/exercise_card.dart';
 
 class AppExerciseListScreen extends StatelessWidget {
   const AppExerciseListScreen({super.key});
@@ -26,8 +29,8 @@ class AppExerciseListScreen extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return StreamBuilder<ScrExerciseList>(
-      stream: AppExerciseService().subscribeToExercises(),
+    return StreamBuilder<Scr2ExerciseList>(
+      stream: AppExerciseService().subscribeToExerciseListScreen(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -44,13 +47,13 @@ class AppExerciseListScreen extends StatelessWidget {
           return const Center(child: Text('No exercises available'));
         }
 
-        final ScrExerciseList exerciseListScreenModel = snapshot.data!;
+        final Scr2ExerciseList exerciseListScreenModel = snapshot.data!;
         return _buildExercisesList(exerciseListScreenModel.exercises);
       },
     );
   }
 
-  Widget _buildExercisesList(List<ScrExerciseItem> exercises) {
+  Widget _buildExercisesList(List<Scr2ExerciseItem> exercises) {
     return ListView.builder(
       itemCount: exercises.length,
       addAutomaticKeepAlives: true,
@@ -58,7 +61,7 @@ class AppExerciseListScreen extends StatelessWidget {
         return CardAnimation(
           duration: const Duration(milliseconds: 400),
           delay: Duration(milliseconds: 100 * index),
-          child: ExerciseItem(exercise: exercises[index]),
+          child: ExerciseCard(exercise: exercises[index]),
         );
       },
     );

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:weightlifting_plan_and_track/models/app/screens/workout_list.dart';
 
-class WorkoutItem extends StatelessWidget {
-  final ScrWorkoutItem workout;
+class WorkoutCard extends StatelessWidget {
+  final Scr1WorkoutItem workout;
 
-  const WorkoutItem({super.key, required this.workout});
+  const WorkoutCard({super.key, required this.workout});
 
   static const days = [
     'Monday',
@@ -184,27 +184,30 @@ class WorkoutItem extends StatelessWidget {
   }
 
   Widget _buildNoExercisesText() {
-    return Row(
-      children: [
-        Icon(
-          Icons.add_circle_outline,
-          color: Colors.blueGrey[700],
-          size: 18.0,
-        ),
-        const SizedBox(width: 8.0),
-        Expanded(
-          child: Text(
-            'No exercises added yet. Tap to add!',
-            style: TextStyle(
-              color: Colors.blueGrey[700],
-              fontWeight: FontWeight.bold,  // Bold font weight
-            ),
-            overflow: TextOverflow.ellipsis,
+    return Opacity(
+      opacity: 0.5, // You can adjust the opacity value as needed (0.0 to 1.0)
+      child: Row(
+        children: [
+          Icon(
+            Icons.add_circle_outline,
+            color: Colors.blueGrey[700],
+            size: 18.0,
           ),
-        ),
-      ],
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: Text(
+              'No exercises added yet. Tap to add!',
+              style: TextStyle(
+                color: Colors.blueGrey[700],
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
+
 
 }
 

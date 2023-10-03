@@ -5,7 +5,7 @@ import '../../animations/card_animation.dart';
 import '../../core/app_shell.dart';
 import '../../models/app/screens/workout_list.dart';
 import '../../services/app/workout_service.dart';
-import '../../widgets/app/workout_item.dart';
+import '../../widgets/app/workout_card.dart';
 
 class AppWorkoutListScreen extends StatelessWidget {
   const AppWorkoutListScreen({super.key});
@@ -29,8 +29,8 @@ class AppWorkoutListScreen extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return StreamBuilder<ScrWorkoutList>(
-      stream: AppWorkoutService().subscribeToWorkouts(),
+    return StreamBuilder<Scr1WorkoutList>(
+      stream: AppWorkoutService().subscribeToWorkoutListScreen(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -47,13 +47,13 @@ class AppWorkoutListScreen extends StatelessWidget {
           return const Center(child: Text('No workouts available'));
         }
 
-        final ScrWorkoutList workoutListScreenModel = snapshot.data!;
+        final Scr1WorkoutList workoutListScreenModel = snapshot.data!;
         return _buildWorkoutsList(workoutListScreenModel.workouts);
       },
     );
   }
 
-  Widget _buildWorkoutsList(List<ScrWorkoutItem> workouts) {
+  Widget _buildWorkoutsList(List<Scr1WorkoutItem> workouts) {
     return ListView.builder(
       itemCount: workouts.length,
       addAutomaticKeepAlives: true,
@@ -61,7 +61,7 @@ class AppWorkoutListScreen extends StatelessWidget {
         return CardAnimation(
           duration: const Duration(milliseconds: 400),
           delay: Duration(milliseconds: 100 * index),
-          child: WorkoutItem(workout: workouts[index]),
+          child: WorkoutCard(workout: workouts[index]),
         );
       },
     );

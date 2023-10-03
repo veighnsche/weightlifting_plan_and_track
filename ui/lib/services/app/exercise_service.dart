@@ -1,41 +1,40 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/screens/workout_list.dart';
-import '../../models/app/workout_model.dart';
+import '../../models/app/exercise_model.dart';
+import '../../models/app/screens/exercise_list.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
 
-class AppWorkoutService {
+class AppExerciseService {
   final ApiService _apiService = ApiService();
   final GraphQLService _graphQLService = GraphQLService();
 
-  Stream<Scr1WorkoutList> subscribeToWorkoutListScreen() {
+  Stream<Scr2ExerciseList> subscribeToExerciseListScreen() {
     // language=GraphQL
-    const String getWorkoutsSubscription = r"""
-      subscription GetWorkouts {
-        wpt_workouts {
-          workout_id
+    const String getExercisesSubscription = r"""
+      subscription GetExercises {
+        wpt_exercises {
+          exercise_id
           name
-          day_of_week
           note
-          wpt_workout_exercises(limit: 3) {
-            wpt_exercise {
+          workouts: wpt_workout_exercises {
+            wpt_workout {
               name
+              day_of_week
+            }
+            wpt_set_references(limit: 1, order_by: {wpt_set_details_aggregate: {max: {weight: desc}}}) {
+              wpt_set_details(order_by: {created_at: desc}, limit: 1) {
+                workingWeight: weight
+              }
             }
           }
-          totalExercises: wpt_workout_exercises_aggregate {
+          wpt_completed_sets_aggregate {
             aggregate {
-              count
-            }
-          }
-          totalSets: wpt_workout_exercises {
-            wpt_set_references_aggregate {
-              aggregate {
-                count
+              max {
+                personalRecord: weight
               }
             }
           }
@@ -46,7 +45,7 @@ class AppWorkoutService {
 
     return _graphQLService
         .subscribe(
-      SubscriptionOptions(document: gql(getWorkoutsSubscription)),
+      SubscriptionOptions(document: gql(getExercisesSubscription)),
     )
         .map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
@@ -56,16 +55,16 @@ class AppWorkoutService {
         throw queryResult.exception!;
       }
 
-      return Scr1WorkoutList.fromJson(queryResult.data!);
+      return Scr2ExerciseList.fromJson(queryResult.data!);
     });
   }
 
-  Future<AppWorkoutModel?> upsert(Map<String, dynamic> workout) async {
+  Future<AppExerciseModel?> upsert(Map<String, dynamic> exercise) async {
     try {
       final response = await _apiService.post(
-        'http://localhost:3000/app/workouts',
+        'http://localhost:3000/app/exercises',
         {
-          'workout': workout,
+          'exercise': exercise,
         },
       );
 
@@ -73,12 +72,12 @@ class AppWorkoutService {
       print(json.decode(response.body));
 
       if (response.statusCode == 200) {
-        return AppWorkoutModel.fromMap(json.decode(response.body)['workout']);
+        return AppExerciseModel.fromMap(json.decode(response.body)['exercise']);
       } else {
         if (kDebugMode) {
           print("error ${response.statusCode} ${response.body}");
         }
-        throw Exception('Failed to upsert workout');
+        throw Exception('Failed to upsert exercise');
       }
     } catch (error) {
       if (kDebugMode) {

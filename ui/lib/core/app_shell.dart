@@ -12,7 +12,6 @@ class AppShell extends StatefulWidget {
   final List<Widget> actions;
   final bool showBottomNavigationBar;
   final bool showFab;
-  final bool showChat;
   final PreferredSizeWidget? bottomWidget;
 
   const AppShell({
@@ -22,7 +21,6 @@ class AppShell extends StatefulWidget {
     this.actions = const [],
     this.showBottomNavigationBar = false,
     this.showFab = false,
-    this.showChat = false,
     this.bottomWidget,
   });
 
@@ -35,10 +33,7 @@ class _AppShellState extends State<AppShell> {
   bool _isBottomSheetOpen = false;
 
   void _showBottomSheet() {
-    final currentRoute = ModalRoute
-        .of(context)
-        ?.settings
-        .name;
+    final currentRoute = ModalRoute.of(context)?.settings.name;
     Map<String, String> routeNames = {
       '/app/workouts': 'Chatting about workouts',
       '/app/exercises': 'Chatting about exercises',
@@ -52,15 +47,15 @@ class _AppShellState extends State<AppShell> {
 
     _scaffoldKey.currentState!
         .showBottomSheet((context) {
-      return const ChatSheet();
-    })
+          return const ChatSheet();
+        })
         .closed
         .then((value) {
-      // This callback is called when the bottom sheet is closed
-      setState(() {
-        _isBottomSheetOpen = false;
-      });
-    });
+          // This callback is called when the bottom sheet is closed
+          setState(() {
+            _isBottomSheetOpen = false;
+          });
+        });
 
     // Update the state to reflect that the bottom sheet is open
     setState(() {
@@ -84,9 +79,9 @@ class _AppShellState extends State<AppShell> {
           : null,
       floatingActionButton: !_isBottomSheetOpen && widget.showFab
           ? FloatingActionButton(
-        onPressed: () => _showBottomSheet(),
-        child: const Icon(Icons.chat),
-      )
+              onPressed: () => _showBottomSheet(),
+              child: const Icon(Icons.chat),
+            )
           : null,
     );
   }

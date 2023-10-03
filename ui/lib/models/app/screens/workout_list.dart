@@ -1,11 +1,11 @@
-class ScrWorkoutList {
-  final List<ScrWorkoutItem> workouts;
+class Scr1WorkoutList {
+  final List<Scr1WorkoutItem> workouts;
 
-  ScrWorkoutList({required this.workouts});
+  Scr1WorkoutList({required this.workouts});
 
-  factory ScrWorkoutList.fromJson(Map<String, dynamic> json) {
-    List<ScrWorkoutItem> unsortedWorkouts = (json['wpt_workouts'] as List)
-        .map((data) => ScrWorkoutItem.fromJson(data))
+  factory Scr1WorkoutList.fromJson(Map<String, dynamic> json) {
+    List<Scr1WorkoutItem> unsortedWorkouts = (json['wpt_workouts'] as List)
+        .map((data) => Scr1WorkoutItem.fromJson(data))
         .toList();
 
     int today = DateTime.now().weekday - 1; // 0 = Monday, 6 = Sunday
@@ -35,22 +35,22 @@ class ScrWorkoutList {
       return a.dayOfWeek!.compareTo(b.dayOfWeek!);
     });
 
-    return ScrWorkoutList(workouts: unsortedWorkouts);
+    return Scr1WorkoutList(workouts: unsortedWorkouts);
   }
 
   bool get isEmpty => workouts.isEmpty;
 }
 
-class ScrWorkoutItem {
+class Scr1WorkoutItem {
   final String workoutId;
   final String name;
   final int? dayOfWeek;
   final String? note;
-  final List<ScrExerciseItem> exercises;
+  final List<Scr1ExerciseItem> exercises;
   final int totalExercises;
   final int totalSets;
 
-  ScrWorkoutItem({
+  Scr1WorkoutItem({
     required this.workoutId,
     required this.name,
     this.dayOfWeek,
@@ -60,7 +60,7 @@ class ScrWorkoutItem {
     required this.totalSets,
   });
 
-  factory ScrWorkoutItem.fromJson(Map<String, dynamic> json) {
+  factory Scr1WorkoutItem.fromJson(Map<String, dynamic> json) {
     int getTotalCount(Map<String, dynamic> json, String key) {
       var value = json[key];
       if (value is List) {
@@ -73,13 +73,13 @@ class ScrWorkoutItem {
     }
 
 
-    return ScrWorkoutItem(
+    return Scr1WorkoutItem(
       workoutId: json['workout_id'],
       name: json['name'],
       dayOfWeek: json['day_of_week'],
       note: json['note'],
       exercises: (json['wpt_workout_exercises'] as List)
-          .map((data) => ScrExerciseItem.fromJson(data))
+          .map((data) => Scr1ExerciseItem.fromJson(data))
           .toList(),
       totalExercises: getTotalCount(json, 'totalExercises'),
       totalSets: getTotalCount(json, 'totalSets'),
@@ -88,17 +88,17 @@ class ScrWorkoutItem {
 
 }
 
-class ScrExerciseItem {
+class Scr1ExerciseItem {
   final String name;
 
-  ScrExerciseItem({required this.name});
+  Scr1ExerciseItem({required this.name});
 
-  factory ScrExerciseItem.fromJson(Map<String, dynamic> json) {
+  factory Scr1ExerciseItem.fromJson(Map<String, dynamic> json) {
     print("ScrExerciseItem.fromJson: $json");
 
     var exercise = json['wpt_exercise'];
     if (exercise != null && exercise is Map) {
-      return ScrExerciseItem(name: exercise['name'] ?? '');
+      return Scr1ExerciseItem(name: exercise['name'] ?? '');
     } else {
       // You might want to return a default value or throw a specific error here.
       throw Exception('Exercise data is not properly formatted.');

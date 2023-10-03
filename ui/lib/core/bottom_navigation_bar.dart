@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class AppBottomNavigationBar extends StatelessWidget {
-  const AppBottomNavigationBar({Key? key}) : super(key: key);
+class AppBottomNavigationBar extends StatefulWidget {
+  const AppBottomNavigationBar({super.key});
+
+  @override
+  _AppBottomNavigationBarState createState() => _AppBottomNavigationBarState();
+}
+
+class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
+  int _selectedIndex = 0; // default index is 0
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +20,8 @@ class AppBottomNavigationBar extends StatelessWidget {
       showSelectedLabels: true,
       showUnselectedLabels: true,
       elevation: 0,
+      currentIndex: _selectedIndex,
+      // set currentIndex to _selectedIndex
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.directions_run),
@@ -40,6 +49,11 @@ class AppBottomNavigationBar extends StatelessWidget {
             Navigator.pushReplacementNamed(context, routes[index]);
           }
         }
+
+        setState(() {
+          // update the state when a new index is tapped
+          _selectedIndex = index;
+        });
       },
     );
   }

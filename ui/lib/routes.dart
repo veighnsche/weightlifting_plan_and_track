@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'screens/app/exercise_list_screen.dart';
 import 'screens/app/workout_form_screen.dart';
 import 'screens/app/workout_list_screen.dart';
 import 'screens/chat_screen.dart';
@@ -16,4 +17,5 @@ Map<String, Widget Function(BuildContext)> routes = {
   '/user/edit': (context) => UserDetailsEditScreen(),
   '/app/workouts': (context) => const AppWorkoutListScreen(),
   '/app/workouts/create': (context) => const AppWorkoutFormScreen(),
+  '/app/exercises': (context) => const AppExerciseListScreen(),
 };

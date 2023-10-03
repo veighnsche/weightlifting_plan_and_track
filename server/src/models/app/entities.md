@@ -266,6 +266,41 @@ subscription GetExercises {
 }
 ```
 
+### Desired Result
+
+```json
+{
+  "exercises": [
+    {
+      "exercise_id": "1ccaddfe-cd0e-4818-a79d-e00c3cc90dc7",
+      "name": "Squat",
+      "note": "Back squats",
+      "workouts": [
+        {
+          "name": "Legs - Quads",
+          "day_of_week": 0,
+          "workingWeight": 60
+        }
+      ],
+      "personalRecord": null
+    },
+    {
+      "exercise_id": "ca196e2a-96ba-465b-8e3c-c7e9544eeb75",
+      "name": "Leg press",
+      "note": "Machine with plates",
+      "workouts": [
+        {
+          "name": "Legs - Quads",
+          "day_of_week": 0,
+          "workingWeight": 120
+        }
+      ],
+      "personalRecord": 140
+    }
+  ]
+}
+```
+
 ## 2.1. Exercise details Screen
 
 ### Overview
