@@ -3,11 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:weightlifting_plan_and_track/screens/app/app_screen.dart';
 
 import 'providers/chat_provider.dart';
 import 'providers/function_definition_provider.dart';
 import 'routes.dart';
-import 'screens/app/workout_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/splash_screen.dart';
 import 'services/auth_service.dart';
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
                   return const Center(
                       child: Text('Error loading initialization data.'));
                 }
-                return const AppWorkoutListScreen();
+                return const AppScreen();
               },
             );
           },

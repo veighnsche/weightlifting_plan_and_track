@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../core/app_shell.dart';
+import '../core/chat_shell.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/chat_widget.dart';
 
@@ -14,7 +14,7 @@ class ChatScreen extends StatelessWidget {
       builder: (context, chatProvider, _) {
         final chatName = chatProvider.name;
 
-        return AppShell(
+        return ChatShell(
           title: chatName,
           actions: [
             IconButton(

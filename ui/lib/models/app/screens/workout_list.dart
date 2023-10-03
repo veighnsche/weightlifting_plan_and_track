@@ -12,7 +12,8 @@ class Scr1WorkoutList {
 
     unsortedWorkouts.sort((a, b) {
       // Both are today's workouts or both don't have a dayOfWeek
-      if ((a.dayOfWeek == today && b.dayOfWeek == today) || (a.dayOfWeek == null && b.dayOfWeek == null)) {
+      if ((a.dayOfWeek == today && b.dayOfWeek == today) ||
+          (a.dayOfWeek == null && b.dayOfWeek == null)) {
         return 0;
       }
       // 'a' is today's workout
@@ -64,14 +65,15 @@ class Scr1WorkoutItem {
     int getTotalCount(Map<String, dynamic> json, String key) {
       var value = json[key];
       if (value is List) {
-        return value.isEmpty ? 0 : value.length; // Assuming you want the length of the list
+        return value.isEmpty
+            ? 0
+            : value.length; // Assuming you want the length of the list
       } else if (value is Map && value['aggregate'] != null) {
         return value['aggregate']['count'];
       } else {
         throw Exception('Unexpected data format for key: $key');
       }
     }
-
 
     return Scr1WorkoutItem(
       workoutId: json['workout_id'],
@@ -85,7 +87,6 @@ class Scr1WorkoutItem {
       totalSets: getTotalCount(json, 'totalSets'),
     );
   }
-
 }
 
 class Scr1ExerciseItem {
@@ -94,8 +95,6 @@ class Scr1ExerciseItem {
   Scr1ExerciseItem({required this.name});
 
   factory Scr1ExerciseItem.fromJson(Map<String, dynamic> json) {
-    print("ScrExerciseItem.fromJson: $json");
-
     var exercise = json['wpt_exercise'];
     if (exercise != null && exercise is Map) {
       return Scr1ExerciseItem(name: exercise['name'] ?? '');

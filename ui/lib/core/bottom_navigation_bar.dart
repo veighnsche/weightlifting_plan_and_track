@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class AppBottomNavigationBar extends StatefulWidget {
-  const AppBottomNavigationBar({super.key});
+class AppBottomNavigationBar extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onItemSelected;
 
-  @override
-  _AppBottomNavigationBarState createState() => _AppBottomNavigationBarState();
-}
-
-class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
-  int _selectedIndex = 0; // default index is 0
+  const AppBottomNavigationBar({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
       showSelectedLabels: true,
       showUnselectedLabels: true,
       elevation: 0,
-      currentIndex: _selectedIndex,
+      currentIndex: selectedIndex,
       // set currentIndex to _selectedIndex
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
@@ -37,23 +37,9 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
         ),
       ],
       onTap: (index) {
-        final routes = [
-          '/app/workouts',
-          '/app/exercises',
-          '/app/completed',
-        ];
-
-        if (index < routes.length) {
-          String currentRoute = ModalRoute.of(context)?.settings.name ?? '';
-          if (currentRoute != routes[index]) {
-            Navigator.pushReplacementNamed(context, routes[index]);
-          }
+        if (index != selectedIndex) {
+          onItemSelected(index);
         }
-
-        setState(() {
-          // update the state when a new index is tapped
-          _selectedIndex = index;
-        });
       },
     );
   }

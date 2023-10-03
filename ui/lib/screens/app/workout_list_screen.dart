@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../animations/card_animation.dart';
-import '../../core/app_shell.dart';
 import '../../models/app/screens/workout_list.dart';
 import '../../services/app/workout_service.dart';
 import '../../widgets/app/workout_card.dart';
@@ -12,23 +11,6 @@ class AppWorkoutListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppShell(
-      title: 'Workouts',
-      showBottomNavigationBar: true,
-      showFab: true,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () async {
-            await Navigator.pushNamed(context, '/app/workouts/create');
-          },
-        ),
-      ],
-      body: _buildBody(),
-    );
-  }
-
-  Widget _buildBody() {
     return StreamBuilder<Scr1WorkoutList>(
       stream: AppWorkoutService().subscribeToWorkoutListScreen(),
       builder: (context, snapshot) {
