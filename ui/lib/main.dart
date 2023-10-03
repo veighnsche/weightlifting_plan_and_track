@@ -13,6 +13,7 @@ import 'screens/splash_screen.dart';
 import 'services/auth_service.dart';
 import 'services/init_service.dart';
 import 'themes/theme.dart';
+import 'themes/theme_dark.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Weightlifting Plan & Track',
         theme: chatAppTheme,
+        darkTheme: chatAppThemeDark,
+        themeMode: ThemeMode.system,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -62,7 +65,8 @@ class MyApp extends StatelessWidget {
                 }
                 if (futureSnapshot.hasError) {
                   return const Center(
-                      child: Text('Error loading initialization data.'));
+                    child: Text('Error loading initialization data.'),
+                  );
                 }
                 return const AppScreen();
               },

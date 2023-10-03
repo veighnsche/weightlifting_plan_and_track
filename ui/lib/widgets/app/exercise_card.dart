@@ -94,7 +94,7 @@ class ExerciseCard extends StatelessWidget {
         ),
         const SizedBox(width: 6.0),
         Text(
-          'PR: ${exercise.personalRecord}',
+          '${exercise.personalRecord}kg',
           style: TextStyle(color: Colors.blueGrey[600]),
         ),
       ],
