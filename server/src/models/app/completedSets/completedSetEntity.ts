@@ -8,11 +8,11 @@ export class CompletedSetEntity {
   @PrimaryGeneratedColumn("uuid")
   completed_set_id!: string;
 
-  @Column()
-  completed_workout_id!: string;
+  @Column({ nullable: true })
+  completed_workout_id?: string;
 
-  @Column()
-  set_detail_id!: string;
+  @Column({ nullable: true })
+  set_detail_id?: string;
 
   @Column()
   exercise_id!: string;
@@ -44,13 +44,17 @@ export class CompletedSetEntity {
   @Column({ default: false })
   is_archived!: boolean;
 
-  @ManyToOne(() => CompletedWorkoutEntity, completedWorkout => completedWorkout.completedSets)
+  @ManyToOne(() => CompletedWorkoutEntity, completedWorkout => completedWorkout.completedSets, {
+    nullable: true
+  })
   @JoinColumn({ name: "completed_workout_id" })
-  completedWorkout!: CompletedWorkoutEntity;
+  completedWorkout?: CompletedWorkoutEntity;
 
-  @ManyToOne(() => SetDetailEntity, setDetail => setDetail.completedSets)
+  @ManyToOne(() => SetDetailEntity, setDetail => setDetail.completedSets, {
+    nullable: true
+  })
   @JoinColumn({ name: "set_detail_id" })
-  setDetail!: SetDetailEntity;
+  setDetail?: SetDetailEntity;
 
   @ManyToOne(() => ExerciseEntity, exercise => exercise.completedSets, {
     nullable: true
