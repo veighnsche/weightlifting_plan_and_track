@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weightlifting_plan_and_track/services/app/workout_service.dart';
 
-import '../../models/app/workout_model.dart';
 import '../../widgets/app/workout_form.dart';
 
 class AppWorkoutFormScreen extends StatefulWidget {
@@ -14,9 +13,12 @@ class AppWorkoutFormScreen extends StatefulWidget {
 class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
   final AppWorkoutService _appWorkoutService = AppWorkoutService();
 
-  void _onFormSubmit(AppWorkoutModel workout) {
+  void _onSubmitted(bool ok) {
+    if (!ok) {
+      return;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context).pop(workout);
+      Navigator.of(context).pop(ok);
     });
   }
 
@@ -30,7 +32,7 @@ class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Material(
           child: AppWorkoutForm(
-            onFormSubmit: _onFormSubmit,
+            onSubmitted: _onSubmitted,
             appWorkoutService: _appWorkoutService,
           ),
         ),

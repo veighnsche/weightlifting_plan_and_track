@@ -54,11 +54,19 @@ class Scr2WorkoutItem {
   });
 
   factory Scr2WorkoutItem.fromJson(Map<String, dynamic> json) {
+    int? workingWeight;
+
+    if (json['wpt_set_references'] != null &&
+        json['wpt_set_references'].isNotEmpty &&
+        json['wpt_set_references'][0]['wpt_set_details'] != null &&
+        json['wpt_set_references'][0]['wpt_set_details'].isNotEmpty) {
+      workingWeight = json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
+    }
+
     return Scr2WorkoutItem(
       name: json['wpt_workout']['name'],
       dayOfWeek: json['wpt_workout']['day_of_week'],
-      workingWeight: json['wpt_set_references'][0]?['wpt_set_details'][0]
-          ?['workingWeight'],
+      workingWeight: workingWeight,
     );
   }
 }

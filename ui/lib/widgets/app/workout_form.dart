@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../models/app/workout_model.dart';
 import '../../services/app/workout_service.dart';
 import '../../themes/input_decorations.dart';
 
 class AppWorkoutForm extends StatefulWidget {
-  final Function(AppWorkoutModel) onFormSubmit;
+  final Function(bool ok) onSubmitted;
   final AppWorkoutService appWorkoutService;
 
   const AppWorkoutForm({
     super.key,
-    required this.onFormSubmit,
+    required this.onSubmitted,
     required this.appWorkoutService,
   });
 
@@ -41,11 +40,11 @@ class _AppWorkoutFormState extends State<AppWorkoutForm> {
       'note': _noteController.text,
     };
 
-    final AppWorkoutModel? workout =
+    final bool ok =
         await widget.appWorkoutService.upsert(data);
 
-    if (workout != null) {
-      widget.onFormSubmit(workout);
+    if (ok) {
+      widget.onSubmitted(true);
     }
   }
 

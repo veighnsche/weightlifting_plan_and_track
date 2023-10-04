@@ -108,8 +108,8 @@
 ### Overview`wpt_completed_sets`
 
 - `completed_set_id`: _uuid_ **(Primary Key)**
-- `completed_workout_id`: _uuid_ **(Foreign Key)** Connects to a `completed_workout_id` from `wpt_completed_workouts`
-- `set_detail_id`: _uuid_ **(Foreign Key)** Connects to a `set_detail_id` from `wpt_set_details`
+- `completed_workout_id`: _uuid_ **(Foreign Key, Optional)** Connects to a `completed_workout_id` from `wpt_completed_workouts`
+- `set_detail_id`: _uuid_ **(Foreign Key, Optional)** Connects to a `set_detail_id` from `wpt_set_details`
 - `exercise_id`: _uuid_ **(Foreign Key)** Connects to an `exercise_id` from `wpt_exercises`
 - `completed_at`: _timestamp_
 - `rep_count`: _number_ **(Optional)** Actual reps done
@@ -153,19 +153,127 @@ subscription GetWorkouts {
         name
       }
     }
-    totalExercises: wpt_workout_exercises_aggregate {
+    wpt_workout_exercises_aggregate {
       aggregate {
-        count
+        totalExercises: count
       }
     }
-    totalSets: wpt_workout_exercises {
+    totalSetsAggragate: wpt_workout_exercises {
       wpt_set_references_aggregate {
         aggregate {
-          count
+          totalSets: count
         }
       }
     }
   }
+}
+```
+
+### Actual Result
+
+```json
+{
+  "data": {
+    "wpt_workouts": [
+      {
+        "workout_id": "c14bf452-e606-4e99-a83c-590d3536c54b",
+        "name": "Chest",
+        "day_of_week": 6,
+        "note": "Chest workout",
+        "wpt_workout_exercises": [
+          {
+            "wpt_exercise": {
+              "name": "Bench Press"
+            }
+          },
+          {
+            "wpt_exercise": {
+              "name": "Inclined Dumbbell Bench Press"
+            }
+          },
+          {
+            "wpt_exercise": {
+              "name": "Lateral Pull-down"
+            }
+          }
+        ],
+        "wpt_workout_exercises_aggregate": {
+          "aggregate": {
+            "totalExercises": 7
+          }
+        },
+        "totalSetsAggragate": [
+          {
+            "wpt_set_references_aggregate": {
+              "aggregate": {
+                "totalSets": 5
+              }
+            }
+          },
+          {
+            "wpt_set_references_aggregate": {
+              "aggregate": {
+                "totalSets": 5
+              }
+            }
+          },
+          {
+            "wpt_set_references_aggregate": {
+              "aggregate": {
+                "totalSets": 3
+              }
+            }
+          },
+          {
+            "wpt_set_references_aggregate": {
+              "aggregate": {
+                "totalSets": 3
+              }
+            }
+          },
+          {
+            "wpt_set_references_aggregate": {
+              "aggregate": {
+                "totalSets": 3
+              }
+            }
+          },
+          {
+            "wpt_set_references_aggregate": {
+              "aggregate": {
+                "totalSets": 3
+              }
+            }
+          },
+          {
+            "wpt_set_references_aggregate": {
+              "aggregate": {
+                "totalSets": 3
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Desired Result
+
+```json
+{
+  "workouts": [
+    {
+      "workout_id": "c14bf452-e606-4e99-a83c-590d3536c54b",
+      "name": "Chest",
+      "day_of_week": 6,
+      "note": "Chest workout",
+      "exercises": ["Bench Press", "Inclined Dumbbell Bench Press", "Lateral Pull-down"],
+      "totalExercises": 7,
+      "totalSets": 25
+    }
+  ]
 }
 ```
 
@@ -266,36 +374,63 @@ subscription GetExercises {
 }
 ```
 
+### Actual Result
+
+```json
+{
+  "data": {
+    "wpt_exercises": [
+      {
+        "exercise_id": "996b11f0-a1a4-4366-a2ca-63be871ff0d8",
+        "name": "Bench Press",
+        "note": "Compound movement",
+        "workouts": [
+          {
+            "wpt_workout": {
+              "name": "Chest",
+              "day_of_week": 6
+            },
+            "wpt_set_references": [
+              {
+                "wpt_set_details": [
+                  {
+                    "workingWeight": 60
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "wpt_completed_sets_aggregate": {
+          "aggregate": {
+            "max": {
+              "personalRecord": 100
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
 ### Desired Result
 
 ```json
 {
   "exercises": [
     {
-      "exercise_id": "1ccaddfe-cd0e-4818-a79d-e00c3cc90dc7",
-      "name": "Squat",
-      "note": "Back squats",
+      "exercise_id": "996b11f0-a1a4-4366-a2ca-63be871ff0d8",
+      "name": "Bench Press",
+      "note": "Compound movement",
       "workouts": [
         {
-          "name": "Legs - Quads",
-          "day_of_week": 0,
+          "name": "Chest",
+          "day_of_week": 6,
           "workingWeight": 60
         }
       ],
-      "personalRecord": null
-    },
-    {
-      "exercise_id": "ca196e2a-96ba-465b-8e3c-c7e9544eeb75",
-      "name": "Leg press",
-      "note": "Machine with plates",
-      "workouts": [
-        {
-          "name": "Legs - Quads",
-          "day_of_week": 0,
-          "workingWeight": 120
-        }
-      ],
-      "personalRecord": 140
+      "personalRecord": 100
     }
   ]
 }

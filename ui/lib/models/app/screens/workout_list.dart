@@ -47,60 +47,42 @@ class Scr1WorkoutItem {
   final String name;
   final int? dayOfWeek;
   final String? note;
-  final List<Scr1ExerciseItem> exercises;
+  final List<String> exercises;
   final int totalExercises;
   final int totalSets;
 
   Scr1WorkoutItem({
     required this.workoutId,
     required this.name,
-    this.dayOfWeek,
-    this.note,
+    required this.dayOfWeek,
+    required this.note,
     required this.exercises,
     required this.totalExercises,
     required this.totalSets,
   });
 
   factory Scr1WorkoutItem.fromJson(Map<String, dynamic> json) {
-    int getTotalCount(Map<String, dynamic> json, String key) {
-      var value = json[key];
-      if (value is List) {
-        return value.isEmpty
-            ? 0
-            : value.length; // Assuming you want the length of the list
-      } else if (value is Map && value['aggregate'] != null) {
-        return value['aggregate']['count'];
-      } else {
-        throw Exception('Unexpected data format for key: $key');
-      }
-    }
+    List<String> exercisesList = (json['wpt_workout_exercises'] as List)
+        .map((e) => e['wpt_exercise']['name'] as String)
+        .toList();
+
+    int totalSetsCount = (json['totalSetsAggragate'] as List).fold(
+        0,
+        (sum, item) =>
+            sum +
+            (item['wpt_set_references_aggregate']['aggregate']['totalSets']
+                    as num)
+                .toInt());
 
     return Scr1WorkoutItem(
       workoutId: json['workout_id'],
       name: json['name'],
-      dayOfWeek: json['day_of_week'],
+      dayOfWeek: json['day_of_week'] as int?,
       note: json['note'],
-      exercises: (json['wpt_workout_exercises'] as List)
-          .map((data) => Scr1ExerciseItem.fromJson(data))
-          .toList(),
-      totalExercises: getTotalCount(json, 'totalExercises'),
-      totalSets: getTotalCount(json, 'totalSets'),
+      exercises: exercisesList,
+      totalExercises: json['wpt_workout_exercises_aggregate']['aggregate']
+          ['totalExercises'],
+      totalSets: totalSetsCount,
     );
-  }
-}
-
-class Scr1ExerciseItem {
-  final String name;
-
-  Scr1ExerciseItem({required this.name});
-
-  factory Scr1ExerciseItem.fromJson(Map<String, dynamic> json) {
-    var exercise = json['wpt_exercise'];
-    if (exercise != null && exercise is Map) {
-      return Scr1ExerciseItem(name: exercise['name'] ?? '');
-    } else {
-      // You might want to return a default value or throw a specific error here.
-      throw Exception('Exercise data is not properly formatted.');
-    }
   }
 }

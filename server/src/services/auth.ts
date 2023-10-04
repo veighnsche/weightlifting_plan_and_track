@@ -10,18 +10,25 @@ export interface AuthRequest<T = any> extends Request<ParamsDictionary, any, T> 
 
 export type AuthMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => void;
 
-export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
-  const token = req.headers.authorization?.split("Bearer ")[1];
+const HARDCODED_PASSWORD = 'S3cureP@ssw0rd!';
 
+export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
+  // Check if route is GET "/mock"
+  if (req.method === 'GET' && req.path === '/mock') {
+    const password = req.headers['x-mock-password'];
+    if (password !== HARDCODED_PASSWORD) {
+      return res.status(403).send('Forbidden: Invalid password for mock endpoint.');
+    }
+    return next();
+  }
+
+  const token = req.headers.authorization?.split("Bearer ")[1];
   if (!token) {
     return res.status(401).send("Authentication required.");
   }
 
-  // console.log(token)
-
   try {
     req.user = await admin.auth().verifyIdToken(token);
-    // console.log(req.user);
     next();
   } catch (error) {
     res.status(401).send("Invalid token.");

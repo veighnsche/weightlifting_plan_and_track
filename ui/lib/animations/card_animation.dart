@@ -17,14 +17,18 @@ class CardAnimation extends StatefulWidget {
 }
 
 class _CardAnimationState extends State<CardAnimation>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<CardAnimation> {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
   late Animation<double> _scaleAnimation;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       duration: widget.duration,
       vsync: this,
@@ -46,6 +50,8 @@ class _CardAnimationState extends State<CardAnimation>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {

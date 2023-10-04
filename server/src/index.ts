@@ -3,6 +3,8 @@ import { config } from "dotenv";
 import express from "express";
 import { createServer } from "http";
 import "reflect-metadata";
+import mockRouter from "./mock/mockEvents";
+import exerciseRouter from "./models/app/exercises/exerciseEvents";
 import workoutRouter from "./models/app/workouts/workoutEvents";
 import chatRouter from "./models/chat/chatEvents";
 import initRouter from "./models/init/initEvents";
@@ -38,6 +40,9 @@ app.use("/init", initRouter);
 app.use("/user", userRouter);
 app.use("/chat", chatRouter);
 app.use("/app/workouts", workoutRouter);
+app.use("/app/exercises", exerciseRouter);
+
+app.use("/mock", mockRouter);
 
 Promise.all([
   connectDatabase(),

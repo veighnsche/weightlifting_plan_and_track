@@ -36,7 +36,10 @@ class AppExerciseListScreen extends StatelessWidget {
   }
 
   Widget _buildExercisesList(List<Scr2ExerciseItem> exercises) {
+    final scrollController = ScrollController();
+
     return ListView.builder(
+      controller: scrollController,
       itemCount: exercises.length,
       addAutomaticKeepAlives: true,
       itemBuilder: (BuildContext context, int index) {

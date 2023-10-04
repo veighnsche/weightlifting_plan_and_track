@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
 import '../../models/app/screens/workout_list.dart';
-import '../../models/app/workout_model.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
 
@@ -27,15 +25,15 @@ class AppWorkoutService {
               name
             }
           }
-          totalExercises: wpt_workout_exercises_aggregate {
+          wpt_workout_exercises_aggregate {
             aggregate {
-              count
+              totalExercises: count
             }
           }
-          totalSets: wpt_workout_exercises {
+          totalSetsAggragate: wpt_workout_exercises {
             wpt_set_references_aggregate {
               aggregate {
-                count
+                totalSets: count
               }
             }
           }
@@ -60,7 +58,7 @@ class AppWorkoutService {
     });
   }
 
-  Future<AppWorkoutModel?> upsert(Map<String, dynamic> workout) async {
+  Future<bool> upsert(Map<String, dynamic> workout) async {
     try {
       final response = await _apiService.post(
         'http://localhost:3000/app/workouts',
@@ -69,11 +67,8 @@ class AppWorkoutService {
         },
       );
 
-      print(response.statusCode);
-      print(json.decode(response.body));
-
       if (response.statusCode == 200) {
-        return AppWorkoutModel.fromMap(json.decode(response.body)['workout']);
+        return true;
       } else {
         if (kDebugMode) {
           print("error ${response.statusCode} ${response.body}");
@@ -86,6 +81,6 @@ class AppWorkoutService {
         print("error $error, ${StackTrace.current}");
       }
     }
-    return null;
+    return false;
   }
 }

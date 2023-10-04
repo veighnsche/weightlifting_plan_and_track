@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:weightlifting_plan_and_track/screens/app/exercise_form_screen.dart';
 
 import 'screens/app/workout_form_screen.dart';
 import 'screens/chat_screen.dart';
@@ -14,4 +15,5 @@ Map<String, Widget Function(BuildContext)> routes = {
   '/settings': (context) => const SettingsScreen(),
   '/user/edit': (context) => UserDetailsEditScreen(),
   '/app/workouts/create': (context) => const AppWorkoutFormScreen(),
+  '/app/exercises/create': (context) => const AppExerciseFormScreen(),
 };

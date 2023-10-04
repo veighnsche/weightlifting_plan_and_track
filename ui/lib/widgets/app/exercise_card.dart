@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/app/screens/exercise_list.dart';
-import 'workout_card.dart';
+import '../diagonal_clipper.dart';
 
 class ExerciseCard extends StatelessWidget {
   final Scr2ExerciseItem exercise;

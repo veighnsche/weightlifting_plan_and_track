@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/models/app/screens/workout_list.dart';
+
+import '../../models/app/screens/workout_list.dart';
+import '../diagonal_clipper.dart';
 
 class WorkoutCard extends StatelessWidget {
   final Scr1WorkoutItem workout;
@@ -145,6 +147,7 @@ class WorkoutCard extends StatelessWidget {
     }
 
     String exercisesText = _generateExercisesText();
+    String totalSetsText = _generateTotalSetsText();
 
     return Row(
       children: [
@@ -153,16 +156,31 @@ class WorkoutCard extends StatelessWidget {
           color: Colors.blueGrey[700],
           size: 18.0,
         ),
-        const SizedBox(width: 8.0), // Spacing between icon and text.
+        const SizedBox(width: 8.0),
         Expanded(
           // To ensure the text does not overflow.
-          child: Text(
-            exercisesText,
-            style: TextStyle(
-              color: Colors.blueGrey[700],
-              fontWeight: FontWeight.bold,  // Bold font weight
+          child: RichText(
+            overflow: TextOverflow.ellipsis,
+            maxLines: 3,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: exercisesText,
+                  style: TextStyle(
+                    color: Colors.blueGrey[700],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,  // Increased font size
+                  ),
+                ),
+                TextSpan(
+                  text: ' $totalSetsText',
+                  style: TextStyle(
+                    color: Colors.blueGrey[700],
+                    fontSize: 16.0,  // Increased font size
+                  ),
+                ),
+              ],
             ),
-            overflow: TextOverflow.ellipsis, // Handle potential overflow.
           ),
         ),
       ],
@@ -171,16 +189,19 @@ class WorkoutCard extends StatelessWidget {
 
 
   String _generateExercisesText() {
-    // Combine the names of the first 3 exercises (or fewer) into a single string.
-    String combinedExercises =
-        workout.exercises.take(3).map((e) => e.name).join(', ');
+    String combinedExercises = workout.exercises.take(3).join(', ');
 
-    // If there are more than 3 exercises, append "+X more" to the string.
-    if (workout.exercises.length > 3) {
-      combinedExercises += ', +${workout.exercises.length - 3} more';
+    if (workout.totalExercises > 3) {
+      combinedExercises += ', +${workout.totalExercises - 3} more';
     }
 
     return combinedExercises;
+  }
+
+  String _generateTotalSetsText() {
+    String combinedSets = workout.totalSets.toString();
+
+    return "$combinedSets sets";
   }
 
   Widget _buildNoExercisesText() {
@@ -207,28 +228,4 @@ class WorkoutCard extends StatelessWidget {
       ),
     );
   }
-
-
-}
-
-class DiagonalClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path()
-      ..moveTo(0, size.height)
-      ..lineTo(size.width - 12, size.height)
-      ..quadraticBezierTo(
-        size.width,
-        size.height,
-        size.width,
-        size.height - 12,
-      )
-      ..lineTo(size.width, 0)
-      ..lineTo(0, size.height)
-      ..close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

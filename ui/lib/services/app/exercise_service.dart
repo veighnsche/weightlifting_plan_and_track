@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/exercise_model.dart';
 import '../../models/app/screens/exercise_list.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
@@ -59,7 +56,7 @@ class AppExerciseService {
     });
   }
 
-  Future<AppExerciseModel?> upsert(Map<String, dynamic> exercise) async {
+  Future<bool> upsert(Map<String, dynamic> exercise) async {
     try {
       final response = await _apiService.post(
         'http://localhost:3000/app/exercises',
@@ -68,11 +65,8 @@ class AppExerciseService {
         },
       );
 
-      print(response.statusCode);
-      print(json.decode(response.body));
-
       if (response.statusCode == 200) {
-        return AppExerciseModel.fromMap(json.decode(response.body)['exercise']);
+        return true;
       } else {
         if (kDebugMode) {
           print("error ${response.statusCode} ${response.body}");
@@ -85,6 +79,6 @@ class AppExerciseService {
         print("error $error, ${StackTrace.current}");
       }
     }
-    return null;
+    return false;
   }
 }
