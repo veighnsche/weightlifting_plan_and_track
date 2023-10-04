@@ -33,7 +33,6 @@ String getDayOfWeekName(int? dayOfWeek) {
   }
 
   List<String> daysOfWeek = [
-    'None',
     'Monday',
     'Tuesday',
     'Wednesday',
