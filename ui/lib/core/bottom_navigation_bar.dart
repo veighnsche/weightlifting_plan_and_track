@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
@@ -22,20 +24,23 @@ class AppBottomNavigationBar extends StatelessWidget {
       elevation: 0,
       currentIndex: selectedIndex,
       // set currentIndex to _selectedIndex
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
+      items: <BottomNavigationBarItem>[
+        const BottomNavigationBarItem(
           icon: Icon(Icons.directions_run),
           label: 'Workouts',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.fitness_center),
+          icon: Transform.rotate(
+            angle: (3/8) * 2 * pi,
+            child: const Icon(Icons.fitness_center)
+          ),
           label: 'Exercises',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.check),
           label: 'Completed',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.search),
           label: 'Search',
         ),

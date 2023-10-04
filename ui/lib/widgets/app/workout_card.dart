@@ -34,6 +34,21 @@ class WorkoutCard extends StatelessWidget {
           Positioned(
             bottom: 0,
             right: 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.0), // Match card's border radius
+              child: const Opacity(
+                opacity: 0.3, // Adjust opacity as needed
+                child: Icon(
+                  Icons.directions_run,
+                  color: Colors.orange,
+                  size: 60, // Adjust size as needed
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
             child: ClipPath(
               clipper: DiagonalClipper(),
               child: Container(
@@ -139,44 +154,30 @@ class WorkoutCard extends StatelessWidget {
     String exercisesText = _generateExercisesText();
     String totalSetsText = _generateTotalSetsText();
 
-    return Row(
-      children: [
-        Icon(
-          Icons.fitness_center,
-          color: Colors.blueGrey[700],
-          size: 18.0,
-        ),
-        const SizedBox(width: 8.0),
-        Expanded(
-          // To ensure the text does not overflow.
-          child: RichText(
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: exercisesText,
-                  style: TextStyle(
-                    color: Colors.blueGrey[700],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,  // Increased font size
-                  ),
-                ),
-                TextSpan(
-                  text: ' $totalSetsText',
-                  style: TextStyle(
-                    color: Colors.blueGrey[700],
-                    fontSize: 16.0,  // Increased font size
-                  ),
-                ),
-              ],
+    return RichText(
+      overflow: TextOverflow.ellipsis,
+      maxLines: 3,
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: exercisesText,
+            style: TextStyle(
+              color: Colors.blueGrey[700],
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0, // Increased font size
             ),
           ),
-        ),
-      ],
+          TextSpan(
+            text: ' $totalSetsText',
+            style: TextStyle(
+              color: Colors.blueGrey[700],
+              fontSize: 16.0, // Increased font size
+            ),
+          ),
+        ],
+      ),
     );
   }
-
 
   String _generateExercisesText() {
     String combinedExercises = workout.exercises.take(3).join(', ');

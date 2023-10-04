@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../models/app/screens/exercise_list.dart';
@@ -27,6 +29,25 @@ class ExerciseCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              // Match card's border radius
+              child: Opacity(
+                opacity: 0.3, // Adjust opacity as needed
+                child: Transform.rotate(
+                  angle: (3/8) * 2 * pi,
+                  child: const Icon(
+                    Icons.fitness_center,
+                    color: Colors.black,
+                    size: 60, // Adjust size as needed
+                  ),
+                ),
+              ),
+            ),
+          ),
           Positioned(
             bottom: 0,
             right: 0,
