@@ -122,29 +122,16 @@ class ExerciseCard extends StatelessWidget {
 
     List<TextSpan> workoutsSpans = _generateWorkoutsTextSpans();
 
-    return Row(
-      children: [
-        Icon(
-          Icons.fitness_center,
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(
+          fontSize: 16, // Setting font size to 16.
           color: Colors.blueGrey[700],
-          size: 18.0,
+          fontWeight: FontWeight.bold, // Default to bold font weight.
         ),
-        const SizedBox(width: 8.0), // Spacing between icon and text.
-        Expanded(
-          // To ensure the text does not overflow.
-          child: RichText(
-            text: TextSpan(
-              style: TextStyle(
-                fontSize: 16, // Setting font size to 16.
-                color: Colors.blueGrey[700],
-                fontWeight: FontWeight.bold, // Default to bold font weight.
-              ),
-              children: workoutsSpans,
-            ),
-            overflow: TextOverflow.ellipsis, // Handle potential overflow.
-          ),
-        ),
-      ],
+        children: workoutsSpans,
+      ),
+      overflow: TextOverflow.ellipsis, // Handle potential overflow.
     );
   }
 

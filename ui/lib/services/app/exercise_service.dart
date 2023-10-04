@@ -13,7 +13,7 @@ class AppExerciseService {
     // language=GraphQL
     const String getExercisesSubscription = r"""
       subscription GetExercises {
-        wpt_exercises {
+        wpt_exercises(order_by: {wpt_workout_exercises_aggregate: {avg: {order_number: asc}}}) {
           exercise_id
           name
           note

@@ -8,13 +8,11 @@ class Scr1WorkoutList {
   factory Scr1WorkoutList.fromJson(Map<String, dynamic> json) {
     List<Scr1WorkoutItem> workouts = (json['wpt_workouts'] as List)
         .map((data) => Scr1WorkoutItem.fromJson(data))
-        .toList();
-
-    workouts.sort(sortByDayOfWeek);
+        .toList()
+      ..sort(sortByDayOfWeek);
 
     return Scr1WorkoutList(workouts: workouts);
   }
-
 
   bool get isEmpty => workouts.isEmpty;
 }
@@ -43,13 +41,13 @@ class Scr1WorkoutItem {
         .map((e) => e['wpt_exercise']['name'] as String)
         .toList();
 
-    int totalSetsCount = (json['totalSetsAggragate'] as List).fold(
-        0,
-        (sum, item) =>
-            sum +
-            (item['wpt_set_references_aggregate']['aggregate']['totalSets']
-                    as num)
-                .toInt());
+    int totalSetsCount =
+        (json['totalSetsAggragate'] as List).fold(0, (sum, item) {
+      int totalSets = item['wpt_set_references_aggregate']['aggregate']
+              ['totalSets']
+          .toInt();
+      return sum + totalSets;
+    });
 
     return Scr1WorkoutItem(
       workoutId: json['workout_id'],
