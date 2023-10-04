@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/screens/exercise_list.dart';
+import '../../models/app/screen_models/exercise_list.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
 
@@ -17,6 +17,13 @@ class AppExerciseService {
           exercise_id
           name
           note
+          wpt_completed_sets_aggregate {
+            aggregate {
+              max {
+                personalRecord: weight
+              }
+            }
+          }
           workouts: wpt_workout_exercises {
             wpt_workout {
               name
@@ -25,13 +32,6 @@ class AppExerciseService {
             wpt_set_references(limit: 1, order_by: {wpt_set_details_aggregate: {max: {weight: desc}}}) {
               wpt_set_details(order_by: {created_at: desc}, limit: 1) {
                 workingWeight: weight
-              }
-            }
-          }
-          wpt_completed_sets_aggregate {
-            aggregate {
-              max {
-                personalRecord: weight
               }
             }
           }

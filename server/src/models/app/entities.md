@@ -292,6 +292,7 @@ The workout details screen is divided into 3 sections:
   - Exercise name
   - Note (if applicable)
   - Number of sets
+  - Number of average reps
   - The highest weight used for the exercise
 - Completed workout list
   - Date of completion
@@ -302,32 +303,426 @@ The workout details screen is divided into 3 sections:
 ### Query
 
 ```graphql
-query GetWorkoutDetails($workoutId: uuid!) {
-  workout(where: {workout_id: {_eq: $workoutId}}) {
+subscription GetWorkoutDetails($workoutId: uuid!) {
+  wpt_workouts_by_pk(workout_id: $workoutId) {
+    workout_id
     name
     day_of_week
     note
-    workout_exercises {
-      exercise {
+    wpt_workout_exercises(order_by: {order_number: asc}) {
+      wpt_exercise {
+        exercise_id
         name
         note
       }
-      set_references_aggregate {
-        aggregate {
-          count
+      wpt_set_references(order_by: {order_number: asc}) {
+        wpt_set_details(order_by: {created_at: desc}, limit: 1) {
+          repsPerSet: rep_count
+          weightPerSet: weight
         }
       }
     }
-    completed_workouts {
+    wpt_completed_workouts(order_by: {started_at: desc}) {
+      completed_workout_id
       started_at
-      completed_at
       note
-      completedSets: completed_sets_aggregate {
+      is_active
+      wpt_completed_sets_aggregate {
         aggregate {
-          count
+          completedRepsAmount: count
         }
       }
     }
+  }
+}
+```
+
+### Actual Results
+
+```json
+{
+  "data": {
+    "wpt_workouts_by_pk": {
+      "workout_id": "5feade00-aed1-42d8-b9a2-1f6cb203a5e5",
+      "name": "Chest",
+      "day_of_week": 6,
+      "note": "Chest workout",
+      "wpt_workout_exercises": [
+        {
+          "wpt_exercise": {
+            "exercise_id": "8969ea59-f68b-49d7-b786-588c80e1bf1e",
+            "name": "Bench Press",
+            "note": "Compound movement"
+          },
+          "wpt_set_references": [
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 5,
+                  "weightPerSet": 40
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 5,
+                  "weightPerSet": 50
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 5,
+                  "weightPerSet": 60
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 5,
+                  "weightPerSet": 60
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 5,
+                  "weightPerSet": 60
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "wpt_exercise": {
+            "exercise_id": "8ebf15ab-aef9-43a7-9b7b-ee9ff546dbf8",
+            "name": "Inclined Dumbbell Bench Press",
+            "note": "Compound movement"
+          },
+          "wpt_set_references": [
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 12
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 16
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 20
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 20
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 20
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "wpt_exercise": {
+            "exercise_id": "6137a519-ca0a-4a9d-a315-08eac11ac6e9",
+            "name": "Lateral Pull-down",
+            "note": "Compound movement"
+          },
+          "wpt_set_references": [
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 8,
+                  "weightPerSet": 45
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 8,
+                  "weightPerSet": 45
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 8,
+                  "weightPerSet": 45
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "wpt_exercise": {
+            "exercise_id": "d3ee34f9-c1f0-4546-bf79-fac3aec98b18",
+            "name": "Dumbbell Arm Curl",
+            "note": "Isolation movement"
+          },
+          "wpt_set_references": [
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 15,
+                  "weightPerSet": 10
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 15,
+                  "weightPerSet": 10
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 15,
+                  "weightPerSet": 10
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "wpt_exercise": {
+            "exercise_id": "600cff06-739f-488c-ada4-6e4ecc1c89f2",
+            "name": "Triceps Cable Extension",
+            "note": "Isolation movement"
+          },
+          "wpt_set_references": [
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 21
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 21
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 21
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "wpt_exercise": {
+            "exercise_id": "d6328888-78d2-4b4d-a404-b2de93affa78",
+            "name": "Face Pulls",
+            "note": "Isolation movement"
+          },
+          "wpt_set_references": [
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 21
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 21
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 21
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "wpt_exercise": {
+            "exercise_id": "656cfa1a-0462-43c8-b2e3-a90517080152",
+            "name": "Dumbbell Side Raises",
+            "note": "Isolation movement"
+          },
+          "wpt_set_references": [
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 7
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 7
+                }
+              ]
+            },
+            {
+              "wpt_set_details": [
+                {
+                  "repsPerSet": 12,
+                  "weightPerSet": 7
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "wpt_completed_workouts": [
+        {
+          "completed_workout_id": "4df00521-c6cd-404b-9939-62d3600d55e4",
+          "started_at": "2023-10-04T22:08:51.508",
+          "note": null,
+          "is_active": false,
+          "wpt_completed_sets_aggregate": {
+            "aggregate": {
+              "completedRepsAmount": 25
+            }
+          }
+        },
+        {
+          "completed_workout_id": "351a149d-8230-4eca-9d05-faa06ebafbb3",
+          "started_at": "2023-09-27T22:08:51.508",
+          "note": null,
+          "is_active": false,
+          "wpt_completed_sets_aggregate": {
+            "aggregate": {
+              "completedRepsAmount": 25
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+### Desired Result
+```json
+{
+  "workout": {
+    "workout_id": "5feade00-aed1-42d8-b9a2-1f6cb203a5e5",
+    "name": "Chest",
+    "day_of_week": 6,
+    "note": "Chest workout",
+    "exercises": [
+      {
+        "exercise_id": "8969ea59-f68b-49d7-b786-588c80e1bf1e",
+        "name": "Bench Press",
+        "note": "Compound movement",
+        "sets_count": 5,
+        "averageReps": 5,
+        "highestWeight": 60
+      },
+      {
+        "exercise_id": "8ebf15ab-aef9-43a7-9b7b-ee9ff546dbf8",
+        "name": "Inclined Dumbbell Bench Press",
+        "note": "Compound movement",
+        "sets_count": 5,
+        "averageReps": 12,
+        "highestWeight": 20
+      },
+      {
+        "exercise_id": "6137a519-ca0a-4a9d-a315-08eac11ac6e9",
+        "name": "Lateral Pull-down",
+        "note": "Compound movement",
+        "sets_count": 3,
+        "averageReps": 8,
+        "highestWeight": 45
+      },
+      {
+        "exercise_id": "d3ee34f9-c1f0-4546-bf79-fac3aec98b18",
+        "name": "Dumbbell Arm Curl",
+        "note": "Isolation movement",
+        "sets_count": 3,
+        "averageReps": 15,
+        "highestWeight": 10
+      },
+      {
+        "exercise_id": "600cff06-739f-488c-ada4-6e4ecc1c89f2",
+        "name": "Triceps Cable Extension",
+        "note": "Isolation movement",
+        "sets_count": 3,
+        "averageReps": 12,
+        "highestWeight": 21
+      },
+      {
+        "exercise_id": "d6328888-78d2-4b4d-a404-b2de93affa78",
+        "name": "Face Pulls",
+        "note": "Isolation movement",
+        "sets_count": 3,
+        "averageReps": 12,
+        "highestWeight": 21
+      },
+      {
+        "exercise_id": "656cfa1a-0462-43c8-b2e3-a90517080152",
+        "name": "Dumbbell Side Raises",
+        "note": "Isolation movement",
+        "sets_count": 3,
+        "averageReps": 12,
+        "highestWeight": 7
+      }
+    ],
+    "completed_workouts": [
+      {
+        "completed_workout_id": "4df00521-c6cd-404b-9939-62d3600d55e4",
+        "started_at": "2023-10-04T22:08:51.508",
+        "note": null,
+        "is_active": false,
+        "completedRepsAmount": 25
+      },
+      {
+        "completed_workout_id": "351a149d-8230-4eca-9d05-faa06ebafbb3",
+        "started_at": "2023-09-27T22:08:51.508",
+        "note": null,
+        "is_active": false,
+        "completedRepsAmount": 25
+      }
+    ]
   }
 }
 ```
@@ -352,6 +747,13 @@ subscription GetExercises {
     exercise_id
     name
     note
+    wpt_completed_sets_aggregate {
+      aggregate {
+        max {
+          personalRecord: weight
+        }
+      }
+    }
     workouts: wpt_workout_exercises {
       wpt_workout {
         name
@@ -363,16 +765,8 @@ subscription GetExercises {
         }
       }
     }
-    wpt_completed_sets_aggregate {
-      aggregate {
-        max {
-          personalRecord: weight
-        }
-      }
-    }
   }
 }
-
 ```
 
 ### Actual Result
@@ -385,6 +779,13 @@ subscription GetExercises {
         "exercise_id": "996b11f0-a1a4-4366-a2ca-63be871ff0d8",
         "name": "Bench Press",
         "note": "Compound movement",
+        "wpt_completed_sets_aggregate": {
+          "aggregate": {
+            "max": {
+              "personalRecord": 100
+            }
+          }
+        },
         "workouts": [
           {
             "wpt_workout": {
@@ -401,14 +802,7 @@ subscription GetExercises {
               }
             ]
           }
-        ],
-        "wpt_completed_sets_aggregate": {
-          "aggregate": {
-            "max": {
-              "personalRecord": 100
-            }
-          }
-        }
+        ]
       }
     ]
   }
@@ -424,14 +818,14 @@ subscription GetExercises {
       "exercise_id": "996b11f0-a1a4-4366-a2ca-63be871ff0d8",
       "name": "Bench Press",
       "note": "Compound movement",
+      "personalRecord": 100,
       "workouts": [
         {
           "name": "Chest",
           "day_of_week": 6,
           "workingWeight": 60
         }
-      ],
-      "personalRecord": 100
+      ]
     }
   ]
 }

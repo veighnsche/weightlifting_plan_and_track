@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/screens/workout_list.dart';
+import '../../models/app/screen_models/workout_list.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
 

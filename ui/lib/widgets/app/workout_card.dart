@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/app/screens/workout_list.dart';
+import '../../models/app/screen_models/workout_list.dart';
 import '../diagonal_clipper.dart';
 
 class WorkoutCard extends StatelessWidget {

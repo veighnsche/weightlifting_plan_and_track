@@ -20,13 +20,13 @@ class Scr2ExerciseItem {
   final String exerciseId;
   final String name;
   final String? note;
-  final List<Scr2WorkoutItem> workouts;
   final int? personalRecord;
+  final List<Scr2WorkoutItem> workouts;
 
   Scr2ExerciseItem({
     required this.exerciseId,
     required this.name,
-    required this.note,
+    this.note,
     this.personalRecord,
     required this.workouts,
   });
@@ -52,8 +52,8 @@ class Scr2WorkoutItem {
 
   Scr2WorkoutItem({
     required this.name,
-    required this.dayOfWeek,
-    required this.workingWeight,
+    this.dayOfWeek,
+    this.workingWeight,
   });
 
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);

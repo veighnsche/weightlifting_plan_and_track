@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../animations/card_animation.dart';
-import '../../models/app/screens/workout_list.dart';
+import '../../models/app/screen_models/workout_list.dart';
 import '../../services/app/workout_service.dart';
 import '../../widgets/app/workout_card.dart';
 

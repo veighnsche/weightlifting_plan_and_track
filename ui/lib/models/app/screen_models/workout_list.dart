@@ -29,8 +29,8 @@ class Scr1WorkoutItem {
   Scr1WorkoutItem({
     required this.workoutId,
     required this.name,
-    required this.dayOfWeek,
-    required this.note,
+    this.dayOfWeek,
+    this.note,
     required this.exercises,
     required this.totalExercises,
     required this.totalSets,

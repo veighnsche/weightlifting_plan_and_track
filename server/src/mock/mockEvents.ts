@@ -795,6 +795,344 @@ router.get("/", async (req, res) => {
 
     const savedSetDetails = await setDetailRepository.save(setDetails);
 
+    const completedWorkouts: Partial<CompletedWorkoutEntity>[] = [
+      { user_uid, workout_id: savedWorkouts[0].workout_id, started_at: new Date(Date.now() - 6048e5), is_active: false }, // 0 Chest (1 week ago)
+      { user_uid, workout_id: savedWorkouts[1].workout_id, started_at: new Date(Date.now() - 6048e5), is_active: false }, // 1 Squats (1 week ago)
+      { user_uid, workout_id: savedWorkouts[2].workout_id, started_at: new Date(Date.now() - 6048e5), is_active: false }, // 2 Shoulders (1 week ago)
+      { user_uid, workout_id: savedWorkouts[3].workout_id, started_at: new Date(Date.now() - 6048e5), is_active: false }, // 3 Deadlifts (1 week ago)
+
+      { user_uid, workout_id: savedWorkouts[0].workout_id, started_at: new Date(Date.now()), is_active: false }, // 4 Chest
+      { user_uid, workout_id: savedWorkouts[1].workout_id, started_at: new Date(Date.now()), is_active: false }, // 5 Squats
+      { user_uid, workout_id: savedWorkouts[2].workout_id, started_at: new Date(Date.now()), is_active: false }, // 6 Shoulders
+      { user_uid, workout_id: savedWorkouts[3].workout_id, started_at: new Date(Date.now()), is_active: false }, // 7 Deadlifts
+    ];
+
+    const savedCompletedWorkouts = await completedWorkoutRepository.save(completedWorkouts);
+
+    const completedSets: Partial<CompletedSetEntity>[] = [
+      //   Chest (Sunday: day 6):
+      // - Bench Press: 2 warmup sets (5 reps) (40kg, 50kg), 3 working sets (5 reps) (60kg) [compound]
+      { set_detail_id: savedSetDetails[0].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 38, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[1].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 39, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[3].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 48, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[4].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 49, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[6].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[7].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[9].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[10].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[12].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[13].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[0].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Incline Bench Press: 2 warmup sets (12 reps) (12kg, 16kg), 3 working sets (12 reps) (20kg) [compound]
+      { set_detail_id: savedSetDetails[15].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 10, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[16].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 11, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[18].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 14, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[19].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 15, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[21].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 18, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[22].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[24].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 18, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[25].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[27].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 18, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[28].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[1].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Lateral Pull-down: 3 sets (8 reps) (45kg) [compound]
+      { set_detail_id: savedSetDetails[30].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[2].exercise_id, rep_count: 8, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[31].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[2].exercise_id, rep_count: 8, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[33].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[2].exercise_id, rep_count: 8, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[34].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[2].exercise_id, rep_count: 8, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[36].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[2].exercise_id, rep_count: 8, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[37].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[2].exercise_id, rep_count: 8, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Dumbbell Arm Curl: 3 sets (15 reps) (10kg) [isolation]
+      { set_detail_id: savedSetDetails[39].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 8, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[40].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 9, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[42].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 8, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[43].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 9, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[45].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 8, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[46].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 9, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Triceps Cable Extension: 3 sets (12 reps) (21kg) [isolation]
+      { set_detail_id: savedSetDetails[48].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[49].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 20, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[51].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[52].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 20, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[54].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[55].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 20, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Face Pulls: 3 sets (12 reps) (21kg) [isolation]
+      { set_detail_id: savedSetDetails[57].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[58].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 20, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[60].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[61].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 20, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[63].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[64].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 20, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Dumbbell Side Raises: 3 sets (12 reps) (7kg) [isolation]
+      { set_detail_id: savedSetDetails[66].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 5, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[67].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 6, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[69].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 5, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[70].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 6, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[72].set_detail_id, completed_workout_id: savedCompletedWorkouts[0].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 5, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[73].set_detail_id, completed_workout_id: savedCompletedWorkouts[4].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 6, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      //   Squats (Monday: day 0):
+      // - Barbell Squats: 2 warmup sets (5 reps) (40kg, 50kg), 3 working sets (5 reps) (60kg) [compound]
+      { set_detail_id: savedSetDetails[75].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 38, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[76].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 39, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[78].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 48, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[79].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 49, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[81].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[82].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[84].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[85].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[87].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[88].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[7].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Leg Press: 3 sets (12 reps) (100kg) [compound]
+      { set_detail_id: savedSetDetails[90].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[8].exercise_id, rep_count: 12, weight: 98, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[91].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[8].exercise_id, rep_count: 12, weight: 99, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[93].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[8].exercise_id, rep_count: 12, weight: 98, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[94].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[8].exercise_id, rep_count: 12, weight: 99, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[96].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[8].exercise_id, rep_count: 12, weight: 98, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[97].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[8].exercise_id, rep_count: 12, weight: 99, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Good Mornings: 3 sets (12 reps) (20kg) [compound]
+      { set_detail_id: savedSetDetails[99].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[9].exercise_id, rep_count: 12, weight: 18, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[100].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[9].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[102].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[9].exercise_id, rep_count: 12, weight: 18, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[103].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[9].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[105].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[9].exercise_id, rep_count: 12, weight: 18, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[106].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[9].exercise_id, rep_count: 12, weight: 19, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Lying Leg Curls: 3 sets (12 reps) (45kg) [isolation]
+      { set_detail_id: savedSetDetails[108].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[10].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[109].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[10].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[111].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[10].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[112].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[10].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[114].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[10].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[115].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[10].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Standing Calf Raises: 3 sets (15 reps) (50kg) [isolation]
+      { set_detail_id: savedSetDetails[117].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 48, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[118].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 49, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[120].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 48, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[121].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 49, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[123].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 48, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[124].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 49, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Abs leg raises: 3 sets (15 reps) (body weight) [isolation]
+      { set_detail_id: savedSetDetails[126].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight: 0, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[127].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight: 0, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[129].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight: 0, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[130].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight: 0, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[132].set_detail_id, completed_workout_id: savedCompletedWorkouts[1].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight: 0, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[133].set_detail_id, completed_workout_id: savedCompletedWorkouts[5].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight: 0, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      //   Shoulders (Wednesday: day 2):
+      // - Overhead Press: 2 warmup sets (5 reps) (20kg, 30kg), 3 working sets (5 reps) (40kg) [compound]
+      { set_detail_id: savedSetDetails[135].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 18, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[136].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 19, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[138].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 28, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[139].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 29, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[141].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 38, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[142].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 39, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[144].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 38, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[145].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 39, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[147].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 38, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[148].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[13].exercise_id, rep_count: 5, weight: 39, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Pull-ups: 3 set (5 reps) (body weight) [compound]
+      { set_detail_id: savedSetDetails[150].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[14].exercise_id, rep_count: 5, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[151].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[14].exercise_id, rep_count: 5, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[153].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[14].exercise_id, rep_count: 5, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[154].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[14].exercise_id, rep_count: 5, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[156].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[14].exercise_id, rep_count: 5, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[157].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[14].exercise_id, rep_count: 5, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Pendley Rows: 3 sets (12 reps) (40kg) [compound]
+      { set_detail_id: savedSetDetails[159].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[15].exercise_id, rep_count: 12, weight: 38, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[160].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[15].exercise_id, rep_count: 12, weight: 39, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[162].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[15].exercise_id, rep_count: 12, weight: 38, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[163].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[15].exercise_id, rep_count: 12, weight: 39, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[165].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[15].exercise_id, rep_count: 12, weight: 38, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[166].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[15].exercise_id, rep_count: 12, weight: 39, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Seated Chest Press: 3 sets (12 reps) (60kg) [isolation]
+      { set_detail_id: savedSetDetails[168].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[16].exercise_id, rep_count: 12, weight: 58, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[169].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[16].exercise_id, rep_count: 12, weight: 59, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[171].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[16].exercise_id, rep_count: 12, weight: 58, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[172].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[16].exercise_id, rep_count: 12, weight: 59, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[174].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[16].exercise_id, rep_count: 12, weight: 58, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[175].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[16].exercise_id, rep_count: 12, weight: 59, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Dumbbell Arm Curl: 3 sets (15 reps) (12kg) [isolation] (exercise already exists, but unique set details)
+      { set_detail_id: savedSetDetails[177].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 10, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[178].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 11, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[180].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 10, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[181].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 11, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[183].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 10, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[184].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[3].exercise_id, rep_count: 15, weight: 11, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Triceps Cable Extension: 3 sets (12 reps) (23kg) [isolation] (exercise already exists, but unique set details)
+      { set_detail_id: savedSetDetails[186].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 21, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[187].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 22, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[189].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 21, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[190].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 22, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[192].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 21, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[193].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[4].exercise_id, rep_count: 12, weight: 22, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Face Pulls: 3 sets (12 reps) (23kg) [isolation] (exercise already exists, but unique set details)
+      { set_detail_id: savedSetDetails[195].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 21, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[196].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 22, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[198].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 21, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[199].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 22, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[201].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 21, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[202].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[5].exercise_id, rep_count: 12, weight: 22, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Dumbbell Side Raises: 3 sets (12 reps) (8kg) [isolation] (exercise already exists, but unique set details)
+      { set_detail_id: savedSetDetails[204].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 6, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[205].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 7, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[207].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 6, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[208].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 7, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[210].set_detail_id, completed_workout_id: savedCompletedWorkouts[2].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 6, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[211].set_detail_id, completed_workout_id: savedCompletedWorkouts[6].completed_workout_id, exercise_id: savedExercises[6].exercise_id, rep_count: 12, weight: 7, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      //   Deadlifts (Thursday: day 3):
+      // - Romanian Deadlifts: 2 warmup sets (7 reps) (60kg, 80kg), 3 working sets (7 reps) (100kg) [compound]
+      { set_detail_id: savedSetDetails[213].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[214].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[216].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 78, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[217].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 79, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[219].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 98, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[220].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 99, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[222].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 98, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[223].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 99, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[225].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 98, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[226].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[17].exercise_id, rep_count: 7, weight: 99, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Front Squats: 2 warmup sets (5 reps) (40kg, 50kg), 3 working sets (5 reps) (60kg) [compound]
+      { set_detail_id: savedSetDetails[228].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 38, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[229].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 39, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[231].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 48, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[232].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 49, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[234].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[235].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[237].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[238].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[240].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 58, rest_time_before: 300, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[241].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[18].exercise_id, rep_count: 5, weight: 59, rest_time_before: 300, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Hip Thrusts: 3 sets (12 reps) (30kg) [compound]
+      { set_detail_id: savedSetDetails[243].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[19].exercise_id, rep_count: 12, weight: 28, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[244].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[19].exercise_id, rep_count: 12, weight: 29, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[246].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[19].exercise_id, rep_count: 12, weight: 28, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[247].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[19].exercise_id, rep_count: 12, weight: 29, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[249].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[19].exercise_id, rep_count: 12, weight: 28, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[250].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[19].exercise_id, rep_count: 12, weight: 29, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Leg Extensions: 3 sets (12 reps) (45kg) [isolation]
+      { set_detail_id: savedSetDetails[252].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[20].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[253].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[20].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[255].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[20].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[256].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[20].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[258].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[20].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[259].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[20].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Seated Leg Curls: 3 sets (12 reps) (45kg) [isolation]
+      { set_detail_id: savedSetDetails[261].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[21].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[262].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[21].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[264].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[21].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[265].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[21].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[267].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[21].exercise_id, rep_count: 12, weight: 43, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[268].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[21].exercise_id, rep_count: 12, weight: 44, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Standing Calf Raises: 3 sets (15 reps) (52kg) [isolation] (exercise already exists, but unique set details)
+      { set_detail_id: savedSetDetails[270].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 50, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[271].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 51, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[273].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 50, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[274].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 51, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[276].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 50, rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[277].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[11].exercise_id, rep_count: 15, weight: 51, rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      // - Abs leg raises: 3 sets (15 reps) (body weight) [isolation] (exercise already exists, but unique set details)
+      { set_detail_id: savedSetDetails[279].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[280].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[282].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[283].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+
+      { set_detail_id: savedSetDetails[285].set_detail_id, completed_workout_id: savedCompletedWorkouts[3].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now() - 6048e5), is_active: false },
+      { set_detail_id: savedSetDetails[286].set_detail_id, completed_workout_id: savedCompletedWorkouts[7].completed_workout_id, exercise_id: savedExercises[12].exercise_id, rep_count: 15, weight_text: "body weight", rest_time_before: 120, completed_at: new Date(Date.now()), is_active: false },
+    ];
+
+    await completedSetRepository.save(completedSets);
+
     res.json({ message: "Data initialized successfully" });
   } catch (error) {
     console.error("Error while initializing data:", error);
