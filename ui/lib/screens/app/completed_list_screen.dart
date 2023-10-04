@@ -6,7 +6,7 @@ class CompletedListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Completed List'),
+      child: Text('No completed workouts'),
     );
   }
 }

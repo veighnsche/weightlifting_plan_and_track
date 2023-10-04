@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
-InputDecoration blueInputDecoration({required String label, IconData? icon}) {
-  return InputDecoration(
-    labelText: label,
+class BlueInputDecoration extends InputDecoration {
+  final IconData? customIcon;
+
+  BlueInputDecoration({
+    String? labelText,
+    this.customIcon,
+    String? hintText,
+  }) : super(
+    labelText: labelText,
+    hintText: hintText,
     labelStyle: TextStyle(
       color: Colors.grey[600],
       fontSize: 16.0,
       fontWeight: FontWeight.bold,
     ),
-    prefixIcon: icon != null ? Icon(icon, color: Colors.blueGrey) : null,
+    prefixIcon: customIcon != null ? Icon(customIcon, color: Colors.blueGrey) : null,
     border: UnderlineInputBorder(
       borderSide: BorderSide(color: Colors.grey[400]!),
     ),

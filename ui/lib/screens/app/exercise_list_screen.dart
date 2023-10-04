@@ -30,6 +30,7 @@ class AppExerciseListScreen extends StatelessWidget {
         }
 
         final Scr2ExerciseList exerciseListScreenModel = snapshot.data!;
+
         return _buildExercisesList(exerciseListScreenModel.exercises);
       },
     );
@@ -44,6 +45,7 @@ class AppExerciseListScreen extends StatelessWidget {
       addAutomaticKeepAlives: true,
       itemBuilder: (BuildContext context, int index) {
         return CardAnimation(
+          key: ValueKey(exercises[index].exerciseId),
           duration: const Duration(milliseconds: 400),
           delay: Duration(milliseconds: 100 * index),
           child: ExerciseCard(exercise: exercises[index]),

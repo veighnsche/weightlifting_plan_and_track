@@ -5,14 +5,20 @@ import 'auth_service.dart';
 class GraphQLService {
   final AuthService _authService = AuthService();
 
-  GraphQLClient? _client;
+  GraphQLClient? _wsClient;
+  GraphQLClient? _httpClient;
 
-  GraphQLClient get client {
-    _client ??= _connect();
-    return _client!;
+  GraphQLClient get wsClient {
+    _wsClient ??= _wsConnect();
+    return _wsClient!;
   }
 
-  GraphQLClient _connect() {
+  GraphQLClient get httpClient {
+    _httpClient ??= _httpConnect();
+    return _httpClient!;
+  }
+
+  GraphQLClient _wsConnect() {
     final websocketLink = WebSocketLink(
       'ws://localhost:8080/v1/graphql',
       config: SocketClientConfig(
@@ -29,10 +35,23 @@ class GraphQLService {
       ),
     );
 
-    final link = Link.split(
-          (request) => request.isSubscription,
-      websocketLink,
+    return GraphQLClient(
+      cache: GraphQLCache(),
+      link: websocketLink,
     );
+  }
+
+  GraphQLClient _httpConnect() {
+    final httpLink = HttpLink('http://localhost:8080/v1/graphql');
+
+    final authLink = AuthLink(
+      getToken: () async {
+        final token = await _authService.token;
+        return 'Bearer $token';
+      },
+    );
+
+    final link = authLink.concat(httpLink);
 
     return GraphQLClient(
       cache: GraphQLCache(),
@@ -41,7 +60,7 @@ class GraphQLService {
   }
 
   Stream<QueryResult> subscribe(SubscriptionOptions options) {
-    return client.subscribe(options).map((event) {
+    return wsClient.subscribe(options).map((event) {
       if (event.hasException) {
         if (kDebugMode) {
           print("GraphQL Exception: ${event.exception}");
@@ -50,5 +69,9 @@ class GraphQLService {
       }
       return event;
     });
+  }
+
+  Future<QueryResult> query(QueryOptions options) {
+    return httpClient.query(options);
   }
 }

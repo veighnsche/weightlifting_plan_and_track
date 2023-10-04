@@ -55,12 +55,12 @@ class _AppWorkoutFormState extends State<AppWorkoutForm> {
         // Name
         TextFormField(
           controller: _nameController,
-          decoration: blueInputDecoration(label: "Name"),
+          decoration: BlueInputDecoration(labelText: "Name"),
         ),
         const SizedBox(height: 16.0),
         DropdownButtonFormField<String>(
           value: _selectedDay,
-          decoration: blueInputDecoration(label: "Day of the Week"),
+          decoration: BlueInputDecoration(labelText: "Day of the Week"),
           items: _daysOfWeek.map((String day) {
             return DropdownMenuItem<String>(
               value: day,
@@ -76,7 +76,7 @@ class _AppWorkoutFormState extends State<AppWorkoutForm> {
         const SizedBox(height: 16.0),
         TextFormField(
           controller: _noteController,
-          decoration: blueInputDecoration(label: "Note"),
+          decoration: BlueInputDecoration(labelText: "Note"),
           maxLines: 5,
         ),
         const SizedBox(height: 16.0),

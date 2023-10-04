@@ -9,24 +9,12 @@ import 'bottom_navigation_bar.dart';
 class AppShell extends StatefulWidget {
   final Widget body;
   final int selectedIndex;
-  final String? title;
-  final List<Widget> actions;
-  final bool showBottomNavigationBar;
-  final bool showFab;
-  final bool showAppBar;
-  final PreferredSizeWidget? bottomWidget;
   final AppBottomNavigationBar? bottomNavigationBar;
 
   const AppShell({
     super.key,
     required this.body,
     required this.selectedIndex,
-    this.title,
-    this.actions = const [],
-    this.showBottomNavigationBar = false,
-    this.showFab = false,
-    this.showAppBar = true,
-    this.bottomWidget,
     this.bottomNavigationBar,
   });
 
@@ -34,28 +22,14 @@ class AppShell extends StatefulWidget {
   State<AppShell> createState() => _AppShellState();
 }
 
-List<String> routeNames = [
-  'Workouts',
-  'Exercises',
-  'Completed sets',
-];
-
-List<String> routePaths = [
-  '/app/workouts',
-  '/app/exercises',
-  '/app/completed',
-];
-
 class _AppShellState extends State<AppShell> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isBottomSheetOpen = false;
 
   void _showBottomSheet() {
     String name = routeNames[widget.selectedIndex];
-
-    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-
-    chatProvider.newChat("Chatting about $name");
+    Provider.of<ChatProvider>(context, listen: false)
+        .newChat("Chatting about $name");
 
     _scaffoldKey.currentState!
         .showBottomSheet((context) {
@@ -79,28 +53,23 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: widget.showAppBar
-          ? AppBar(
-              title: Text(widget.title ?? routeNames[widget.selectedIndex]),
-              actions: [
-                ...widget.actions,
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () async {
-                    await Navigator.pushNamed(
-                        context, '${routePaths[widget.selectedIndex]}/create');
-                  },
-                ),
-              ],
-              bottom: widget.bottomWidget,
-            )
-          : null,
+      appBar: AppBar(
+        title: Text(routeNames[widget.selectedIndex]),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () async {
+              await Navigator.pushNamed(
+                  context, '${routePaths[widget.selectedIndex]}/create');
+            },
+          ),
+        ],
+      ),
       drawer: const Drawer(child: DrawerContent()),
       body: widget.body,
-      bottomNavigationBar: !_isBottomSheetOpen && widget.showBottomNavigationBar
-          ? widget.bottomNavigationBar
-          : null,
-      floatingActionButton: !_isBottomSheetOpen && widget.showFab
+      bottomNavigationBar:
+          !_isBottomSheetOpen ? widget.bottomNavigationBar : null,
+      floatingActionButton: !_isBottomSheetOpen
           ? FloatingActionButton(
               onPressed: () => _showBottomSheet(),
               child: const Icon(Icons.chat),
@@ -109,3 +78,17 @@ class _AppShellState extends State<AppShell> {
     );
   }
 }
+
+List<String> routeNames = [
+  'Workouts',
+  'Exercises',
+  'Completed workouts',
+  'Search Results',
+];
+
+List<String> routePaths = [
+  '/app/workouts',
+  '/app/exercises',
+  '/app/completed',
+  '/app/search',
+];

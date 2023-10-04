@@ -41,13 +41,13 @@ class _AppExerciseFormState extends State<AppExerciseForm> {
         // Name
         TextFormField(
           controller: _nameController,
-          decoration: blueInputDecoration(label: "Name"),
+          decoration: BlueInputDecoration(labelText: "Name"),
         ),
         const SizedBox(height: 16.0),
         // Note
         TextFormField(
           controller: _noteController,
-          decoration: blueInputDecoration(label: "Note"),
+          decoration: BlueInputDecoration(labelText: "Note"),
           maxLines: 5,
         ),
         const SizedBox(height: 16.0),

@@ -25,3 +25,23 @@ int sortByDayOfWeek(dynamic a, dynamic b) {
   // Both have a dayOfWeek but neither is today's workout
   return a.dayOfWeek!.compareTo(b.dayOfWeek!);
 }
+
+
+String getDayOfWeekName(int? dayOfWeek) {
+  if (dayOfWeek == null) {
+    return 'None';
+  }
+
+  List<String> daysOfWeek = [
+    'None',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
+
+  return daysOfWeek[dayOfWeek];
+}

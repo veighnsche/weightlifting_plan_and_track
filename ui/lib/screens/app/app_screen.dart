@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weightlifting_plan_and_track/screens/app/exercise_list_screen.dart';
+import 'package:weightlifting_plan_and_track/screens/app/search_screen.dart';
 import 'package:weightlifting_plan_and_track/screens/app/workout_list_screen.dart';
 
 import '../../core/app_shell.dart';
@@ -27,8 +28,6 @@ class _AppScreenState extends State<AppScreen> {
   Widget build(BuildContext context) {
     return AppShell(
       selectedIndex: _selectedIndex,
-      showFab: true,
-      showBottomNavigationBar: true,
       bottomNavigationBar: AppBottomNavigationBar(
         selectedIndex: _selectedIndex,
         onItemSelected: (index) {
@@ -51,6 +50,7 @@ class _AppScreenState extends State<AppScreen> {
           AppWorkoutListScreen(),
           AppExerciseListScreen(),
           CompletedListScreen(),
+          SearchScreen(),
         ],
       ),
     );

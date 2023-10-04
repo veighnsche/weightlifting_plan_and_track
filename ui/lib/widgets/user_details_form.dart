@@ -75,7 +75,7 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
                 TextFormField(
                   initialValue: gender,
                   decoration:
-                      blueInputDecoration(label: "Gender", icon: Icons.person),
+                      BlueInputDecoration(labelText: "Gender", customIcon: Icons.person),
                   onSaved: (value) => gender = value,
                 ),
                 const SizedBox(height: 16),
@@ -89,32 +89,32 @@ class _UserDetailsFormState extends State<UserDetailsForm> {
                 const SizedBox(height: 16),
                 TextFormField(
                   initialValue: weight,
-                  decoration: blueInputDecoration(
-                      label: "Weight (kg)", icon: Icons.fitness_center),
+                  decoration: BlueInputDecoration(
+                      labelText: "Weight (kg)", customIcon: Icons.fitness_center),
                   keyboardType: TextInputType.number,
                   onSaved: (value) => weight = value,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   initialValue: height,
-                  decoration: blueInputDecoration(
-                      label: "Height (cm)", icon: Icons.height),
+                  decoration: BlueInputDecoration(
+                      labelText: "Height (cm)", customIcon: Icons.height),
                   keyboardType: TextInputType.number,
                   onSaved: (value) => height = value,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   initialValue: fatPercentage,
-                  decoration: blueInputDecoration(
-                      label: "Fat Percentage (%)", icon: Icons.pie_chart),
+                  decoration: BlueInputDecoration(
+                      labelText: "Fat Percentage (%)", customIcon: Icons.pie_chart),
                   keyboardType: TextInputType.number,
                   onSaved: (value) => fatPercentage = value,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   initialValue: gymDescription,
-                  decoration: blueInputDecoration(
-                      label: "Gym Description", icon: Icons.description),
+                  decoration: BlueInputDecoration(
+                      labelText: "Gym Description", customIcon: Icons.description),
                   maxLines: 3,
                   onSaved: (value) => gymDescription = value,
                 ),

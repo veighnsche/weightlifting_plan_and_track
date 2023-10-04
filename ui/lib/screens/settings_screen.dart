@@ -61,9 +61,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 TextFormField(
                   controller: instructionsController,
                   maxLines: 15, // Adjust this value as required
-                  decoration: blueInputDecoration(
-                    label: 'Custom Instructions (1500 characters max)',
-                    icon: Icons.info,
+                  decoration: BlueInputDecoration(
+                    labelText: 'Custom Instructions (1500 characters max)',
+                    customIcon: Icons.info,
                   ),
                   validator: (value) {
                     if (value!.length > 1500) {

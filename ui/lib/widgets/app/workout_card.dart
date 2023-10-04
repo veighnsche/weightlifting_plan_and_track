@@ -8,16 +8,6 @@ class WorkoutCard extends StatelessWidget {
 
   const WorkoutCard({super.key, required this.workout});
 
-  static const days = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-  ];
-
   @override
   Widget build(BuildContext context) {
     final today = (DateTime.now().weekday - 1) % 7;
@@ -72,7 +62,7 @@ class WorkoutCard extends StatelessWidget {
             right: 0,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: _buildDayOfWeek(days),
+              child: _buildDayOfWeek(),
             ),
           ),
           const Positioned(
@@ -110,7 +100,7 @@ class WorkoutCard extends StatelessWidget {
     );
   }
 
-  Row _buildDayOfWeek(List<String> days) {
+  Row _buildDayOfWeek() {
     return Row(
       children: [
         Icon(
@@ -120,7 +110,7 @@ class WorkoutCard extends StatelessWidget {
         ),
         const SizedBox(width: 6.0),
         Text(
-          days[workout.dayOfWeek!],
+          workout.dayOfWeekName,
           style: TextStyle(color: Colors.blueGrey[600]),
         ),
       ],

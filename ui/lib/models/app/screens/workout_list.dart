@@ -36,6 +36,8 @@ class Scr1WorkoutItem {
     required this.totalSets,
   });
 
+  get dayOfWeekName => getDayOfWeekName(dayOfWeek);
+
   factory Scr1WorkoutItem.fromJson(Map<String, dynamic> json) {
     List<String> exercisesList = (json['wpt_workout_exercises'] as List)
         .map((e) => e['wpt_exercise']['name'] as String)

@@ -35,6 +35,10 @@ class AppBottomNavigationBar extends StatelessWidget {
           icon: Icon(Icons.check),
           label: 'Completed',
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
       ],
       onTap: (index) {
         if (index != selectedIndex) {

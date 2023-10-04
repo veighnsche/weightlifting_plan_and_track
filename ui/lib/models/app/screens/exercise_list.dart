@@ -56,6 +56,8 @@ class Scr2WorkoutItem {
     required this.workingWeight,
   });
 
+  get dayOfWeekName => getDayOfWeekName(dayOfWeek);
+
   factory Scr2WorkoutItem.fromJson(Map<String, dynamic> json) {
     int? workingWeight;
 
