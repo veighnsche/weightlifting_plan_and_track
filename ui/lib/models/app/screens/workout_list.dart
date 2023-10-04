@@ -1,43 +1,20 @@
+import '../../../utils/dates.dart';
+
 class Scr1WorkoutList {
   final List<Scr1WorkoutItem> workouts;
 
   Scr1WorkoutList({required this.workouts});
 
   factory Scr1WorkoutList.fromJson(Map<String, dynamic> json) {
-    List<Scr1WorkoutItem> unsortedWorkouts = (json['wpt_workouts'] as List)
+    List<Scr1WorkoutItem> workouts = (json['wpt_workouts'] as List)
         .map((data) => Scr1WorkoutItem.fromJson(data))
         .toList();
 
-    int today = DateTime.now().weekday - 1; // 0 = Monday, 6 = Sunday
+    workouts.sort(sortByDayOfWeek);
 
-    unsortedWorkouts.sort((a, b) {
-      // Both are today's workouts or both don't have a dayOfWeek
-      if ((a.dayOfWeek == today && b.dayOfWeek == today) ||
-          (a.dayOfWeek == null && b.dayOfWeek == null)) {
-        return 0;
-      }
-      // 'a' is today's workout
-      if (a.dayOfWeek == today) {
-        return -1;
-      }
-      // 'b' is today's workout
-      if (b.dayOfWeek == today) {
-        return 1;
-      }
-      // 'a' doesn't have a dayOfWeek
-      if (a.dayOfWeek == null) {
-        return 1;
-      }
-      // 'b' doesn't have a dayOfWeek
-      if (b.dayOfWeek == null) {
-        return -1;
-      }
-      // Both have a dayOfWeek but neither is today's workout
-      return a.dayOfWeek!.compareTo(b.dayOfWeek!);
-    });
-
-    return Scr1WorkoutList(workouts: unsortedWorkouts);
+    return Scr1WorkoutList(workouts: workouts);
   }
+
 
   bool get isEmpty => workouts.isEmpty;
 }

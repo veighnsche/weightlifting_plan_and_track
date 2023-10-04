@@ -120,7 +120,7 @@ class ExerciseCard extends StatelessWidget {
       return _buildNoWorkoutsText();
     }
 
-    String workoutsText = _generateWorkoutsText();
+    List<TextSpan> workoutsSpans = _generateWorkoutsTextSpans();
 
     return Row(
       children: [
@@ -132,11 +132,14 @@ class ExerciseCard extends StatelessWidget {
         const SizedBox(width: 8.0), // Spacing between icon and text.
         Expanded(
           // To ensure the text does not overflow.
-          child: Text(
-            workoutsText,
-            style: TextStyle(
-              color: Colors.blueGrey[700],
-              fontWeight: FontWeight.bold, // Bold font weight
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 16, // Setting font size to 16.
+                color: Colors.blueGrey[700],
+                fontWeight: FontWeight.bold, // Default to bold font weight.
+              ),
+              children: workoutsSpans,
             ),
             overflow: TextOverflow.ellipsis, // Handle potential overflow.
           ),
@@ -145,17 +148,29 @@ class ExerciseCard extends StatelessWidget {
     );
   }
 
-  String _generateWorkoutsText() {
-    // Combine the names of the first 3 workouts (or fewer) into a single string.
-    String combinedWorkouts =
-        exercise.workouts.take(3).map((w) => w.name).join(', ');
+  List<TextSpan> _generateWorkoutsTextSpans() {
+    List<TextSpan> spans = [];
 
-    // If there are more than 3 workouts, append "+X more" to the string.
-    if (exercise.workouts.length > 3) {
-      combinedWorkouts += ', +${exercise.workouts.length - 3} more';
+    for (var i = 0; i < exercise.workouts.take(3).length; i++) {
+      var workout = exercise.workouts[i];
+      if (i != 0) {
+        spans.add(const TextSpan(text: ', '));
+      }
+      spans.add(TextSpan(text: workout.name));
+      if (workout.workingWeight == null) {
+        continue;
+      }
+      spans.add(TextSpan(
+          text: ' ${workout.workingWeight}',
+          style: const TextStyle(fontWeight: FontWeight.normal)));
+      spans.add(const TextSpan(text: 'kg', style: TextStyle(fontSize: 12.0)));
     }
 
-    return combinedWorkouts;
+    if (exercise.workouts.length > 3) {
+      spans.add(TextSpan(text: ', +${exercise.workouts.length - 3} more'));
+    }
+
+    return spans;
   }
 
   Widget _buildNoWorkoutsText() {

@@ -1,3 +1,5 @@
+import '../../../utils/dates.dart';
+
 class Scr2ExerciseList {
   final List<Scr2ExerciseItem> exercises;
 
@@ -31,14 +33,15 @@ class Scr2ExerciseItem {
 
   factory Scr2ExerciseItem.fromJson(Map<String, dynamic> json) {
     return Scr2ExerciseItem(
-      exerciseId: json['exercise_id'],
-      name: json['name'],
-      note: json['note'],
-      personalRecord: json['wpt_completed_sets_aggregate']['aggregate']['max']
-          ['personalRecord'],
-      workouts:
-          (json['workouts'] as List).map((e) => Scr2WorkoutItem.fromJson(e)).toList(),
-    );
+        exerciseId: json['exercise_id'],
+        name: json['name'],
+        note: json['note'],
+        personalRecord: json['wpt_completed_sets_aggregate']['aggregate']['max']
+            ['personalRecord'],
+        workouts: (json['workouts'] as List)
+            .map((e) => Scr2WorkoutItem.fromJson(e))
+            .toList()
+          ..sort(sortByDayOfWeek));
   }
 }
 
@@ -60,7 +63,8 @@ class Scr2WorkoutItem {
         json['wpt_set_references'].isNotEmpty &&
         json['wpt_set_references'][0]['wpt_set_details'] != null &&
         json['wpt_set_references'][0]['wpt_set_details'].isNotEmpty) {
-      workingWeight = json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
+      workingWeight =
+          json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
     }
 
     return Scr2WorkoutItem(

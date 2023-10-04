@@ -20,7 +20,7 @@ class AppWorkoutService {
           name
           day_of_week
           note
-          wpt_workout_exercises(limit: 3) {
+          wpt_workout_exercises(limit: 3, order_by: {order_number: asc}) {
             wpt_exercise {
               name
             }
