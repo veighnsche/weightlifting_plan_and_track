@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/drawer_content.dart';
+import '../drawer_content.dart';
 
 class ChatShell extends StatefulWidget {
   final Widget body;

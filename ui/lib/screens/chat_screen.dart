@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../core/chat_shell.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/chat_widget.dart';
+import '../widgets/shells/chat_shell.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});

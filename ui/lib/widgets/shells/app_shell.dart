@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/chat_provider.dart';
-import '../widgets/chat/chat_sheet.dart';
-import '../widgets/drawer_content.dart';
-import 'bottom_navigation_bar.dart';
+import '../../providers/chat_provider.dart';
+import '../bottom_navigation_bar.dart';
+import '../chat/chat_sheet.dart';
+import '../drawer_content.dart';
 
 class AppShell extends StatefulWidget {
   final Widget body;

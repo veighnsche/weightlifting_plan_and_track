@@ -12,7 +12,7 @@ class AppExerciseListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Scr2ExerciseList>(
-      stream: AppExerciseService().subscribeToExerciseListScreen(),
+      stream: AppExerciseService().exerciseListSubscription(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

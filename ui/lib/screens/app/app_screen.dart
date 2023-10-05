@@ -3,8 +3,8 @@ import 'package:weightlifting_plan_and_track/screens/app/exercise_list_screen.da
 import 'package:weightlifting_plan_and_track/screens/app/search_screen.dart';
 import 'package:weightlifting_plan_and_track/screens/app/workout_list_screen.dart';
 
-import '../../core/app_shell.dart';
-import '../../core/bottom_navigation_bar.dart';
+import '../../widgets/bottom_navigation_bar.dart';
+import '../../widgets/shells/app_shell.dart';
 import 'completed_list_screen.dart';
 
 class AppScreen extends StatefulWidget {

@@ -9,7 +9,7 @@ class AppExerciseService {
   final ApiService _apiService = ApiService();
   final GraphQLService _graphQLService = GraphQLService();
 
-  Stream<Scr2ExerciseList> subscribeToExerciseListScreen() {
+  Stream<Scr2ExerciseList> exerciseListSubscription() {
     // language=GraphQL
     const String getExercisesSubscription = r"""
       subscription GetExercises {
