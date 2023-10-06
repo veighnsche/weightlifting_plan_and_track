@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../animations/card_animation.dart';
 import '../../models/app/screen_models/workout_list.dart';
 import '../../services/app/workout_service.dart';
-import '../../widgets/app/workout_card.dart';
+import '../../widgets/app/scr1_workout_card.dart';
 
 class AppWorkoutListScreen extends StatelessWidget {
   const AppWorkoutListScreen({super.key});
@@ -46,9 +46,10 @@ class AppWorkoutListScreen extends StatelessWidget {
           // Ensure unique keys for each card
           duration: const Duration(milliseconds: 400),
           delay: Duration(milliseconds: 100 * index),
-          child: WorkoutCard(workout: workouts[index]),
+          child: Scr1WorkoutCard(workout: workouts[index]),
         );
       },
     );
   }
+
 }

@@ -82,9 +82,10 @@ final ThemeData chatAppTheme = ThemeData(
     elevation: 4.0,
     margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
   ),
+
   dividerTheme: DividerThemeData(
-    space: 0.5,
-    thickness: 1,
+    space: 0,
+    thickness: 8.0,
     color: Colors.blueGrey[200],
   ),
 );

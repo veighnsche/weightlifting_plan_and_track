@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../animations/card_animation.dart';
 import '../../models/app/screen_models/exercise_list.dart';
 import '../../services/app/exercise_service.dart';
-import '../../widgets/app/exercise_card.dart';
+import '../../widgets/app/scr2_exercise_card.dart';
 
 class AppExerciseListScreen extends StatelessWidget {
   const AppExerciseListScreen({super.key});
@@ -48,7 +48,7 @@ class AppExerciseListScreen extends StatelessWidget {
           key: ValueKey(exercises[index].exerciseId),
           duration: const Duration(milliseconds: 400),
           delay: Duration(milliseconds: 100 * index),
-          child: ExerciseCard(exercise: exercises[index]),
+          child: Scr2ExerciseCard(exercise: exercises[index]),
         );
       },
     );

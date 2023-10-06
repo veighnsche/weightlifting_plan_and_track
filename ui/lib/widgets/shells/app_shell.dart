@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../providers/chat_provider.dart';
 import '../bottom_navigation_bar.dart';
-import '../chat/chat_sheet.dart';
+import '../chat/chat_bottom_sheet.dart';
 import '../drawer_content.dart';
 
 class AppShell extends StatefulWidget {
@@ -25,27 +23,21 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isBottomSheetOpen = false;
+  late final ChatBottomSheet _chatBottomSheet;
 
-  void _showBottomSheet() {
-    String name = routeNames[widget.selectedIndex];
-    Provider.of<ChatProvider>(context, listen: false)
-        .newChat("Chatting about $name");
+  @override
+  void initState() {
+    super.initState();
+    _chatBottomSheet = ChatBottomSheet(
+      context: context,
+      scaffoldKey: _scaffoldKey,
+      onSheetClosed: _handleSheetClosed,
+    );
+  }
 
-    _scaffoldKey.currentState!
-        .showBottomSheet((context) {
-          return const ChatSheet();
-        })
-        .closed
-        .then((value) {
-          // This callback is called when the bottom sheet is closed
-          setState(() {
-            _isBottomSheetOpen = false;
-          });
-        });
-
-    // Update the state to reflect that the bottom sheet is open
+  void _handleSheetClosed() {
     setState(() {
-      _isBottomSheetOpen = true;
+      _isBottomSheetOpen = false;
     });
   }
 
@@ -71,7 +63,12 @@ class _AppShellState extends State<AppShell> {
           !_isBottomSheetOpen ? widget.bottomNavigationBar : null,
       floatingActionButton: !_isBottomSheetOpen
           ? FloatingActionButton(
-              onPressed: () => _showBottomSheet(),
+              onPressed: () {
+                _chatBottomSheet.show(name: routeNames[widget.selectedIndex]);
+                setState(() {
+                  _isBottomSheetOpen = true;
+                });
+              },
               child: const Icon(Icons.chat),
             )
           : null,

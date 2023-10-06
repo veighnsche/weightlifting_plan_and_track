@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import '../../models/app/screen_models/exercise_list.dart';
 import '../diagonal_clipper.dart';
 
-class ExerciseCard extends StatelessWidget {
+class Scr2ExerciseCard extends StatelessWidget {
   final Scr2ExerciseItem exercise;
 
-  const ExerciseCard({super.key, required this.exercise});
+  const Scr2ExerciseCard({super.key, required this.exercise});
 
   @override
   Widget build(BuildContext context) {

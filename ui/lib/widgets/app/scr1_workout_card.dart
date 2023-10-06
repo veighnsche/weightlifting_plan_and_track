@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../models/app/screen_models/workout_list.dart';
 import '../diagonal_clipper.dart';
 
-class WorkoutCard extends StatelessWidget {
+class Scr1WorkoutCard extends StatelessWidget {
   final Scr1WorkoutItem workout;
 
-  const WorkoutCard({super.key, required this.workout});
+  const Scr1WorkoutCard({super.key, required this.workout});
 
   @override
   Widget build(BuildContext context) {
@@ -29,63 +29,76 @@ class WorkoutCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12.0), // Match card's border radius
-              child: const Opacity(
-                opacity: 0.3, // Adjust opacity as needed
-                child: Icon(
-                  Icons.directions_run,
-                  color: Colors.orange,
-                  size: 60, // Adjust size as needed
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12.0),
+          onTap: () {
+            Navigator.pushNamed(context, '/app/workouts/:workout_id',
+                arguments: {
+                  'workout_id': workout.workoutId,
+                });
+          },
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  // Match card's border radius
+                  child: const Opacity(
+                    opacity: 0.3,
+                    child: Icon(
+                      Icons.directions_run,
+                      color: Colors.orange,
+                      size: 60,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: ClipPath(
-              clipper: DiagonalClipper(),
-              child: Container(
-                width: 48, // Adjust as necessary
-                height: 48, // Adjust as necessary
-                color: Colors.blueGrey.shade400,
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: ClipPath(
+                  clipper: DiagonalClipper(),
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    color: Colors.blueGrey.shade400,
+                  ),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isToday) _buildTodayIndicator(),
+                    _buildName(),
+                    const SizedBox(height: 8.0),
+                    _buildExerciseList(),
+                    const SizedBox(height: 8.0),
+                    if (workout.note != null) _buildNote(),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _buildDayOfWeek(),
+                ),
+              ),
+              const Positioned(
+                bottom: 2,
+                right: 2,
+                child: Icon(Icons.play_arrow, color: Colors.white, size: 24),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (isToday) _buildTodayIndicator(),
-                _buildName(),
-                const SizedBox(height: 8.0),
-                _buildExerciseList(),
-                const SizedBox(height: 8.0),
-                if (workout.note != null) _buildNote(),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: _buildDayOfWeek(),
-            ),
-          ),
-          const Positioned(
-            bottom: 2,
-            right: 2,
-            child: Icon(Icons.play_arrow, color: Colors.white, size: 24),
-          ),
-        ],
+        ),
       ),
     );
   }

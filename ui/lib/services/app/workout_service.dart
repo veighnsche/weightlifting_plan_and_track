@@ -76,8 +76,12 @@ class AppWorkoutService {
             }
             wpt_set_references(order_by: {order_number: asc}) {
               wpt_set_details(order_by: {created_at: desc}, limit: 1) {
-                repsPerSet: rep_count
-                weightPerSet: weight
+                rep_count
+                weight
+                weight_text
+                weight_adjustment
+                rest_time_before
+                note
               }
             }
           }

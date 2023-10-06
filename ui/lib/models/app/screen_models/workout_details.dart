@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../../../utils/dates.dart';
 
 class Scr3WorkoutDetails {
@@ -20,20 +22,7 @@ class Scr3WorkoutDetails {
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);
 
   factory Scr3WorkoutDetails.fromJson(Map<String, dynamic> json) {
-    var workout = json['wpt_workouts_by_pk'];
-
-    return Scr3WorkoutDetails(
-      workoutId: workout['workout_id'],
-      name: workout['name'],
-      dayOfWeek: workout['day_of_week'] as int?,
-      note: workout['note'],
-      exercises: (workout['wpt_workout_exercises'] as List)
-          .map((e) => Scr3Exercise.fromJson(e))
-          .toList(),
-      completedWorkouts: (workout['wpt_completed_workouts'] as List)
-          .map((e) => Scr3CompletedWorkout.fromJson(e))
-          .toList(),
-    );
+    return scr3WorkoutDetailsFromJson(json);
   }
 }
 
@@ -42,41 +31,30 @@ class Scr3Exercise {
   final String name;
   final String? note;
   final int setsCount;
-  final int? averageReps;
-  final int? highestWeight;
+  final int maxReps;
+  final int totalReps;
+  final int? minWeight;
+  final int? maxWeight;
+  final int? maxRest;
+  final int? totalVolume;
+  final List<Scr3Sets> sets;
 
   Scr3Exercise({
     required this.exerciseId,
     required this.name,
     this.note,
     required this.setsCount,
-    this.averageReps,
-    this.highestWeight,
+    required this.maxReps,
+    required this.totalReps,
+    this.minWeight,
+    this.maxWeight,
+    this.maxRest,
+    this.totalVolume,
+    required this.sets,
   });
 
   factory Scr3Exercise.fromJson(Map<String, dynamic> json) {
-    List<int> repsList = [];
-    List<int> weightList = [];
-
-    for (var setRef in json['wpt_set_references']) {
-      if (setRef['wpt_set_details'] != null &&
-          setRef['wpt_set_details'].isNotEmpty) {
-        repsList.add(setRef['wpt_set_details'][0]['repsPerSet']);
-        weightList.add(setRef['wpt_set_details'][0]['weightPerSet']);
-      }
-    }
-
-    int avgReps = (repsList.reduce((a, b) => a + b) / repsList.length).round();
-    int maxWeight = weightList.reduce((a, b) => a > b ? a : b);
-
-    return Scr3Exercise(
-      exerciseId: json['wpt_exercise']['exercise_id'],
-      name: json['wpt_exercise']['name'],
-      note: json['wpt_exercise']['note'],
-      setsCount: json['wpt_set_references'].length,
-      averageReps: avgReps,
-      highestWeight: maxWeight,
-    );
+    return scr3ExerciseFromJson(json);
   }
 }
 
@@ -96,13 +74,127 @@ class Scr3CompletedWorkout {
   });
 
   factory Scr3CompletedWorkout.fromJson(Map<String, dynamic> json) {
-    return Scr3CompletedWorkout(
-      completedWorkoutId: json['completed_workout_id'],
-      startedAt: json['started_at'],
-      note: json['note'],
-      isActive: json['is_active'],
-      completedRepsAmount:
-      json['wpt_completed_sets_aggregate']['aggregate']['completedRepsAmount'],
-    );
+    return scr3CompletedWorkoutFromJson(json);
   }
+}
+
+class Scr3Sets {
+  final int reps;
+  final int? weight;
+  final String? weightText;
+  final Map<int, int>? weightAdjustments;
+  final String? note;
+
+  Scr3Sets({
+    required this.reps,
+    this.weight,
+    this.weightText,
+    this.weightAdjustments,
+    this.note,
+  });
+
+  factory Scr3Sets.fromJson(Map<String, dynamic> json) {
+    return scr3setsFromJson(json);
+  }
+}
+
+Scr3WorkoutDetails scr3WorkoutDetailsFromJson(Map<String, dynamic> json) {
+  var workout = json['wpt_workouts_by_pk'];
+
+  return Scr3WorkoutDetails(
+    workoutId: workout['workout_id'],
+    name: workout['name'],
+    dayOfWeek: workout['day_of_week'] as int?,
+    note: workout['note'],
+    exercises: (workout['wpt_workout_exercises'] as List)
+        .map((e) => Scr3Exercise.fromJson(e))
+        .toList(),
+    completedWorkouts: (workout['wpt_completed_workouts'] as List)
+        .map((e) => Scr3CompletedWorkout.fromJson(e))
+        .toList(),
+  );
+}
+
+Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
+  List<int> repsList = [];
+  List<int> volumeList = [];
+  List<int> restTimeBeforeList = [];
+
+  int totalVolume = 0;
+  int maxReps = 0;
+  int? minWeight;
+  int maxWeight = 0;
+  int totalReps = 0;
+  int maxRest = 0;
+
+  for (var setRef in json['wpt_set_references']) {
+    var details = setRef['wpt_set_details']?.isNotEmpty == true
+        ? setRef['wpt_set_details'][0]
+        : null;
+
+    if (details != null) {
+      int reps = details['rep_count'];
+      int? weight = details['weight'];
+      int? restTimeBefore = details['rest_time_before'];
+
+      repsList.add(reps);
+      totalReps += reps;
+      maxReps = max(maxReps, reps);
+
+      if (weight != null) {
+        minWeight ??= weight; // Set minWeight the first time a weight value is encountered
+        minWeight = min(minWeight, weight);
+        maxWeight = max(maxWeight, weight);
+
+        int volume = reps * weight;
+        volumeList.add(volume);
+        totalVolume += volume;
+      }
+
+      if (restTimeBefore != null) {
+        restTimeBeforeList.add(restTimeBefore);
+        maxRest = max(maxRest, restTimeBefore);
+      }
+    }
+  }
+
+  return Scr3Exercise(
+    exerciseId: json['wpt_exercise']['exercise_id'],
+    name: json['wpt_exercise']['name'],
+    note: json['wpt_exercise']['note'],
+    setsCount: json['wpt_set_references'].length,
+    maxReps: maxReps,
+    totalReps: totalReps,
+    minWeight: minWeight ?? 0,  // Handle the case where no weight value is encountered
+    maxWeight: maxWeight,
+    maxRest: maxRest,
+    totalVolume: totalVolume,
+    sets: (json['wpt_set_references'] as List)
+        .map((e) => Scr3Sets.fromJson(e['wpt_set_details'][0]))
+        .toList(),
+  );
+}
+
+
+
+Scr3CompletedWorkout scr3CompletedWorkoutFromJson(Map<String, dynamic> json) {
+  return Scr3CompletedWorkout(
+    completedWorkoutId: json['completed_workout_id'],
+    startedAt: json['started_at'],
+    note: json['note'],
+    isActive: json['is_active'],
+    completedRepsAmount: json['wpt_completed_sets_aggregate']['aggregate']
+            ['completedRepsAmount'] ??
+        0,
+  );
+}
+
+Scr3Sets scr3setsFromJson(Map<String, dynamic> json) {
+  return Scr3Sets(
+    reps: json['rep_count'],
+    weight: json['weight'],
+    weightText: json['weightText'],
+    weightAdjustments: json['weightAdjustments'],
+    note: json['note'],
+  );
 }

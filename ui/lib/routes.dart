@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:weightlifting_plan_and_track/screens/app/exercise_form_screen.dart';
 
+import 'screens/app/exercise_form_screen.dart';
+import 'screens/app/workout_detail_screen.dart';
 import 'screens/app/workout_form_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/history_screen.dart';
@@ -15,5 +16,12 @@ Map<String, Widget Function(BuildContext)> routes = {
   '/settings': (context) => const SettingsScreen(),
   '/user/edit': (context) => UserDetailsEditScreen(),
   '/app/workouts/create': (context) => const AppWorkoutFormScreen(),
+  '/app/workouts/:workout_id': (context) {
+    final routeArgs =
+        ModalRoute.of(context)?.settings.arguments as Map<String, String>;
+    final workoutId = routeArgs['workout_id']!;
+
+    return AppWorkoutDetailScreen(workoutId: workoutId);
+  },
   '/app/exercises/create': (context) => const AppExerciseFormScreen(),
 };
