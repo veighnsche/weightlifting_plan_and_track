@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/app/screen_models/workout_details.dart';
+import '../../models/app/screen_models/scr3_workout_details.dart';
 import '../../services/app/workout_service.dart';
 import '../../widgets/add_separators.dart';
 import '../../widgets/app/scr3_completed_workout_card.dart';

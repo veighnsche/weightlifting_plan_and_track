@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/screen_models/workout_details.dart';
-import '../../models/app/screen_models/workout_list.dart';
+import '../../models/app/screen_models/scr3_workout_details.dart';
+import '../../models/app/screen_models/scr1_workout_list.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
 
@@ -75,6 +75,7 @@ class AppWorkoutService {
               note
             }
             wpt_set_references(order_by: {order_number: asc}) {
+              order_number
               wpt_set_details(order_by: {created_at: desc}, limit: 1) {
                 rep_count
                 weight

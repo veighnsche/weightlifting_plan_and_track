@@ -37,7 +37,7 @@ class Scr3Exercise {
   final int? maxWeight;
   final int? maxRest;
   final int? totalVolume;
-  final List<Scr3Sets> sets;
+  final List<Scr3Set> sets;
 
   Scr3Exercise({
     required this.exerciseId,
@@ -78,14 +78,16 @@ class Scr3CompletedWorkout {
   }
 }
 
-class Scr3Sets {
+class Scr3Set {
+  final int setNumber;
   final int reps;
   final int? weight;
   final String? weightText;
   final Map<int, int>? weightAdjustments;
   final String? note;
 
-  Scr3Sets({
+  Scr3Set({
+    required this.setNumber,
     required this.reps,
     this.weight,
     this.weightText,
@@ -93,8 +95,8 @@ class Scr3Sets {
     this.note,
   });
 
-  factory Scr3Sets.fromJson(Map<String, dynamic> json) {
-    return scr3setsFromJson(json);
+  factory Scr3Set.fromJson(int setNumber, Map<String, dynamic> json) {
+    return scr3setsFromJson(setNumber, json);
   }
 }
 
@@ -142,7 +144,8 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
       maxReps = max(maxReps, reps);
 
       if (weight != null) {
-        minWeight ??= weight; // Set minWeight the first time a weight value is encountered
+        minWeight ??=
+            weight; // Set minWeight the first time a weight value is encountered
         minWeight = min(minWeight, weight);
         maxWeight = max(maxWeight, weight);
 
@@ -165,17 +168,17 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
     setsCount: json['wpt_set_references'].length,
     maxReps: maxReps,
     totalReps: totalReps,
-    minWeight: minWeight ?? 0,  // Handle the case where no weight value is encountered
+    minWeight: minWeight ?? 0,
+    // Handle the case where no weight value is encountered
     maxWeight: maxWeight,
     maxRest: maxRest,
     totalVolume: totalVolume,
     sets: (json['wpt_set_references'] as List)
-        .map((e) => Scr3Sets.fromJson(e['wpt_set_details'][0]))
+        .map((e) =>
+            Scr3Set.fromJson(e['order_number'] + 1, e['wpt_set_details'][0]))
         .toList(),
   );
 }
-
-
 
 Scr3CompletedWorkout scr3CompletedWorkoutFromJson(Map<String, dynamic> json) {
   return Scr3CompletedWorkout(
@@ -189,8 +192,9 @@ Scr3CompletedWorkout scr3CompletedWorkoutFromJson(Map<String, dynamic> json) {
   );
 }
 
-Scr3Sets scr3setsFromJson(Map<String, dynamic> json) {
-  return Scr3Sets(
+Scr3Set scr3setsFromJson(int setNumber, Map<String, dynamic> json) {
+  return Scr3Set(
+    setNumber: setNumber,
     reps: json['rep_count'],
     weight: json['weight'],
     weightText: json['weightText'],

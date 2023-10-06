@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/app/screen_models/workout_details.dart';
+import '../../models/app/screen_models/scr3_workout_details.dart';
 
 class Scr3CompletedWorkoutCard extends StatelessWidget {
   final Scr3CompletedWorkout completedWorkout;

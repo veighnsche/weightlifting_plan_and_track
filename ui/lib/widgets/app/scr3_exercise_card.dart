@@ -1,16 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/utils/scr3_exercise_card_utils.dart';
+import 'package:weightlifting_plan_and_track/utils/scr3_utils.dart';
 
-import '../../models/app/screen_models/workout_details.dart';
+import '../../models/app/screen_models/scr3_workout_details.dart';
+import '../detail_box.dart';
+import 'scr3_set_card.dart';
 
-class Scr3WorkoutExerciseCard extends StatelessWidget {
+class Scr3WorkoutExerciseCard extends StatefulWidget {
   final Scr3Exercise exercise;
 
-  static const double _paddingSize = 16.0;
-  static const double _iconSize = 30.0;
-  static const double _detailBoxHeight = 80.0;
+  static const double paddingSize = 16.0;
+  static const double iconSize = 30.0;
+  static const double detailBoxHeight = 80.0;
 
   const Scr3WorkoutExerciseCard({
     Key? key,
@@ -18,22 +20,65 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<Scr3WorkoutExerciseCard> createState() =>
+      _Scr3WorkoutExerciseCardState();
+}
+
+class _Scr3WorkoutExerciseCardState extends State<Scr3WorkoutExerciseCard>
+    with SingleTickerProviderStateMixin {
+
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+    _controller.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: _paddingSize),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
         _buildName(),
-        if (exercise.note != null) _buildNote(),
-        const SizedBox(height: _paddingSize),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
         _buildExerciseDetails(),
-        const SizedBox(height: 2 * _paddingSize),
-
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+        if (widget.exercise.note != null) _buildNote(),
+        const SizedBox(height: 2 * Scr3WorkoutExerciseCard.paddingSize),
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: _paddingSize),
+          padding: EdgeInsets.symmetric(
+              horizontal: Scr3WorkoutExerciseCard.paddingSize),
           child: Divider(color: Colors.grey, thickness: 1.5),
-        ), // Adding the divider
-        _buildActionButtons() // Adding the row of buttons
+        ),
+        _buildActionButtons(),
+        SizeTransition(
+          sizeFactor: _animation,
+          axisAlignment: 1.0,
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Scr3WorkoutExerciseCard.paddingSize),
+                child: Divider(color: Colors.grey, thickness: 1.5),
+              ),
+              const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+              ..._buildSets()
+            ],
+          ),
+        )
       ],
     );
   }
@@ -41,10 +86,10 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
   Widget _buildName() {
     return _paddedRow([
       _opacityRotatedIcon(Icons.fitness_center),
-      const SizedBox(width: _paddingSize),
+      const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
       Expanded(
         child: Text(
-          exercise.name,
+          widget.exercise.name,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -61,22 +106,22 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
     List<Widget> boxes = [];
 
     HandleExerciseDetails(
-      exercise: exercise,
-      addEntry: (String key, String value, IconData iconData) {
+      exercise: widget.exercise,
+      addEntry: (String name, String value, IconData iconData) {
         boxes.add(
-          _detailBox(key, value, iconData),
+          DetailBox(name: name, value: value, icon: iconData),
         );
       },
     );
 
     return SizedBox(
-      height: _detailBoxHeight,
+      height: Scr3WorkoutExerciseCard.detailBoxHeight,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          const SizedBox(width: _paddingSize),
+          const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
           ...boxes,
-          const SizedBox(width: _paddingSize),
+          const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
         ],
       ),
     );
@@ -85,7 +130,7 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
   Padding _buildNote() {
     return _padding(
       Text(
-        exercise.note!,
+        widget.exercise.note!,
         style: TextStyle(
           color: Colors.blueGrey[600],
           fontStyle: FontStyle.italic,
@@ -97,7 +142,8 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
   // Helper Functions
   Padding _padding(Widget child) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _paddingSize),
+      padding: const EdgeInsets.symmetric(
+          horizontal: Scr3WorkoutExerciseCard.paddingSize),
       child: child,
     );
   }
@@ -105,7 +151,7 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
   Row _paddedRow(List<Widget> children) {
     return Row(
       children: [
-        const SizedBox(width: _paddingSize),
+        const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
         ...children,
       ],
     );
@@ -119,47 +165,8 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
         child: Icon(
           icon,
           color: Colors.black,
-          size: _iconSize,
+          size: Scr3WorkoutExerciseCard.iconSize,
         ),
-      ),
-    );
-  }
-
-  Widget _detailBox(String key, String value, IconData icon) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
-      width: _detailBoxHeight,
-      height: _detailBoxHeight,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Background Icon
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4.0),
-            child: Transform.rotate(
-              angle: (345 / 360) * 2 * pi,
-              child: Icon(
-                icon,
-                size: _detailBoxHeight,
-                color: Colors.grey[200],
-              ),
-            ),
-          ),
-          // Key and Value Texts
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(key, textAlign: TextAlign.center),
-              Text(value,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -170,13 +177,33 @@ class Scr3WorkoutExerciseCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          TextButton.icon(
-            label: const Text("Sets"),
-            icon: const Icon(Icons.format_list_numbered),
-            onPressed: () {},
+          Expanded(
+            child: TextButton.icon(
+              label: const Text("Sets"),
+              icon: const Icon(Icons.format_list_numbered),
+              onPressed: () {
+                setState(() {
+                  if (_controller.status == AnimationStatus.completed) {
+                    _controller.reverse();
+                  } else {
+                    _controller.forward();
+                  }
+                });
+              },
+            ),
           ),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildSets() {
+    return widget.exercise.sets.map((set) => Scr3SetCard(set: set)).toList();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

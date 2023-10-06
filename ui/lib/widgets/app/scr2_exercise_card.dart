@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../models/app/screen_models/exercise_list.dart';
+import '../../models/app/screen_models/scr2_exercise_list.dart';
 import '../diagonal_clipper.dart';
 
 class Scr2ExerciseCard extends StatelessWidget {

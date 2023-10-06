@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/screen_models/exercise_list.dart';
+import '../../models/app/screen_models/scr2_exercise_list.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
 
