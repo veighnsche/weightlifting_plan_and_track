@@ -1,11 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/models/app/screen_models/scr3_workout_details.dart';
 
-class HandleExerciseDetails {
+import '../models/app/screen_models/scr3_workout_details.dart';
+
+class Scr3WorkoutBoxes {
+  final Scr3WorkoutDetails workout;
+  final Function(String name, String value, IconData iconData) addEntry;
+
+  Scr3WorkoutBoxes({required this.workout, required this.addEntry}) {
+    handleTotalExercises();
+    handleTotalSets();
+    handleTotalVolume();
+    handleTotalTime();
+  }
+
+  void handleTotalExercises() {
+    if (workout.totalExercises > 0) {
+      addEntry('Exercises', '${workout.totalExercises}', Icons.fitness_center);
+    }
+  }
+
+  void handleTotalSets() {
+    if (workout.totalSets > 0) {
+      addEntry('Sets', '${workout.totalSets}', Icons.format_list_numbered);
+    }
+  }
+
+  String formatVolume(double volume) {
+    if (volume >= 1000) {
+      return '${(volume / 1000).toStringAsFixed(1)}t';
+    } else {
+      return '${volume.toString()}kg';
+    }
+  }
+
+  void handleTotalVolume() {
+    if (workout.totalVolume > 0) {
+      addEntry(
+        'Volume',
+        formatVolume(workout.totalVolume.toDouble()),
+        Icons.volume_up,
+      );
+    }
+  }
+
+  void handleTotalTime() {
+    if (workout.totalTime > 0) {
+      final hours = (workout.totalTime / 3600).floor();
+      final remainingAfterHours = workout.totalTime % 3600;
+      final minutes = (remainingAfterHours / 60).floor();
+      final seconds = remainingAfterHours % 60;
+
+      String displayTime;
+
+      if (hours > 0) {
+        if (minutes == 0) {
+          displayTime = '${hours}h';
+        } else {
+          displayTime = '${hours}h ${minutes}m';
+        }
+      } else if (minutes > 0) {
+        if (seconds == 0) {
+          displayTime = '${minutes}m';
+        } else {
+          displayTime = '${minutes}m ${seconds}s';
+        }
+      } else {
+        displayTime = '${seconds}s';
+      }
+
+      addEntry('Time', displayTime, Icons.timer);
+    }
+  }
+}
+
+class Scr3ExerciseBoxes {
   final Scr3Exercise exercise;
   final Function(String name, String value, IconData iconData) addEntry;
 
-  HandleExerciseDetails({required this.exercise, required this.addEntry}) {
+  Scr3ExerciseBoxes({required this.exercise, required this.addEntry}) {
     handleSets();
     handleReps();
     handleWeight();
@@ -69,16 +141,14 @@ class HandleExerciseDetails {
   }
 }
 
-class HandleSetDetails {
+class Scr3SetBoxes {
   final Scr3Set setDetails;
   final Function(String name, String value, IconData iconData) addEntry;
 
-  HandleSetDetails({required this.setDetails, required this.addEntry}) {
+  Scr3SetBoxes({required this.setDetails, required this.addEntry}) {
     handleSetNumber();
     handleReps();
     handleWeight();
-    // handleWeightText();
-    // handleWeightAdjustments();
     handleRest();
   }
 
@@ -99,21 +169,6 @@ class HandleSetDetails {
       addEntry('Weight', '${setDetails.weight}kg', Icons.line_weight);
     }
   }
-
-  // void handleWeightText() {
-  //   if (setDetails.weightText != null && setDetails.weightText!.isNotEmpty) {
-  //     addEntry('Weight Description', setDetails.weightText!, Icons.text_fields);
-  //   }
-  // }
-
-  // void handleWeightAdjustments() {
-  //   if (setDetails.weightAdjustments != null &&
-  //       setDetails.weightAdjustments!.isNotEmpty) {
-  //     // If you wish to show each adjustment you can iterate over the map
-  //     // For now, I'm just adding an entry to signify that adjustments exist
-  //     addEntry('Adjustments', 'Present', Icons.tune);
-  //   }
-  // }
 
   void handleRest() {
     if (setDetails.restTimeBefore != null && setDetails.restTimeBefore! > 0) {

@@ -15,7 +15,7 @@ class Scr3SetCard extends StatelessWidget {
   Widget _buildSetDetails() {
     List<Widget> boxes = [];
 
-    HandleSetDetails(
+    Scr3SetBoxes(
       setDetails: set,
       addEntry: (String name, String value, IconData iconData) {
         boxes.add(

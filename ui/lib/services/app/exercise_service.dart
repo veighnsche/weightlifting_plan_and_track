@@ -56,6 +56,8 @@ class AppExerciseService {
     });
   }
 
+
+
   Future<bool> upsert(Map<String, dynamic> exercise) async {
     try {
       final response = await _apiService.post(

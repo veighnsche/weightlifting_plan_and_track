@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/widgets/app/scr3_workout_card.dart';
 
 import '../../models/app/screen_models/scr3_workout_details.dart';
 import '../../services/app/workout_service.dart';
@@ -53,7 +54,7 @@ class AppWorkoutDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16.0),
-            _buildWorkoutInfo(workout),
+            Scr3WorkoutCard(workout: workout),
             const SizedBox(height: 32.0),
             _buildSectionTitle('Exercises', Colors.blueGrey[200]!),
             ..._buildExercises(workout),
@@ -61,51 +62,6 @@ class AppWorkoutDetailScreen extends StatelessWidget {
             ..._buildCompletedWorkouts(workout),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildWorkoutInfo(Scr3WorkoutDetails workout) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  workout.name,
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (workout.dayOfWeekName != null)
-                Row(
-                  children: [
-                    const Icon(Icons.calendar_today, size: 18.0),
-                    const SizedBox(width: 4.0),
-                    Text(
-                      workout.dayOfWeekName!,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-          const SizedBox(height: 16.0),
-          if (workout.note != null)
-            Text(
-              workout.note!,
-              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-            ),
-        ],
       ),
     );
   }
