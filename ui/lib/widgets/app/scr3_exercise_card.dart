@@ -26,7 +26,6 @@ class Scr3WorkoutExerciseCard extends StatefulWidget {
 
 class _Scr3WorkoutExerciseCardState extends State<Scr3WorkoutExerciseCard>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -57,28 +56,14 @@ class _Scr3WorkoutExerciseCardState extends State<Scr3WorkoutExerciseCard>
         _buildExerciseDetails(),
         const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
         if (widget.exercise.note != null) _buildNote(),
-        const SizedBox(height: 2 * Scr3WorkoutExerciseCard.paddingSize),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
         const Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Scr3WorkoutExerciseCard.paddingSize),
           child: Divider(color: Colors.grey, thickness: 1.5),
         ),
         _buildActionButtons(),
-        SizeTransition(
-          sizeFactor: _animation,
-          axisAlignment: 1.0,
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Scr3WorkoutExerciseCard.paddingSize),
-                child: Divider(color: Colors.grey, thickness: 1.5),
-              ),
-              const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
-              ..._buildSets()
-            ],
-          ),
-        )
+        _buildSets(),
       ],
     );
   }
@@ -197,8 +182,15 @@ class _Scr3WorkoutExerciseCardState extends State<Scr3WorkoutExerciseCard>
     );
   }
 
-  List<Widget> _buildSets() {
-    return widget.exercise.sets.map((set) => Scr3SetCard(set: set)).toList();
+  Widget _buildSets() {
+    return SizeTransition(
+      sizeFactor: _animation,
+      axisAlignment: 1.0,
+      child: Column(
+        children:
+            widget.exercise.sets.map((set) => Scr3SetCard(set: set)).toList(),
+      ),
+    );
   }
 
   @override

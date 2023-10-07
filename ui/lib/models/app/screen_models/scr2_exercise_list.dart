@@ -48,7 +48,7 @@ class Scr2ExerciseItem {
 class Scr2WorkoutItem {
   final String name;
   final int? dayOfWeek;
-  final int? workingWeight;
+  final double? workingWeight;
 
   Scr2WorkoutItem({
     required this.name,
@@ -59,14 +59,18 @@ class Scr2WorkoutItem {
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);
 
   factory Scr2WorkoutItem.fromJson(Map<String, dynamic> json) {
-    int? workingWeight;
+    double? workingWeight;
 
     if (json['wpt_set_references'] != null &&
         json['wpt_set_references'].isNotEmpty &&
         json['wpt_set_references'][0]['wpt_set_details'] != null &&
         json['wpt_set_references'][0]['wpt_set_details'].isNotEmpty) {
-      workingWeight =
-          json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
+      var ww = json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
+      if (ww is int) {
+        workingWeight = ww.toDouble();
+      } else if (ww is double) {
+        workingWeight = (ww * 10).roundToDouble() / 10;
+      }
     }
 
     return Scr2WorkoutItem(

@@ -52,7 +52,9 @@ class AppWorkoutDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 16.0),
             _buildWorkoutInfo(workout),
+            const SizedBox(height: 32.0),
             _buildSectionTitle('Exercises', Colors.blueGrey[200]!),
             ..._buildExercises(workout),
             _buildSectionTitle('Completed Workouts', Colors.blueGrey[200]!),
@@ -67,7 +69,6 @@ class AppWorkoutDetailScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Column(

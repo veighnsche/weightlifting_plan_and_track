@@ -79,7 +79,6 @@ class HandleSetDetails {
     handleWeight();
     handleWeightText();
     handleWeightAdjustments();
-    handleNote();
   }
 
   void handleSetNumber() {
@@ -112,12 +111,6 @@ class HandleSetDetails {
       // If you wish to show each adjustment you can iterate over the map
       // For now, I'm just adding an entry to signify that adjustments exist
       addEntry('Adjustments', 'Present', Icons.tune);
-    }
-  }
-
-  void handleNote() {
-    if (setDetails.note != null && setDetails.note!.isNotEmpty) {
-      addEntry('Note', setDetails.note!, Icons.note);
     }
   }
 }

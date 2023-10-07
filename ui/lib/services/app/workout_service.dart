@@ -76,6 +76,7 @@ class AppWorkoutService {
             }
             wpt_set_references(order_by: {order_number: asc}) {
               order_number
+              note
               wpt_set_details(order_by: {created_at: desc}, limit: 1) {
                 rep_count
                 weight

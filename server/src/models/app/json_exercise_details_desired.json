@@ -1,0 +1,82 @@
+{
+  "exercise": {
+    "name": "Dumbbell Arm Curl",
+    "note": "Isolation movement",
+    "workouts": [
+      {
+        "workout_id": "5feade00-aed1-42d8-b9a2-1f6cb203a5e5",
+        "name": "Chest",
+        "note": "Chest workout",
+        "day_of_week": 6
+      },
+      {
+        "workout_id": "b44e0445-d9f5-467a-91dd-bfbe572eb815",
+        "name": "Shoulders",
+        "note": "Shoulders workout",
+        "day_of_week": 2
+      }
+    ]
+  },
+  "completed_workouts": [
+    {
+      "completed_workout_id": "4df00521-c6cd-404b-9939-62d3600d55e4",
+      "started_at": "2023-10-04T22:08:51.508",
+      "note": null,
+      "is_active": false,
+      "completed_sets": -1,
+      "max_reps": -1,
+      "min_weight": -1,
+      "max_weight": -1,
+      "avg_rest_time_before": -1,
+      "completed_reps_amount": -1,
+      "total_volume": -1,
+      "planned_total_volume": -1,
+      "difference_in_total_volume": -1
+    },
+    {
+      "completed_workout_id": "2a573dbb-4df6-43ce-af31-824cd1838607",
+      "started_at": "2023-10-04T22:08:51.508",
+      "note": null,
+      "is_active": false,
+      "completed_sets": -1,
+      "max_reps": -1,
+      "min_weight": -1,
+      "max_weight": -1,
+      "avg_rest_time_before": -1,
+      "completed_reps_amount": -1,
+      "total_volume": -1,
+      "planned_total_volume": -1,
+      "difference_in_total_volume": -1
+    },
+    {
+      "completed_workout_id": "f788d85c-8878-4c93-8d74-73d121b03167",
+      "started_at": "2023-09-27T22:08:51.508",
+      "note": null,
+      "is_active": false,
+      "completed_sets": -1,
+      "max_reps": -1,
+      "min_weight": -1,
+      "max_weight": -1,
+      "avg_rest_time_before": -1,
+      "completed_reps_amount": -1,
+      "total_volume": -1,
+      "planned_total_volume": -1,
+      "difference_in_total_volume": -1
+    },
+    {
+      "completed_workout_id": "351a149d-8230-4eca-9d05-faa06ebafbb3",
+      "started_at": "2023-09-27T22:08:51.508",
+      "note": null,
+      "is_active": false,
+      "completed_sets": -1,
+      "max_reps": -1,
+      "min_weight": -1,
+      "max_weight": -1,
+      "avg_rest_time_before": -1,
+      "completed_reps_amount": -1,
+      "total_volume": -1,
+      "planned_total_volume": -1,
+      "difference_in_total_volume": -1
+    }
+  ]
+}

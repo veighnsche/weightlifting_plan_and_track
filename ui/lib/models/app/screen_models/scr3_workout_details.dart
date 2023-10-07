@@ -33,10 +33,10 @@ class Scr3Exercise {
   final int setsCount;
   final int maxReps;
   final int totalReps;
-  final int? minWeight;
-  final int? maxWeight;
+  final double? minWeight;
+  final double? maxWeight;
   final int? maxRest;
-  final int? totalVolume;
+  final double? totalVolume;
   final List<Scr3Set> sets;
 
   Scr3Exercise({
@@ -81,9 +81,9 @@ class Scr3CompletedWorkout {
 class Scr3Set {
   final int setNumber;
   final int reps;
-  final int? weight;
+  final double? weight;
   final String? weightText;
-  final Map<int, int>? weightAdjustments;
+  final Map<int, double>? weightAdjustments;
   final String? note;
 
   Scr3Set({
@@ -95,8 +95,8 @@ class Scr3Set {
     this.note,
   });
 
-  factory Scr3Set.fromJson(int setNumber, Map<String, dynamic> json) {
-    return scr3setsFromJson(setNumber, json);
+  factory Scr3Set.fromJson(Map<String, dynamic> json) {
+    return scr3setsFromJson(json);
   }
 }
 
@@ -119,13 +119,13 @@ Scr3WorkoutDetails scr3WorkoutDetailsFromJson(Map<String, dynamic> json) {
 
 Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
   List<int> repsList = [];
-  List<int> volumeList = [];
+  List<double> volumeList = [];
   List<int> restTimeBeforeList = [];
 
-  int totalVolume = 0;
+  double totalVolume = 0.0;
   int maxReps = 0;
-  int? minWeight;
-  int maxWeight = 0;
+  double? minWeight;
+  double maxWeight = 0.0;
   int totalReps = 0;
   int maxRest = 0;
 
@@ -136,7 +136,7 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
 
     if (details != null) {
       int reps = details['rep_count'];
-      int? weight = details['weight'];
+      double? weight = (details['weight'] as num?)?.toDouble();
       int? restTimeBefore = details['rest_time_before'];
 
       repsList.add(reps);
@@ -144,12 +144,11 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
       maxReps = max(maxReps, reps);
 
       if (weight != null) {
-        minWeight ??=
-            weight; // Set minWeight the first time a weight value is encountered
+        minWeight ??= weight;
         minWeight = min(minWeight, weight);
         maxWeight = max(maxWeight, weight);
 
-        int volume = reps * weight;
+        double volume = double.parse((reps * weight).toStringAsFixed(1));
         volumeList.add(volume);
         totalVolume += volume;
       }
@@ -168,14 +167,13 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
     setsCount: json['wpt_set_references'].length,
     maxReps: maxReps,
     totalReps: totalReps,
-    minWeight: minWeight ?? 0,
-    // Handle the case where no weight value is encountered
-    maxWeight: maxWeight,
+    minWeight:
+        minWeight != null ? double.parse(minWeight.toStringAsFixed(1)) : null,
+    maxWeight: double.parse(maxWeight.toStringAsFixed(1)),
     maxRest: maxRest,
-    totalVolume: totalVolume,
+    totalVolume: double.parse(totalVolume.toStringAsFixed(1)),
     sets: (json['wpt_set_references'] as List)
-        .map((e) =>
-            Scr3Set.fromJson(e['order_number'] + 1, e['wpt_set_details'][0]))
+        .map((e) => Scr3Set.fromJson(e))
         .toList(),
   );
 }
@@ -192,13 +190,35 @@ Scr3CompletedWorkout scr3CompletedWorkoutFromJson(Map<String, dynamic> json) {
   );
 }
 
-Scr3Set scr3setsFromJson(int setNumber, Map<String, dynamic> json) {
+Scr3Set scr3setsFromJson(Map<String, dynamic> json) {
   return Scr3Set(
-    setNumber: setNumber,
-    reps: json['rep_count'],
-    weight: json['weight'],
-    weightText: json['weightText'],
-    weightAdjustments: json['weightAdjustments'],
-    note: json['note'],
-  );
+      setNumber: json['order_number'] + 1,
+      reps: json['wpt_set_details'][0]['rep_count'],
+      weight: json['wpt_set_details'][0]['weight'] != null
+          ? double.parse((json['wpt_set_details'][0]['weight'] as num)
+              .toDouble()
+              .toStringAsFixed(1))
+          : null,
+      weightText: json['wpt_set_details'][0]['weight_text'],
+      weightAdjustments: json['wpt_set_details'][0]['weight_adjustments'],
+      note: _buildNote(
+        json['note'],
+        json['wpt_set_details'][0]['note'],
+      ));
+}
+
+String? _buildNote(String? refNote, String? detailNote) {
+  if (refNote == null && detailNote == null) {
+    return null;
+  }
+
+  if (refNote == null) {
+    return detailNote;
+  }
+
+  if (detailNote == null) {
+    return refNote;
+  }
+
+  return '$refNote\n$detailNote';
 }

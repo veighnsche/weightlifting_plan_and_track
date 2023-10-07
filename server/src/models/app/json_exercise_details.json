@@ -1,0 +1,354 @@
+{
+  "data": {
+    "wpt_exercises_by_pk": {
+      "name": "Dumbbell Arm Curl",
+      "note": "Isolation movement",
+      "wpt_workout_exercises": [
+        {
+          "note": null,
+          "wpt_workout": {
+            "name": "Chest",
+            "note": "Chest workout",
+            "day_of_week": 6,
+            "workout_id": "5feade00-aed1-42d8-b9a2-1f6cb203a5e5"
+          }
+        },
+        {
+          "note": null,
+          "wpt_workout": {
+            "name": "Shoulders",
+            "note": "Shoulders workout",
+            "day_of_week": 2,
+            "workout_id": "b44e0445-d9f5-467a-91dd-bfbe572eb815"
+          }
+        }
+      ],
+      "wpt_completed_sets": [
+        {
+          "completed_at": "2023-10-04T22:08:51.513",
+          "rep_count": 16,
+          "weight": 7,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 9,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "4df00521-c6cd-404b-9939-62d3600d55e4",
+            "started_at": "2023-10-04T22:08:51.508",
+            "wpt_workout": {
+              "name": "Chest"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-10-04T22:08:51.513",
+          "rep_count": 15,
+          "weight": 9,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 9,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "4df00521-c6cd-404b-9939-62d3600d55e4",
+            "started_at": "2023-10-04T22:08:51.508",
+            "wpt_workout": {
+              "name": "Chest"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-10-04T22:08:51.513",
+          "rep_count": 14,
+          "weight": 11,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 11,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "2a573dbb-4df6-43ce-af31-824cd1838607",
+            "started_at": "2023-10-04T22:08:51.508",
+            "wpt_workout": {
+              "name": "Shoulders"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-10-04T22:08:51.513",
+          "rep_count": 15,
+          "weight": 11,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 11,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "2a573dbb-4df6-43ce-af31-824cd1838607",
+            "started_at": "2023-10-04T22:08:51.508",
+            "wpt_workout": {
+              "name": "Shoulders"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-10-04T22:08:51.513",
+          "rep_count": 12,
+          "weight": 12,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 11,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "2a573dbb-4df6-43ce-af31-824cd1838607",
+            "started_at": "2023-10-04T22:08:51.508",
+            "wpt_workout": {
+              "name": "Shoulders"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-10-04T22:08:51.513",
+          "rep_count": 15,
+          "weight": 9,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 9,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "4df00521-c6cd-404b-9939-62d3600d55e4",
+            "started_at": "2023-10-04T22:08:51.508",
+            "wpt_workout": {
+              "name": "Chest"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-09-27T22:08:51.513",
+          "rep_count": 14,
+          "weight": 6,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 8,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "351a149d-8230-4eca-9d05-faa06ebafbb3",
+            "started_at": "2023-09-27T22:08:51.508",
+            "wpt_workout": {
+              "name": "Chest"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-09-27T22:08:51.513",
+          "rep_count": 15,
+          "weight": 10,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 10,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "f788d85c-8878-4c93-8d74-73d121b03167",
+            "started_at": "2023-09-27T22:08:51.508",
+            "wpt_workout": {
+              "name": "Shoulders"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-09-27T22:08:51.513",
+          "rep_count": 12,
+          "weight": 8,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 8,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "351a149d-8230-4eca-9d05-faa06ebafbb3",
+            "started_at": "2023-09-27T22:08:51.508",
+            "wpt_workout": {
+              "name": "Chest"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-09-27T22:08:51.513",
+          "rep_count": 15,
+          "weight": 13,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 10,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "f788d85c-8878-4c93-8d74-73d121b03167",
+            "started_at": "2023-09-27T22:08:51.508",
+            "wpt_workout": {
+              "name": "Shoulders"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-09-27T22:08:51.513",
+          "rep_count": 16,
+          "weight": 10,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 10,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "f788d85c-8878-4c93-8d74-73d121b03167",
+            "started_at": "2023-09-27T22:08:51.508",
+            "wpt_workout": {
+              "name": "Shoulders"
+            }
+          }
+        },
+        {
+          "completed_at": "2023-09-27T22:08:51.513",
+          "rep_count": 13,
+          "weight": 8,
+          "weight_text": null,
+          "weight_adjustment": null,
+          "rest_time_before": 120,
+          "note": null,
+          "wpt_set_detail": {
+            "rep_count": 15,
+            "note": null,
+            "weight": 8,
+            "weight_adjustment": null,
+            "weight_text": null,
+            "rest_time_before": 120,
+            "wpt_set_reference": {
+              "note": null
+            }
+          },
+          "wpt_completed_workout": {
+            "completed_workout_id": "351a149d-8230-4eca-9d05-faa06ebafbb3",
+            "started_at": "2023-09-27T22:08:51.508",
+            "wpt_workout": {
+              "name": "Chest"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

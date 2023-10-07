@@ -49,8 +49,9 @@ class Scr3SetCard extends StatelessWidget {
           const SizedBox(height: 8.0),
           if (set.note != null)
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text('Note: ${set.note}'),
+              padding: const EdgeInsets.only(bottom: 8.0, left: 8),
+              child: Text(set.note!,
+                  style: const TextStyle(fontStyle: FontStyle.italic)),
             ),
         ],
       ),
