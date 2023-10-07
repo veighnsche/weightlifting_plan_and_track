@@ -26,176 +26,192 @@ class Scr3WorkoutExerciseCard extends StatefulWidget {
 
 class _Scr3WorkoutExerciseCardState extends State<Scr3WorkoutExerciseCard>
     with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
-late AnimationController _controller;
-late Animation<double> _animation;
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+    _controller.addListener(() {
+      setState(() {});
+    });
+  }
 
-@override
-void initState() {
-  super.initState();
-  _controller = AnimationController(
-    duration: const Duration(milliseconds: 500),
-    vsync: this,
-  );
-  _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.easeInOut,
-  );
-  _controller.addListener(() {
-    setState(() {});
-  });
-}
-
-@override
-Widget build(BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
-      _buildName(),
-      const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
-      _buildExerciseDetails(),
-      const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
-      if (widget.exercise.note != null) _buildNote(),
-      const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
-      const Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: Scr3WorkoutExerciseCard.paddingSize),
-        child: Divider(color: Colors.grey, thickness: 1.5),
-      ),
-      _buildActionButtons(),
-      _buildSets(),
-    ],
-  );
-}
-
-Widget _buildName() {
-  return _paddedRow([
-    _opacityRotatedIcon(Icons.fitness_center),
-    const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
-    Expanded(
-      child: Text(
-        widget.exercise.name,
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.blueGrey[800],
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-    )
-  ]);
-}
-
-Widget _buildExerciseDetails() {
-  List<Widget> boxes = [];
-
-  Scr3ExerciseBoxes(
-    exercise: widget.exercise,
-    addEntry: (String name, String value, IconData iconData) {
-      boxes.add(
-        DetailBox(name: name, value: value, icon: iconData),
-      );
-    },
-  );
-
-  return SizedBox(
-    height: Scr3WorkoutExerciseCard.detailBoxHeight,
-    child: ListView(
-      scrollDirection: Axis.horizontal,
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
-        ...boxes,
-        const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+        _buildName(context),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+        _buildExerciseDetails(),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+        if (widget.exercise.note != null) _buildNote(),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+        const Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: Scr3WorkoutExerciseCard.paddingSize),
+          child: Divider(color: Colors.grey, thickness: 1.5),
+        ),
+        _buildActionButtons(),
+        _buildSets(),
       ],
-    ),
-  );
-}
+    );
+  }
 
-Padding _buildNote() {
-  return _padding(
-    Text(
-      widget.exercise.note!,
-      style: TextStyle(
-        color: Colors.blueGrey[600],
-        fontStyle: FontStyle.italic,
+  Widget _buildName(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.pushNamed(context, '/app/exercises/:exercise_id', arguments: {
+          'exercise_id': widget.exercise.exerciseId,
+        });
+      },
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        alignment: Alignment.centerLeft,
+        backgroundColor: Colors.transparent,
+        // Make background transparent
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        // Remove extra padding
+        shape: const RoundedRectangleBorder(), // Default shape
       ),
-    ),
-  );
-}
+      child: _paddedRow([
+        _opacityRotatedIcon(Icons.fitness_center),
+        const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
+        Expanded(
+          child: Text(
+            widget.exercise.name,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.blueGrey[800],
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        )
+      ]),
+    );
+  }
+
+  Widget _buildExerciseDetails() {
+    List<Widget> boxes = [];
+
+    Scr3ExerciseBoxes(
+      exercise: widget.exercise,
+      addEntry: (String name, String value, IconData iconData) {
+        boxes.add(
+          DetailBox(name: name, value: value, icon: iconData),
+        );
+      },
+    );
+
+    return SizedBox(
+      height: Scr3WorkoutExerciseCard.detailBoxHeight,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
+          ...boxes,
+          const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
+        ],
+      ),
+    );
+  }
+
+  Padding _buildNote() {
+    return _padding(
+      Text(
+        widget.exercise.note!,
+        style: TextStyle(
+          color: Colors.blueGrey[600],
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    );
+  }
 
 // Helper Functions
-Padding _padding(Widget child) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(
-        horizontal: Scr3WorkoutExerciseCard.paddingSize),
-    child: child,
-  );
-}
+  Padding _padding(Widget child) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: Scr3WorkoutExerciseCard.paddingSize),
+      child: child,
+    );
+  }
 
-Row _paddedRow(List<Widget> children) {
-  return Row(
-    children: [
-      const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
-      ...children,
-    ],
-  );
-}
-
-Widget _opacityRotatedIcon(IconData icon) {
-  return Opacity(
-    opacity: 0.3,
-    child: Transform.rotate(
-      angle: (3 / 8) * 2 * pi,
-      child: Icon(
-        icon,
-        color: Colors.black,
-        size: Scr3WorkoutExerciseCard.iconSize,
-      ),
-    ),
-  );
-}
-
-Widget _buildActionButtons() {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 8.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Row _paddedRow(List<Widget> children) {
+    return Row(
       children: [
-        Expanded(
-          child: TextButton.icon(
-            label: const Text("Sets"),
-            icon: const Icon(Icons.format_list_numbered),
-            onPressed: () {
-              setState(() {
-                if (_controller.status == AnimationStatus.completed) {
-                  _controller.reverse();
-                } else {
-                  _controller.forward();
-                }
-              });
-            },
-          ),
-        ),
+        const SizedBox(width: Scr3WorkoutExerciseCard.paddingSize),
+        ...children,
       ],
-    ),
-  );
-}
+    );
+  }
 
-Widget _buildSets() {
-  return SizeTransition(
-    sizeFactor: _animation,
-    axisAlignment: 1.0,
-    child: Column(children: [
-      ...widget.exercise.sets.map((set) => Scr3SetCard(set: set)).toList(),
-      const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
-    ]),
-  );
-}
+  Widget _opacityRotatedIcon(IconData icon) {
+    return Opacity(
+      opacity: 0.3,
+      child: Transform.rotate(
+        angle: (3 / 8) * 2 * pi,
+        child: Icon(
+          icon,
+          color: Colors.black,
+          size: Scr3WorkoutExerciseCard.iconSize,
+        ),
+      ),
+    );
+  }
 
-@override
-void dispose() {
-  _controller.dispose();
-  super.dispose();
-}}
+  Widget _buildActionButtons() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: TextButton.icon(
+              label: const Text("Sets"),
+              icon: const Icon(Icons.format_list_numbered),
+              onPressed: () {
+                setState(() {
+                  if (_controller.status == AnimationStatus.completed) {
+                    _controller.reverse();
+                  } else {
+                    _controller.forward();
+                  }
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSets() {
+    return SizeTransition(
+      sizeFactor: _animation,
+      axisAlignment: 1.0,
+      child: Column(children: [
+        ...widget.exercise.sets.map((set) => Scr3SetCard(set: set)).toList(),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+      ]),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}

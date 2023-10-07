@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'screens/app/exercise_detail_screen.dart';
 import 'screens/app/exercise_form_screen.dart';
 import 'screens/app/workout_detail_screen.dart';
 import 'screens/app/workout_form_screen.dart';
@@ -24,4 +25,11 @@ Map<String, Widget Function(BuildContext)> routes = {
     return AppWorkoutDetailScreen(workoutId: workoutId);
   },
   '/app/exercises/create': (context) => const AppExerciseFormScreen(),
+  '/app/exercises/:exercise_id': (context) {
+    final routeArgs =
+        ModalRoute.of(context)?.settings.arguments as Map<String, String>;
+    final exerciseId = routeArgs['exercise_id']!;
+
+    return AppExerciseDetailScreen(exerciseId: exerciseId);
+  },
 };

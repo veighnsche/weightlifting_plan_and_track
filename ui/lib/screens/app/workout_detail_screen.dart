@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/widgets/app/scr3_workout_card.dart';
 
 import '../../models/app/screen_models/scr3_workout_details.dart';
 import '../../services/app/workout_service.dart';
 import '../../widgets/add_separators.dart';
 import '../../widgets/app/scr3_completed_workout_card.dart';
 import '../../widgets/app/scr3_exercise_card.dart';
+import '../../widgets/app/scr3_workout_card.dart';
 import '../../widgets/shells/app_detail_shell.dart';
 
 class AppWorkoutDetailScreen extends StatelessWidget {

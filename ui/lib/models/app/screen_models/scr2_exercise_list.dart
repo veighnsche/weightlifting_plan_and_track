@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 import '../../../utils/dates.dart';
 
 class Scr2ExerciseList {
@@ -34,9 +32,8 @@ class Scr2ExerciseItem {
   });
 
   factory Scr2ExerciseItem.fromJson(Map<String, dynamic> json) {
-    debugPrint('Scr2ExerciseItem.fromJson: $json');
-
-    var pr = json['wpt_completed_sets_aggregate']['aggregate']['max']['personalRecord'];
+    var pr = json['wpt_completed_sets_aggregate']['aggregate']['max']
+        ['personalRecord'];
 
     double? personalRecordValue;
     if (pr is int) {
@@ -71,7 +68,6 @@ class Scr2WorkoutItem {
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);
 
   factory Scr2WorkoutItem.fromJson(Map<String, dynamic> json) {
-    debugPrint('Scr2WorkoutItem.fromJson: $json');
     double? workingWeight;
 
     if (json['wpt_set_references'] != null &&

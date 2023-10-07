@@ -27,67 +27,78 @@ class Scr2ExerciseCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              // Match card's border radius
-              child: Opacity(
-                opacity: 0.3, // Adjust opacity as needed
-                child: Transform.rotate(
-                  angle: (3/8) * 2 * pi,
-                  child: const Icon(
-                    Icons.fitness_center,
-                    color: Colors.black,
-                    size: 60, // Adjust size as needed
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/app/exercises/:exercise_id',
+                arguments: {
+                  'exercise_id': exercise.exerciseId,
+                });
+          },
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  // Match card's border radius
+                  child: Opacity(
+                    opacity: 0.3, // Adjust opacity as needed
+                    child: Transform.rotate(
+                      angle: (3/8) * 2 * pi,
+                      child: const Icon(
+                        Icons.fitness_center,
+                        color: Colors.black,
+                        size: 60, // Adjust size as needed
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: ClipPath(
-              clipper: DiagonalClipper(),
-              child: Container(
-                width: 48, // Adjust as necessary
-                height: 48, // Adjust as necessary
-                color: Colors.blueGrey.shade400,
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: ClipPath(
+                  clipper: DiagonalClipper(),
+                  child: Container(
+                    width: 48, // Adjust as necessary
+                    height: 48, // Adjust as necessary
+                    color: Colors.blueGrey.shade400,
+                  ),
+                ),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildName(),
-                const SizedBox(height: 8.0),
-                _buildWorkoutList(),
-                const SizedBox(height: 8.0),
-                if (exercise.note != null) _buildNote(),
-              ],
-            ),
-          ),
-          if (exercise.personalRecord != null)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Padding(
+              Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: _buildPersonalRecord(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildName(),
+                    const SizedBox(height: 8.0),
+                    _buildWorkoutList(),
+                    const SizedBox(height: 8.0),
+                    if (exercise.note != null) _buildNote(),
+                  ],
+                ),
               ),
-            ),
-          const Positioned(
-            bottom: 2,
-            right: 2,
-            child: Icon(Icons.play_arrow, color: Colors.white, size: 24),
+              if (exercise.personalRecord != null)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: _buildPersonalRecord(),
+                  ),
+                ),
+              const Positioned(
+                bottom: 2,
+                right: 2,
+                child: Icon(Icons.play_arrow, color: Colors.white, size: 24),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
