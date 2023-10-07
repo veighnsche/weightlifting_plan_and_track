@@ -77,7 +77,7 @@ class HandleSetDetails {
     handleSetNumber();
     handleReps();
     handleWeight();
-    handleWeightText();
+    // handleWeightText();
     handleWeightAdjustments();
   }
 
@@ -99,11 +99,11 @@ class HandleSetDetails {
     }
   }
 
-  void handleWeightText() {
-    if (setDetails.weightText != null && setDetails.weightText!.isNotEmpty) {
-      addEntry('Weight Description', setDetails.weightText!, Icons.text_fields);
-    }
-  }
+  // void handleWeightText() {
+  //   if (setDetails.weightText != null && setDetails.weightText!.isNotEmpty) {
+  //     addEntry('Weight Description', setDetails.weightText!, Icons.text_fields);
+  //   }
+  // }
 
   void handleWeightAdjustments() {
     if (setDetails.weightAdjustments != null &&

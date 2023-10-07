@@ -36,7 +36,7 @@ class Scr3Exercise {
   final double? minWeight;
   final double? maxWeight;
   final int? maxRest;
-  final double? totalVolume;
+  final int? totalVolume;
   final List<Scr3Set> sets;
 
   Scr3Exercise({
@@ -171,7 +171,7 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
         minWeight != null ? double.parse(minWeight.toStringAsFixed(1)) : null,
     maxWeight: double.parse(maxWeight.toStringAsFixed(1)),
     maxRest: maxRest,
-    totalVolume: double.parse(totalVolume.toStringAsFixed(1)),
+    totalVolume: totalVolume.round(),
     sets: (json['wpt_set_references'] as List)
         .map((e) => Scr3Set.fromJson(e))
         .toList(),

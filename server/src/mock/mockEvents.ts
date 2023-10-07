@@ -200,7 +200,7 @@ router.get("/", async (req, res) => {
 
 
     // Insert workouts into the database
-    const savedWorkouts = await workoutRepository.save(workouts);
+    const savedWorkouts: WorkoutEntity[] = await workoutRepository.save(workouts);
 
     // Define and insert exercises, and associate them with the workouts
     // For simplicity, we assume all exercises are unique and are inserted every time
@@ -376,6 +376,8 @@ router.get("/", async (req, res) => {
             exercise_id: exercise.exercise_id,
             order_number: exerciseOrder,
           });
+        } else {
+          console.log(`Exercise ${exerciseName} not found`);
         }
       });
     });
@@ -415,14 +417,19 @@ router.get("/", async (req, res) => {
     const setReferences: Partial<SetReferenceEntity>[] = [];
 
     savedWorkoutExercises.forEach(workoutExercise => {
-      const exercise = exercises.find(e => e.exercise_id === workoutExercise.exercise_id);
+      const exercise = savedExercises.find(e => e.exercise_id === workoutExercise.exercise_id);
+      if (!exercise) {
+        console.log(`Exercise with id ${workoutExercise.exercise_id} not found`);
+        return;
+      }
       const exerciseType = inferExerciseTypeFromNote(exercise!.note!);
       const setsStructure = exerciseSetsStructure[exerciseType];
 
+      let orderNumber = 0;
       for (let i = 0; i < setsStructure.warmup; i++) {
         setReferences.push({
           workout_exercise_id: workoutExercise.workout_exercise_id,
-          order_number: setReferences.length,
+          order_number: orderNumber++,
           note: "warmup",
         });
       }
@@ -430,7 +437,7 @@ router.get("/", async (req, res) => {
       for (let i = 0; i < setsStructure.working; i++) {
         setReferences.push({
           workout_exercise_id: workoutExercise.workout_exercise_id,
-          order_number: setReferences.length,
+          order_number: orderNumber++,
         });
       }
     });
@@ -442,7 +449,7 @@ router.get("/", async (req, res) => {
       console.log("Error while saving set references:", error);
     }
 
-    const userOneRepMax = {
+    const currentWeightMap: Record<string, number> = {
       "Bench Press": 60, // Assuming the user can bench press 100kg for one rep
       "Inclined Dumbbell Bench Press": 20, // Assuming each dumbbell weighs 30kg
       "Lateral Pull-down": 49,
@@ -467,124 +474,133 @@ router.get("/", async (req, res) => {
       "Seated Leg Curls": 45,
     };
 
-    const generateSetDetailsForReference = (exercise: Partial<ExerciseEntity>, setReference: SetReferenceEntity, weeksAgo: number): Partial<SetDetailEntity> => {
-      let reps;
-      let weightPercentage;
+    // For each set reference there are 3 set details, one for now, one from a week ago and one from two weeks ago
+    // the ones from one week ago are -5% in weight and the ones from two weeks ago are -10% in weight
+    // warmups are 50% of the working weight and the second is 75% of the working weight
 
-      if (exercise.note!.includes("Compound")) {
-        reps = Math.random() > 0.5 ? 5 : 10;
-        weightPercentage = reps === 5 ? 0.8 : 0.7;
-      } else if (exercise.note!.includes("Isolation")) {
-        reps = 12;
-        weightPercentage = 0.5;
-      } else {
-        reps = 10;
-        weightPercentage = 0.7;
-      }
+    const setDetails: Partial<SetDetailEntity>[][] = [[], [], []];
 
-      const baseWeight = userOneRepMax[exercise.name as keyof typeof userOneRepMax] * weightPercentage;
+    let isFirstWarmup = true;
 
-      const weight = baseWeight * (1 - 0.05 * weeksAgo); // Decrease by 5% for each week ago
+    function adjustWeight(weight: number, weeksAgo: 0 | 1 | 2, isWarmup: boolean): number {
+      const weekAdjustment = 1 - weeksAgo * 0.05;
+      const warmupAdjustment = isWarmup ? (isFirstWarmup ? 0.5 : 0.75) : 1;
+      return weight * weekAdjustment * warmupAdjustment;
+    }
 
-      return {
-        set_reference_id: setReference.set_reference_id,
-        rep_count: reps,
-        weight: weight,
-        weight_text: weight === 0 ? "body weight" : undefined,
-        created_at: new Date(Date.now() - weeksAgo * 6048e5), // weeksAgo * 7 days in milliseconds
-      };
-    };
-
-    const allSetDetails: Partial<SetDetailEntity>[] = [];
 
     savedSetReferences.forEach(setReference => {
-      const associatedWorkoutExercise = savedWorkoutExercises.find(we => we.workout_exercise_id === setReference.workout_exercise_id);
-      const exercise = exercises.find(e => e.exercise_id === associatedWorkoutExercise!.exercise_id);
+      const isWarmup = setReference.note === "warmup";
 
-      allSetDetails.push(generateSetDetailsForReference(exercise!, setReference, 0));
-      allSetDetails.push(generateSetDetailsForReference(exercise!, setReference, 1));
-      allSetDetails.push(generateSetDetailsForReference(exercise!, setReference, 2));
-    });
+      const workoutExercise = savedWorkoutExercises.find(e => e.workout_exercise_id === setReference.workout_exercise_id);
+      if (!workoutExercise) {
+        console.log(`Workout Exercise with id ${setReference.workout_exercise_id} not found`);
+        return;
+      }
 
-    allSetDetails.forEach((setDetail, index) => {
-      try {
-        const setReferenceIndex = index % savedSetReferences.length;
-        setDetail.set_reference_id = savedSetReferences[setReferenceIndex].set_reference_id;
-      } catch (error) {
-        console.log("Error while setting set reference id:", error);
+      const exercise = savedExercises.find(e => e.exercise_id === workoutExercise.exercise_id);
+      if (!exercise) {
+        console.log(`Exercise with id ${workoutExercise.exercise_id} not found`);
+        return;
+      }
+
+      const exerciseType = inferExerciseTypeFromNote(exercise!.note!);
+      const currentWeight = currentWeightMap[exercise.name!];
+
+      [2, 1, 0].forEach(weeksAgo => {
+        const weight = adjustWeight(currentWeight, weeksAgo as 0 | 1 | 2, isWarmup);
+
+        const setDetail: Partial<SetDetailEntity> = {
+          set_reference_id: setReference.set_reference_id,
+          rep_count: 12,
+          weight: weight === 0 ? undefined : weight,
+          weight_text: weight === 0 ? "body weight" : undefined,
+          rest_time_before: exerciseType === "Compound" ? 300 : 120,
+        };
+
+        setDetails[weeksAgo].push(setDetail);
+      });
+
+      if (isWarmup) {
+        isFirstWarmup = !isFirstWarmup;
       }
     });
 
-    let savedSetDetails: SetDetailEntity[] = [];
+    let savedSetDetails: SetDetailEntity[][] = [];
     try {
-      savedSetDetails = await setDetailRepository.save(allSetDetails);
+      savedSetDetails = await Promise.all(setDetails.map(setDetailsForWeek => setDetailRepository.save(setDetailsForWeek)));
     } catch (error) {
       console.log("Error while saving set details:", error);
     }
 
-    const generateCompletedWorkout = (workout: Partial<WorkoutEntity>, user_uid: string, timeModifier: number, isActive: boolean): Partial<CompletedWorkoutEntity> => {
-      return {
-        user_uid,
-        workout_id: workout.workout_id,
-        started_at: new Date(Date.now() + timeModifier),
-        is_active: isActive,
-      };
-    };
+    const completedWorkouts: Partial<CompletedWorkoutEntity>[][] = [[], []];
 
-    const oneWeekAgo = -6048e5; // 1 week in milliseconds
-    const currentTime = 0;
+    savedWorkouts.forEach((workout) => {
+      [1, 0].forEach(weeksAgo => {
+        const completedWorkout: Partial<CompletedWorkoutEntity> = {
+          user_uid,
+          workout_id: workout.workout_id,
+          started_at: new Date(Date.now() - (weeksAgo * 7 * 24 * 60 * 60 * 1000)),
+          completed_at: new Date(Date.now() - (weeksAgo * 7 * 24 * 60 * 60 * 1000)),
+          is_active: false,
+        };
 
-    const completedWorkouts: Partial<CompletedWorkoutEntity>[] = [];
-
-    savedWorkouts.forEach(workout => {
-      completedWorkouts.push(generateCompletedWorkout(workout, user_uid, oneWeekAgo, false)); // 1 week ago
-      completedWorkouts.push(generateCompletedWorkout(workout, user_uid, currentTime, false)); // Current time
+        completedWorkouts[weeksAgo].push(completedWorkout);
+      });
     });
 
-    let savedCompletedWorkouts: CompletedWorkoutEntity[] = [];
+    let savedCompletedWorkouts: CompletedWorkoutEntity[][] = [];
     try {
-      savedCompletedWorkouts = await completedWorkoutRepository.save(completedWorkouts);
+      savedCompletedWorkouts = await Promise.all(completedWorkouts.map(completedWorkoutsForWeek => completedWorkoutRepository.save(completedWorkoutsForWeek)));
     } catch (error) {
       console.log("Error while saving completed workouts:", error);
     }
 
-// Helper function to adjust weight and reps by 5-10%
-    const adjustValue = (value: number): number => {
-      const adjustment = 1 + (Math.random() * 0.1 - 0.05); // Random value between -5% to 5%
-      return Math.round(value * adjustment);
-    };
-
-// Loop through each completed workout to create completed sets
     const completedSets: Partial<CompletedSetEntity>[] = [];
-    for (const completedWorkout of savedCompletedWorkouts) {
-      // Find workout exercises associated with the workout
-      const associatedWorkoutExercises = savedWorkoutExercises.filter(we => we.workout_id === completedWorkout.workout_id);
 
-      for (const workoutExercise of associatedWorkoutExercises) {
-        // Find set references associated with the workout exercise
-        const associatedSetReferences = savedSetReferences.filter(sr => sr.workout_exercise_id === workoutExercise.workout_exercise_id);
+    savedSetDetails.forEach((setDetailsForWeek, weekIndex) => {
+      if (weekIndex === 2) return null;
 
-        for (const setReference of associatedSetReferences) {
-          // Find the set detail created one week before the workout was done
-          const oneWeekBeforeCompletedWorkout = new Date(completedWorkout.started_at.getTime() - 6048e5); // Subtract 7 days
-          const matchingSetDetail = savedSetDetails.find(sd => sd.set_reference_id === setReference.set_reference_id && sd.created_at <= oneWeekBeforeCompletedWorkout);
-
-          if (matchingSetDetail) {
-            completedSets.push({
-              completed_workout_id: completedWorkout.completed_workout_id,
-              set_detail_id: matchingSetDetail.set_detail_id,
-              exercise_id: workoutExercise.exercise_id,
-              completed_at: completedWorkout.completed_at,
-              rep_count: adjustValue(matchingSetDetail.rep_count!),
-              weight: adjustValue(matchingSetDetail.weight!),
-              weight_text: matchingSetDetail.weight_text,
-              is_active: false,
-              is_archived: false,
-            });
-          }
+      setDetailsForWeek.forEach(setDetail => {
+        const setReference = savedSetReferences.find(sr => sr.set_reference_id === setDetail.set_reference_id);
+        if (!setReference) {
+          console.log(`Set reference with id ${setDetail.set_reference_id} not found`);
+          return false;
         }
-      }
-    }
+
+        const workoutExercise = savedWorkoutExercises.find(we => we.workout_exercise_id === setReference.workout_exercise_id);
+        if (!workoutExercise) {
+          console.log(`Workout exercise with id ${setReference.workout_exercise_id} not found`);
+          return false;
+        }
+
+        const completedWorkout = savedCompletedWorkouts[weekIndex].find(cw => cw.workout_id === workoutExercise.workout_id);
+        if (!completedWorkout) {
+          console.log(`Completed workout with id ${workoutExercise.workout_id} not found`);
+          return;
+        }
+
+        const exercise = savedExercises.find(e => e.exercise_id === workoutExercise.exercise_id);
+        if (!exercise) {
+          console.log(`Exercise with id ${workoutExercise.exercise_id} not found`);
+          return;
+        }
+
+        const completedSet: Partial<CompletedSetEntity> = {
+          completed_workout_id: completedWorkout.completed_workout_id,
+          set_detail_id: setDetail.set_detail_id,
+          exercise_id: exercise.exercise_id,
+          completed_at: completedWorkout.completed_at,
+          rep_count: varyRepCount(setDetail.rep_count),
+          weight: varyWeight(setDetail.weight),
+          weight_text: setDetail.weight_text,
+          rest_time_before: varyRestTime(setDetail.rest_time_before),
+          is_active: false,
+        };
+
+        completedSets.push(completedSet);
+      });
+    });
 
     try {
       await completedSetRepository.save(completedSets);
@@ -598,5 +614,35 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+function varyRepCount(repCount: number | undefined): number | undefined {
+  // 50% chance of varying the rep count
+  if (Math.random() < 0.5) {
+    const variation = Math.floor(Math.random() * 3) - 1;
+    return Math.max(1, (repCount || 0) + variation);
+  }
+
+  return repCount;
+}
+
+function varyWeight(weight: number | undefined): number | undefined {
+  // 50% chance of varying the weight
+  if (Math.random() < 0.5) {
+    const variation = Math.floor(Math.random() * 3) - 1;
+    return Math.max(0, (weight || 0) + variation);
+  }
+
+  return weight;
+}
+
+function varyRestTime(restTime: number | undefined): number | undefined {
+  // 50% chance of varying the rest time
+  if (Math.random() < 0.5) {
+    const variation = Math.floor(Math.random() * 30) - 1;
+    return Math.max(0, (restTime || 0) + variation);
+  }
+
+  return restTime;
+}
 
 export default router;
