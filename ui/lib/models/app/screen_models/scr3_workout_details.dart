@@ -7,6 +7,10 @@ class Scr3WorkoutDetails {
   final String name;
   final int? dayOfWeek;
   final String? note;
+  final int totalExercises;
+  final int totalSets;
+  final int totalVolume;
+  final int totalTime;
   final List<Scr3Exercise> exercises;
   final List<Scr3CompletedWorkout> completedWorkouts;
 
@@ -15,6 +19,10 @@ class Scr3WorkoutDetails {
     required this.name,
     this.dayOfWeek,
     this.note,
+    required this.totalExercises,
+    required this.totalSets,
+    required this.totalVolume,
+    required this.totalTime,
     required this.exercises,
     required this.completedWorkouts,
   });
@@ -36,6 +44,7 @@ class Scr3Exercise {
   final double? minWeight;
   final double? maxWeight;
   final int? maxRest;
+  final int totalTime;
   final int? totalVolume;
   final List<Scr3Set> sets;
 
@@ -49,6 +58,7 @@ class Scr3Exercise {
     this.minWeight,
     this.maxWeight,
     this.maxRest,
+    required this.totalTime,
     this.totalVolume,
     required this.sets,
   });
@@ -105,19 +115,34 @@ class Scr3Set {
 Scr3WorkoutDetails scr3WorkoutDetailsFromJson(Map<String, dynamic> json) {
   var workout = json['wpt_workouts_by_pk'];
 
+  List<Scr3Exercise> exercises = (workout['wpt_workout_exercises'] as List)
+      .map((e) => Scr3Exercise.fromJson(e))
+      .toList();
+
+  int totalExercises = exercises.length;
+
+  int totalSets = exercises.fold(0, (prev, e) => prev + e.setsCount);
+
+  int totalVolume = exercises.fold(0, (prev, e) => prev + (e.totalVolume ?? 0));
+
+  int totalTime = exercises.fold(0, (prev, e) => prev + e.totalTime);
+
   return Scr3WorkoutDetails(
     workoutId: workout['workout_id'],
     name: workout['name'],
     dayOfWeek: workout['day_of_week'] as int?,
     note: workout['note'],
-    exercises: (workout['wpt_workout_exercises'] as List)
-        .map((e) => Scr3Exercise.fromJson(e))
-        .toList(),
+    totalExercises: totalExercises,
+    totalSets: totalSets,
+    totalVolume: totalVolume,
+    totalTime: totalTime,
+    exercises: exercises,
     completedWorkouts: (workout['wpt_completed_workouts'] as List)
         .map((e) => Scr3CompletedWorkout.fromJson(e))
         .toList(),
   );
 }
+
 
 Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
   List<int> repsList = [];
@@ -130,6 +155,7 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
   double maxWeight = 0.0;
   int totalReps = 0;
   int maxRest = 0;
+  int totalTime = 0;
 
   for (var setRef in json['wpt_set_references']) {
     var details = setRef['wpt_set_details']?.isNotEmpty == true
@@ -159,6 +185,8 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
         restTimeBeforeList.add(restTimeBefore);
         maxRest = max(maxRest, restTimeBefore);
       }
+
+      totalTime += (restTimeBefore ?? 0) + 120;
     }
   }
 
@@ -173,6 +201,7 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
         minWeight != null ? double.parse(minWeight.toStringAsFixed(1)) : null,
     maxWeight: double.parse(maxWeight.toStringAsFixed(1)),
     maxRest: maxRest,
+    totalTime: totalTime,
     totalVolume: totalVolume.round(),
     sets: (json['wpt_set_references'] as List)
         .map((e) => Scr3Set.fromJson(e))

@@ -469,7 +469,7 @@ async function insertSetDetails(savedSetReferences: SetReferenceEntity[], savedW
 
   let savedSetDetails: SetDetailEntity[][] = [];
   try {
-    savedSetDetails = await Promise.all(setDetails.map(setDetailsForWeek => setDetailRepository.save(setDetailsForWeek)));
+    savedSetDetails = await Promise.all(setDetails.map(sd => setDetailRepository.save(sd)));
   } catch (error) {
     console.log("Error while saving set details:", error);
   }
@@ -495,7 +495,7 @@ async function insertCompletedWorkouts(savedWorkouts: WorkoutEntity[]) {
 
   let savedCompletedWorkouts: CompletedWorkoutEntity[][] = [];
   try {
-    savedCompletedWorkouts = await Promise.all(completedWorkouts.map(completedWorkoutsForWeek => completedWorkoutRepository.save(completedWorkoutsForWeek)));
+    savedCompletedWorkouts = await Promise.all(completedWorkouts.map(cw => completedWorkoutRepository.save(cw)));
   } catch (error) {
     console.log("Error while saving completed workouts:", error);
   }
@@ -505,9 +505,7 @@ async function insertCompletedWorkouts(savedWorkouts: WorkoutEntity[]) {
 async function insertCompletedSets(savedSetDetails: SetDetailEntity[][], savedSetReferences: SetReferenceEntity[], savedWorkoutExercises: WorkoutExerciseEntity[], savedCompletedWorkouts: CompletedWorkoutEntity[][], savedExercises: ExerciseEntity[]) {
   const completedSets: Partial<CompletedSetEntity>[] = [];
 
-  savedSetDetails.forEach((setDetailsForWeek, weekIndex) => {
-    if (weekIndex === 2) return null;
-
+  [savedSetDetails[2], savedSetDetails[1]].forEach((setDetailsForWeek, weekIndex) => {
     setDetailsForWeek.forEach(setDetail => {
       const setReference = savedSetReferences.find(sr => sr.set_reference_id === setDetail.set_reference_id);
       if (!setReference) {
@@ -521,7 +519,7 @@ async function insertCompletedSets(savedSetDetails: SetDetailEntity[][], savedSe
         return false;
       }
 
-      const completedWorkout = savedCompletedWorkouts[weekIndex].find(cw => cw.workout_id === workoutExercise.workout_id);
+      const completedWorkout = [savedCompletedWorkouts[1], savedCompletedWorkouts[0]][weekIndex].find(cw => cw.workout_id === workoutExercise.workout_id);
       if (!completedWorkout) {
         console.log(`Completed workout with id ${workoutExercise.workout_id} not found`);
         return;
