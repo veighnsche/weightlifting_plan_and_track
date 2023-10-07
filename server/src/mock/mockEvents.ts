@@ -395,21 +395,21 @@ async function insertSetReferences(savedWorkoutExercises: WorkoutExerciseEntity[
 
 async function insertSetDetails(savedSetReferences: SetReferenceEntity[], savedWorkoutExercises: WorkoutExerciseEntity[], savedExercises: ExerciseEntity[]) {
   const currentWeightMap: Record<string, number> = {
-    "Bench Press": 60, // Assuming the user can bench press 100kg for one rep
-    "Inclined Dumbbell Bench Press": 20, // Assuming each dumbbell weighs 30kg
+    "Bench Press": 60,
+    "Inclined Dumbbell Bench Press": 20,
     "Lateral Pull-down": 49,
-    "Dumbbell Arm Curl": 14, // Assuming each dumbbell weighs 15kg
+    "Dumbbell Arm Curl": 14,
     "Triceps Cable Extension": 23,
     "Face Pulls": 35,
-    "Dumbbell Side Raises": 10, // Assuming each dumbbell weighs 10kg
+    "Dumbbell Side Raises": 10,
     "Barbell Squats": 80,
     "Leg Press": 200,
     "Good Mornings": 40,
     "Lying Leg Curls": 50,
     "Standing Calf Raises": 60,
-    "Abs leg raises": 0, // This exercise doesn't typically involve weights
+    "Abs leg raises": 0,
     "Overhead Press": 45,
-    "Pull-ups": 0, // Body weight exercise; can add user's body weight if needed
+    "Pull-ups": 0,
     "Pendley Rows": 40,
     "Seated Chest Press": 75,
     "Romanian Deadlifts": 130,
@@ -451,6 +451,7 @@ async function insertSetDetails(savedSetReferences: SetReferenceEntity[], savedW
       const weight = adjustWeight(currentWeight, weeksAgo as 0 | 1 | 2, isWarmup);
 
       const setDetail: Partial<SetDetailEntity> = {
+        created_at: new Date(Date.now() - (weeksAgo * 7 * 24 * 60 * 60 * 1000)),
         set_reference_id: setReference.set_reference_id,
         rep_count: 12,
         weight: weight === 0 ? undefined : weight,
@@ -615,17 +616,19 @@ router.get("/", async (req, res) => {
 function varyRepCount(repCount: number | undefined): number | undefined {
   // 50% chance of varying the rep count
   if (Math.random() < 0.5) {
-    const variation = Math.floor(Math.random() * 3) - 1;
-    return Math.max(1, (repCount || 0) + variation);
+    const variation = Math.floor(Math.random() * 11) - 5;
+    return Math.max(0, (repCount || 0) + variation);
   }
 
   return repCount;
 }
 
 function varyWeight(weight: number | undefined): number | undefined {
+  if (weight === undefined || 0) return weight;
+
   // 50% chance of varying the weight
   if (Math.random() < 0.5) {
-    const variation = Math.floor(Math.random() * 3) - 1;
+    const variation = Math.floor(Math.random() * 21) - 10;
     return Math.max(0, (weight || 0) + variation);
   }
 
@@ -635,7 +638,7 @@ function varyWeight(weight: number | undefined): number | undefined {
 function varyRestTime(restTime: number | undefined): number | undefined {
   // 50% chance of varying the rest time
   if (Math.random() < 0.5) {
-    const variation = Math.floor(Math.random() * 30) - 1;
+    const variation = Math.floor(Math.random() * 61) - 30;
     return Math.max(0, (restTime || 0) + variation);
   }
 

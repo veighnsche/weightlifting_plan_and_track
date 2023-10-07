@@ -29,9 +29,9 @@ class Scr3SetCard extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          const SizedBox(width: Scr3SetCard._paddingSize),
+          const SizedBox(width: Scr3SetCard._paddingSize * 2),
           ...boxes,
-          const SizedBox(width: Scr3SetCard._paddingSize),
+          const SizedBox(width: Scr3SetCard._paddingSize * 2),
         ],
       ),
     );
@@ -39,22 +39,18 @@ class Scr3SetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 8.0),
-          _buildSetDetails(),
-          const SizedBox(height: 8.0),
-          if (set.note != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0, left: 8),
-              child: Text(set.note!,
-                  style: const TextStyle(fontStyle: FontStyle.italic)),
-            ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        if (set.note != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0, left: 16),
+            child: Text(set.note!,
+                style: const TextStyle(fontStyle: FontStyle.italic)),
+          ),
+        _buildSetDetails(),
+        const SizedBox(height: 8.0),
+      ],
     );
   }
 }

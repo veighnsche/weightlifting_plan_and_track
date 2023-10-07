@@ -84,6 +84,7 @@ class Scr3Set {
   final double? weight;
   final String? weightText;
   final Map<int, double>? weightAdjustments;
+  final int? restTimeBefore;
   final String? note;
 
   Scr3Set({
@@ -92,6 +93,7 @@ class Scr3Set {
     this.weight,
     this.weightText,
     this.weightAdjustments,
+    this.restTimeBefore,
     this.note,
   });
 
@@ -201,6 +203,7 @@ Scr3Set scr3setsFromJson(Map<String, dynamic> json) {
           : null,
       weightText: json['wpt_set_details'][0]['weight_text'],
       weightAdjustments: json['wpt_set_details'][0]['weight_adjustments'],
+      restTimeBefore: json['wpt_set_details'][0]['rest_time_before'],
       note: _buildNote(
         json['note'],
         json['wpt_set_details'][0]['note'],

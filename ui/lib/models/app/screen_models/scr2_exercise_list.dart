@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import '../../../utils/dates.dart';
 
 class Scr2ExerciseList {
@@ -20,7 +22,7 @@ class Scr2ExerciseItem {
   final String exerciseId;
   final String name;
   final String? note;
-  final int? personalRecord;
+  final double? personalRecord;
   final List<Scr2WorkoutItem> workouts;
 
   Scr2ExerciseItem({
@@ -32,12 +34,22 @@ class Scr2ExerciseItem {
   });
 
   factory Scr2ExerciseItem.fromJson(Map<String, dynamic> json) {
+    debugPrint('Scr2ExerciseItem.fromJson: $json');
+
+    var pr = json['wpt_completed_sets_aggregate']['aggregate']['max']['personalRecord'];
+
+    double? personalRecordValue;
+    if (pr is int) {
+      personalRecordValue = pr.toDouble();
+    } else if (pr is double) {
+      personalRecordValue = pr;
+    }
+
     return Scr2ExerciseItem(
         exerciseId: json['exercise_id'],
         name: json['name'],
         note: json['note'],
-        personalRecord: json['wpt_completed_sets_aggregate']['aggregate']['max']
-            ['personalRecord'],
+        personalRecord: personalRecordValue,
         workouts: (json['workouts'] as List)
             .map((e) => Scr2WorkoutItem.fromJson(e))
             .toList()
@@ -59,13 +71,15 @@ class Scr2WorkoutItem {
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);
 
   factory Scr2WorkoutItem.fromJson(Map<String, dynamic> json) {
+    debugPrint('Scr2WorkoutItem.fromJson: $json');
     double? workingWeight;
 
     if (json['wpt_set_references'] != null &&
         json['wpt_set_references'].isNotEmpty &&
         json['wpt_set_references'][0]['wpt_set_details'] != null &&
         json['wpt_set_references'][0]['wpt_set_details'].isNotEmpty) {
-      var ww = json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
+      var ww =
+          json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
       if (ww is int) {
         workingWeight = ww.toDouble();
       } else if (ww is double) {

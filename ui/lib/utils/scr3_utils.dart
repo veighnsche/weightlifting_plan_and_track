@@ -78,7 +78,8 @@ class HandleSetDetails {
     handleReps();
     handleWeight();
     // handleWeightText();
-    handleWeightAdjustments();
+    // handleWeightAdjustments();
+    handleRest();
   }
 
   void handleSetNumber() {
@@ -105,12 +106,25 @@ class HandleSetDetails {
   //   }
   // }
 
-  void handleWeightAdjustments() {
-    if (setDetails.weightAdjustments != null &&
-        setDetails.weightAdjustments!.isNotEmpty) {
-      // If you wish to show each adjustment you can iterate over the map
-      // For now, I'm just adding an entry to signify that adjustments exist
-      addEntry('Adjustments', 'Present', Icons.tune);
+  // void handleWeightAdjustments() {
+  //   if (setDetails.weightAdjustments != null &&
+  //       setDetails.weightAdjustments!.isNotEmpty) {
+  //     // If you wish to show each adjustment you can iterate over the map
+  //     // For now, I'm just adding an entry to signify that adjustments exist
+  //     addEntry('Adjustments', 'Present', Icons.tune);
+  //   }
+  // }
+
+  void handleRest() {
+    if (setDetails.restTimeBefore != null && setDetails.restTimeBefore! > 0) {
+      final minutes = (setDetails.restTimeBefore! / 60).floor();
+      final seconds = setDetails.restTimeBefore! % 60;
+      final displayTime = seconds == 0
+          ? '${minutes}m'
+          : minutes == 0
+              ? '${seconds}s'
+              : '${minutes}m ${seconds}s';
+      addEntry('Rest', displayTime, Icons.timer);
     }
   }
 }

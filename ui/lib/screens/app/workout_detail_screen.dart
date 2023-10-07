@@ -104,7 +104,6 @@ class AppWorkoutDetailScreen extends StatelessWidget {
             Text(
               workout.note!,
               style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-              overflow: TextOverflow.ellipsis,
             ),
         ],
       ),

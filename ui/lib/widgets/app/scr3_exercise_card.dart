@@ -186,10 +186,10 @@ class _Scr3WorkoutExerciseCardState extends State<Scr3WorkoutExerciseCard>
     return SizeTransition(
       sizeFactor: _animation,
       axisAlignment: 1.0,
-      child: Column(
-        children:
-            widget.exercise.sets.map((set) => Scr3SetCard(set: set)).toList(),
-      ),
+      child: Column(children: [
+        ...widget.exercise.sets.map((set) => Scr3SetCard(set: set)).toList(),
+        const SizedBox(height: Scr3WorkoutExerciseCard.paddingSize),
+      ]),
     );
   }
 
