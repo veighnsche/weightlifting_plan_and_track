@@ -1,14 +1,13 @@
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
 import { execute, subscribe } from "graphql";
-import { PubSub } from "graphql-subscriptions";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { createServer } from "http";
 import "reflect-metadata";
 import { Server as WsServer } from "ws";
+import { schema } from "./graphql";
 
 import mockRouter from "./mock/mockEvents";
 import exerciseRouter from "./models/app/exercises/exerciseEvents";
@@ -20,42 +19,14 @@ import { authenticateRequest } from "./services/auth";
 import { connectDatabase } from "./services/database";
 import { connectDatabaseHasura } from "./services/databaseHasura";
 import { initializeFirebase } from "./services/firebase";
+import { HasuraRESTDataSource } from "./services/hasura";
 import { getRateLimiter } from "./services/rateLimiter";
 
 config();
 
-const pubsub = new PubSub();
-const SOMETHING_CHANGED_TOPIC = "somethingChanged";
-
-
-const typeDefs = gql`
-  type Query {
-      hello: String
-  }
-  
-  type Subscription {
-      somethingChanged: String
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: () => "Hello world!",
-  },
-  Subscription: {
-    somethingChanged: {
-      subscribe: () => pubsub.asyncIterator([SOMETHING_CHANGED_TOPIC]),
-    },
-  },
-};
-
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
 
 initializeFirebase();
 
@@ -77,11 +48,6 @@ app.use("/app/workouts", workoutRouter);
 app.use("/app/exercises", exerciseRouter);
 app.use("/mock", mockRouter);
 
-app.get("/whatever", async (req, res) => {
-  await pubsub.publish(SOMETHING_CHANGED_TOPIC, { somethingChanged: "An update occurred!" }).catch(console.error);
-  res.send("Event published!");
-});
-
 // expose public folder (../public)
 app.use(express.static(__dirname + "/../public"));
 
@@ -91,6 +57,9 @@ const apolloServer = new ApolloServer({
     const token = req.headers.authorization || "";
     return { token };
   },
+  dataSources: () => ({
+    hasura: new HasuraRESTDataSource(),
+  }),
 });
 
 const httpServer = createServer(app);
@@ -99,27 +68,26 @@ const wsServer = new WsServer({ server: httpServer, path: "/graphql" });
 Promise.all([
   connectDatabase(),
   connectDatabaseHasura(),
-])
-  .then(() => apolloServer.start())
-  .then(() => {
-    apolloServer.applyMiddleware({ app, path: "/graphql" });
+  apolloServer.start(),
+]).then(() => {
+  apolloServer.applyMiddleware({ app, path: "/graphql" });
 
-    useServer(
-      {
-        schema,
-        execute,
-        subscribe,
-        onConnect: () => {
-          console.log("Client connected");
-        },
-        onDisconnect: () => {
-          console.log("Client disconnected");
-        },
+  useServer(
+    {
+      schema,
+      execute,
+      subscribe,
+      onConnect: () => {
+        console.log("Client connected");
       },
-      wsServer,
-    );
+      onDisconnect: () => {
+        console.log("Client disconnected");
+      },
+    },
+    wsServer,
+  );
 
-    httpServer.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
-    });
+  httpServer.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
   });
+});
