@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../models/app/screen_models/scr3_workout_details.dart';
-import '../../utils/scr3_utils.dart';
+import '../../utils/scr3_boxes.dart';
 import '../detail_box.dart';
 import 'scr3_exercise_card.dart';
 
-class Scr3WorkoutCard extends StatelessWidget {
+class Scr3WorkoutDetailsCard extends StatelessWidget {
   final Scr3WorkoutDetails workout;
 
-  const Scr3WorkoutCard({
+  const Scr3WorkoutDetailsCard({
     super.key,
     required this.workout,
   });
@@ -18,13 +18,15 @@ class Scr3WorkoutCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(height: 16.0),
         _buildHeaderRow(),
         const SizedBox(height: 16.0),
         _buildWorkoutDetails(),
         if (workout.note != null) ...[
           const SizedBox(height: 16.0),
           _buildNoteText(),
-        ]
+        ],
+        const SizedBox(height: 32.0),
       ],
     );
   }

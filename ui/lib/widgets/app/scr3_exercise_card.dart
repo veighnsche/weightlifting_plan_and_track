@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/utils/scr3_utils.dart';
+import 'package:weightlifting_plan_and_track/utils/scr3_boxes.dart';
 
 import '../../models/app/screen_models/scr3_workout_details.dart';
 import '../detail_box.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/utils/ints.dart';
 
 import '../models/app/screen_models/scr3_workout_details.dart';
 
@@ -15,21 +16,23 @@ class Scr3WorkoutBoxes {
 
   void handleTotalExercises() {
     if (workout.totalExercises > 0) {
-      addEntry('Exercises', '${workout.totalExercises}', Icons.fitness_center);
+      addEntry('Exercises', workout.totalExercises.toCustomString(),
+          Icons.fitness_center);
     }
   }
 
   void handleTotalSets() {
     if (workout.totalSets > 0) {
-      addEntry('Sets', '${workout.totalSets}', Icons.format_list_numbered);
+      addEntry('Sets', workout.totalSets.toCustomString(),
+          Icons.format_list_numbered);
     }
   }
 
   String formatVolume(double volume) {
     if (volume >= 1000) {
-      return '${(volume / 1000).toStringAsFixed(1)}t';
+      return '${(volume / 1000).toCustomString()}t';
     } else {
-      return '${volume.toString()}kg';
+      return '${volume.toCustomString()}kg';
     }
   }
 
@@ -101,11 +104,14 @@ class Scr3ExerciseBoxes {
     if (exercise.minWeight == null || exercise.maxWeight == null) return;
 
     if (exercise.minWeight == exercise.maxWeight && exercise.minWeight! > 0) {
-      addEntry('Weight', '${exercise.maxWeight}kg', Icons.line_weight);
+      addEntry('Weight', '${exercise.maxWeight?.toCustomString()}kg',
+          Icons.line_weight);
     } else if (exercise.minWeight != exercise.maxWeight &&
         exercise.minWeight! > 0 &&
         exercise.maxWeight! > 0) {
-      addEntry('Weight', '${exercise.minWeight} - ${exercise.maxWeight}kg',
+      addEntry(
+          'Weight',
+          '${exercise.minWeight?.toCustomString()} - ${exercise.maxWeight?.toCustomString()}kg',
           Icons.line_weight);
     } else {
       if (exercise.minWeight! == 0 && exercise.maxWeight! == 0) {
@@ -113,10 +119,12 @@ class Scr3ExerciseBoxes {
             'Total Reps', '${exercise.totalReps}', Icons.format_list_numbered);
       }
       if (exercise.minWeight! > 0) {
-        addEntry('Min Weight', '${exercise.minWeight}kg', Icons.arrow_downward);
+        addEntry('Min Weight', '${exercise.minWeight?.toCustomString()}kg',
+            Icons.arrow_downward);
       }
       if (exercise.maxWeight! > 0) {
-        addEntry('Max Weight', '${exercise.maxWeight}kg', Icons.arrow_upward);
+        addEntry('Max Weight', '${exercise.maxWeight?.toCustomString()}kg',
+            Icons.arrow_upward);
       }
     }
   }
@@ -136,7 +144,7 @@ class Scr3ExerciseBoxes {
 
   void handleVolume() {
     if (exercise.totalVolume != null && exercise.totalVolume! > 0) {
-      addEntry('Volume', '${exercise.totalVolume}kg', Icons.volume_up);
+      addEntry('Volume', '${exercise.totalVolume?.toCustomString()}kg', Icons.volume_up);
     }
   }
 }
@@ -166,7 +174,7 @@ class Scr3SetBoxes {
 
   void handleWeight() {
     if (setDetails.weight != null && setDetails.weight! > 0) {
-      addEntry('Weight', '${setDetails.weight}kg', Icons.line_weight);
+      addEntry('Weight', '${setDetails.weight?.toCustomString()}kg', Icons.line_weight);
     }
   }
 

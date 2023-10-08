@@ -2,7 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/app/screen_models/scr4_exercise_details.dart';
-import '../../services/app/exercise_service.dart';  // Assume you have a service for exercises
+import '../../services/app/exercise_service.dart';
+import '../../widgets/app/scr4_completed_workout_card.dart';
+import '../../widgets/app/scr4_exercise_details_card.dart';
+import '../../widgets/app/scr4_workout_card.dart';
 import '../../widgets/shells/app_detail_shell.dart';
 
 class AppExerciseDetailScreen extends StatelessWidget {
@@ -16,7 +19,7 @@ class AppExerciseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: AppExerciseService().exerciseDetailsSubscription(exerciseId),  // Assume you have a method for exercise subscription
+      stream: AppExerciseService().exerciseDetailsSubscription(exerciseId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -47,77 +50,17 @@ class AppExerciseDetailScreen extends StatelessWidget {
       title: "Exercise Details",
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Exercise Name
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                exercise.name,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            // Exercise Note
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(exercise.note),
-            ),
-
-            // Divider
-            Divider(),
-
-            // Linked Workouts Header
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Linked Workouts",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            // List of Linked Workouts
-            ...exercise.workouts.map((workout) {
-              return ListTile(
-                title: Text(workout.name),
-                subtitle: Text(workout.note ?? ""),
-                trailing: Text("Day: ${workout.dayOfWeek}"),
-              );
-            }).toList(),
-
-            // Divider
-            Divider(),
-
-            // Completed Workouts Header
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Completed Workouts",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            // List of Completed Workouts
-            ...exercise.completedWorkouts.map((completedWorkout) {
-              return ListTile(
-                title: Text(completedWorkout.name),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Started At: ${completedWorkout.startedAt}"),
-                    Text("Max Reps: ${completedWorkout.maxReps}"),
-                    Text("Min Weight: ${completedWorkout.minWeight}"),
-                    Text("Max Weight: ${completedWorkout.maxWeight}"),
-                    Text("Avg Rest Time: ${completedWorkout.avgRestTimeBefore}"),
-                    Text("Total Volume: ${completedWorkout.totalVolume}"),
-                  ],
-                ),
-              );
-            }).toList(),
+            Scr4ExerciseDetailsCard(exercise: exercise),
+            const Divider(),
+            ...exercise.workouts
+                .map((workout) => Scr4WorkoutCard(workout: workout)),
+            const Divider(),
+            ...exercise.completedWorkouts.map((completedWorkout) =>
+                Scr4CompletedWorkoutCard(completedWorkout: completedWorkout)),
           ],
         ),
       ),
     );
   }
-
 }

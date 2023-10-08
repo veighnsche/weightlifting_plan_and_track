@@ -6,7 +6,7 @@ import '../../services/app/workout_service.dart';
 import '../../widgets/add_separators.dart';
 import '../../widgets/app/scr3_completed_workout_card.dart';
 import '../../widgets/app/scr3_exercise_card.dart';
-import '../../widgets/app/scr3_workout_card.dart';
+import '../../widgets/app/scr3_workout_details_card.dart';
 import '../../widgets/shells/app_detail_shell.dart';
 
 class AppWorkoutDetailScreen extends StatelessWidget {
@@ -53,9 +53,7 @@ class AppWorkoutDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16.0),
-            Scr3WorkoutCard(workout: workout),
-            const SizedBox(height: 32.0),
+            Scr3WorkoutDetailsCard(workout: workout),
             _buildSectionTitle('Exercises', Colors.blueGrey[200]!),
             ..._buildExercises(workout),
             _buildSectionTitle('Completed Workouts', Colors.blueGrey[200]!),
