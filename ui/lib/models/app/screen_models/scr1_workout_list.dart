@@ -6,7 +6,8 @@ class Scr1WorkoutList {
   Scr1WorkoutList({required this.workouts});
 
   factory Scr1WorkoutList.fromJson(Map<String, dynamic> json) {
-    List<Scr1WorkoutItem> workouts = (json['wpt_workouts'] as List)
+    print('Scr1WorkoutList.fromJson $json');
+    List<Scr1WorkoutItem> workouts = (json['getWorkouts'] as List)
         .map((data) => Scr1WorkoutItem.fromJson(data))
         .toList()
       ..sort(sortByDayOfWeek);
@@ -39,27 +40,14 @@ class Scr1WorkoutItem {
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);
 
   factory Scr1WorkoutItem.fromJson(Map<String, dynamic> json) {
-    List<String> exercisesList = (json['wpt_workout_exercises'] as List)
-        .map((e) => e['wpt_exercise']['name'] as String)
-        .toList();
-
-    int totalSetsCount =
-        (json['totalSetsAggragate'] as List).fold(0, (sum, item) {
-      int totalSets = item['wpt_set_references_aggregate']['aggregate']
-              ['totalSets']
-          .toInt();
-      return sum + totalSets;
-    });
-
     return Scr1WorkoutItem(
       workoutId: json['workout_id'],
       name: json['name'],
-      dayOfWeek: json['day_of_week'] as int?,
+      dayOfWeek: json['day_of_week'],
       note: json['note'],
-      exercises: exercisesList,
-      totalExercises: json['wpt_workout_exercises_aggregate']['aggregate']
-          ['totalExercises'],
-      totalSets: totalSetsCount,
+      exercises: (json['exercises'] as List).cast<String>(),
+      totalExercises: json['totalExercises'],
+      totalSets: json['totalSets'],
     );
   }
 }

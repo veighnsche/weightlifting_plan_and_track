@@ -14,6 +14,7 @@ class AppWorkoutListScreen extends StatelessWidget {
     return StreamBuilder<Scr1WorkoutList>(
       stream: AppWorkoutService().workoutListSubscription(),
       builder: (context, snapshot) {
+        print(snapshot);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }

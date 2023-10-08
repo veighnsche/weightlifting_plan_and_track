@@ -2,16 +2,22 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema/typings/types";
 import { gql } from "apollo-server-express";
 import { PubSub } from "graphql-subscriptions";
+// import { connections } from "../index";
 import { hasuraSubscriptionClient } from "../services/hasura";
 
 const pubsub = new PubSub();
-const SOMETHING_CHANGED_TOPIC = "somethingChanged";
 const WORKOUTS_CHANGED_TOPIC = "workoutsChanged";
 
+
 const typeDefs: IExecutableSchemaDefinition["typeDefs"] = gql`
-    type Workout {
+    type scr1_workout {
         workout_id: String!
         name: String!
+        day_of_week: Int
+        note: String
+        exercises: [String]
+        totalExercises: Int!
+        totalSets: Int!
     }
 
     type Query {
@@ -19,8 +25,7 @@ const typeDefs: IExecutableSchemaDefinition["typeDefs"] = gql`
     }
 
     type Subscription {
-        somethingChanged: String
-        getWorkouts: [Workout!]!
+        getWorkouts: [scr1_workout!]!
     }
 `;
 
@@ -30,12 +35,11 @@ const resolvers: IExecutableSchemaDefinition["resolvers"] = {
     search: () => "Hello World!",
   },
   Subscription: {
-    somethingChanged: {
-      subscribe: () => pubsub.asyncIterator([SOMETHING_CHANGED_TOPIC]),
-    },
     getWorkouts: {
-      subscribe: (_, __, { token }) => {
+      subscribe: (_, __, { token, uid }) => {
         startWorkoutsSubscription(token);
+        console.log(uid);
+        // connections[uid].push(startWorkoutsSubscription(token));
         return pubsub.asyncIterator([WORKOUTS_CHANGED_TOPIC]);
       },
     },
@@ -48,23 +52,97 @@ export const schema = makeExecutableSchema({
 });
 
 const WORKOUTS_SUBSCRIPTION = gql`
-    subscription MySubscription {
+    subscription GetWorkouts {
         wpt_workouts {
             workout_id
             name
+            day_of_week
+            note
+            wpt_workout_exercises(limit: 3, order_by: {order_number: asc}) {
+                wpt_exercise {
+                    name
+                }
+            }
+            wpt_workout_exercises_aggregate {
+                aggregate {
+                    totalExercises: count
+                }
+            }
+            totalSetsAggragate: wpt_workout_exercises {
+                wpt_set_references_aggregate {
+                    aggregate {
+                        totalSets: count
+                    }
+                }
+            }
         }
     }
 `;
+
+type ActualData = {
+  data: {
+    wpt_workouts: {
+      workout_id: string;
+      name: string;
+      day_of_week: number;
+      note: string;
+      wpt_workout_exercises: {
+        wpt_exercise: {
+          name: string;
+        }
+      }[];
+      wpt_workout_exercises_aggregate: {
+        aggregate: {
+          totalExercises: number;
+        }
+      };
+      totalSetsAggragate: {
+        wpt_set_references_aggregate: {
+          aggregate: {
+            totalSets: number;
+          }
+        }
+      }[];
+    }[];
+  };
+};
+
+type DesiredData = {
+  workouts: {
+    workout_id: string;
+    name: string;
+    day_of_week: number;
+    note: string;
+    exercises: string[];
+    totalExercises: number;
+    totalSets: number;
+  }[];
+};
+
+function transformData(input: ActualData): DesiredData {
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  return {
+    workouts: input.data.wpt_workouts.map(workout => ({
+      workout_id: workout.workout_id,
+      name: workout.name,
+      day_of_week: workout.day_of_week,
+      note: workout.note,
+      exercises: workout.wpt_workout_exercises.map(exercise => exercise.wpt_exercise.name),
+      totalExercises: workout.wpt_workout_exercises_aggregate.aggregate.totalExercises,
+      totalSets: workout.totalSetsAggragate.reduce((sum, aggr) => sum + aggr.wpt_set_references_aggregate.aggregate.totalSets, 0),
+    })),
+  };
+}
 
 function startWorkoutsSubscription(bearerToken: string) {
   return hasuraSubscriptionClient(bearerToken).subscribe(
     { query: WORKOUTS_SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
+        const workouts = data?.data?.wpt_workouts ?? [];
+        const transformed = transformData(data as ActualData);
 
-        // transform the data here
-
-        pubsub.publish(WORKOUTS_CHANGED_TOPIC, { getWorkouts: data!.data!.wpt_workouts });
+        pubsub.publish(WORKOUTS_CHANGED_TOPIC, { getWorkouts: transformed.workouts });
       },
       error: (error) => console.error("Subscription error:", error),
       complete: () => console.log("Subscription completed"),

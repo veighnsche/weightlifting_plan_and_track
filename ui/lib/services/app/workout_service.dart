@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
 
-import '../../models/app/screen_models/scr3_workout_details.dart';
 import '../../models/app/screen_models/scr1_workout_list.dart';
+import '../../models/app/screen_models/scr3_workout_details.dart';
 import '../api_service.dart';
 import '../graphql_service.dart';
 
@@ -15,38 +15,26 @@ class AppWorkoutService {
   Stream<Scr1WorkoutList> workoutListSubscription() {
     // language=GraphQL
     const String getWorkoutsSubscription = r"""
-      subscription GetWorkouts {
-        wpt_workouts {
-          workout_id
-          name
-          day_of_week
-          note
-          wpt_workout_exercises(limit: 3, order_by: {order_number: asc}) {
-            wpt_exercise {
-              name
+        subscription GetWorkouts {
+            getWorkouts {
+                name
+                day_of_week
+                note
+                workout_id
+                exercises
+                totalExercises
+                totalSets
             }
-          }
-          wpt_workout_exercises_aggregate {
-            aggregate {
-              totalExercises: count
-            }
-          }
-          totalSetsAggragate: wpt_workout_exercises {
-            wpt_set_references_aggregate {
-              aggregate {
-                totalSets: count
-              }
-            }
-          }
         }
-      }
     """;
     // language=None
 
+    print('workoutListSubscription');
+
     return _graphQLService
-        .subscribe(
-      SubscriptionOptions(document: gql(getWorkoutsSubscription)),
-    )
+        .subscribe(SubscriptionOptions(
+      document: gql(getWorkoutsSubscription),
+    ))
         .map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
         if (kDebugMode) {
@@ -57,6 +45,7 @@ class AppWorkoutService {
 
       return Scr1WorkoutList.fromJson(queryResult.data!);
     });
+    // mock
   }
 
   Stream<Scr3WorkoutDetails> workoutDetailsSubscription(String workoutId) {
@@ -104,7 +93,7 @@ class AppWorkoutService {
     // language=None
 
     return _graphQLService
-        .subscribe(
+        .subscribeDeprecated(
       SubscriptionOptions(
         document: gql(getWorkoutSubscription),
         variables: <String, dynamic>{

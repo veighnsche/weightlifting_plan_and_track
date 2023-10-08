@@ -2,7 +2,8 @@ import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
-import { execute, printSchema, subscribe } from "graphql";
+import admin from "firebase-admin";
+import { execute, subscribe } from "graphql";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { createServer } from "http";
 import "reflect-metadata";
@@ -19,7 +20,6 @@ import { authenticateRequest } from "./services/auth";
 import { connectDatabase } from "./services/database";
 import { connectDatabaseHasura } from "./services/databaseHasura";
 import { initializeFirebase } from "./services/firebase";
-import { getCombinedSchema } from "./services/graphql";
 import { HasuraRESTDataSource } from "./services/hasura";
 import { getRateLimiter } from "./services/rateLimiter";
 
@@ -67,6 +67,25 @@ const apolloServer = new ApolloServer({
 const httpServer = createServer(app);
 const wsServer = new WsServer({ server: httpServer, path: "/graphql" });
 
+// export let connections: Record<string, (() => void)[]> = {};
+
+async function getUserUid(bearerToken?: string) {
+  if (!bearerToken) {
+    throw new Error("Missing auth token!");
+  }
+
+  const token = bearerToken.split("Bearer ")[1];
+
+  let verified;
+  try {
+    verified = await admin.auth().verifyIdToken(token);
+  } catch (error) {
+    throw new Error("Invalid auth token!");
+  }
+
+  return verified.uid;
+}
+
 Promise.all([
   connectDatabase(),
   connectDatabaseHasura(),
@@ -79,15 +98,32 @@ Promise.all([
       schema,
       execute,
       subscribe,
-      onConnect: () => {
+      onConnect: async (ctx) => {
+        console.log("onConnect");
+        const uid = await getUserUid(ctx.extra.request.headers.authorization);
+        console.log(uid);
+
+        // if (connections[uid]) {
+        //   connections[uid].forEach((unsubscribe) => unsubscribe());
+        // }
+        // connections[uid] = [];
+
         console.log("Client connected");
       },
-      onDisconnect: () => {
+      onDisconnect: async (ctx) => {
+        const uid = await getUserUid(ctx.extra.request.headers.authorization);
+
+        // if (connections[uid]) {
+        //   connections[uid].forEach((unsubscribe) => unsubscribe());
+        // }
+        // delete connections[uid];
+
         console.log("Client disconnected");
       },
-      context: (ctx) => {
+      context: async (ctx) => {
         const token = ctx.extra.request.headers.authorization;
-        return { token };
+        const uid = await getUserUid(token);
+        return { token, uid };
       },
     },
     wsServer,

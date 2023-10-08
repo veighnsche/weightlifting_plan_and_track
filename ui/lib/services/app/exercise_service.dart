@@ -42,7 +42,7 @@ class AppExerciseService {
     // language=None
 
     return _graphQLService
-        .subscribe(
+        .subscribeDeprecated(
       SubscriptionOptions(document: gql(getExercisesSubscription)),
     )
         .map((QueryResult<Object?> queryResult) {
@@ -106,7 +106,7 @@ class AppExerciseService {
     // language=None
 
     return _graphQLService
-        .subscribe(
+        .subscribeDeprecated(
       SubscriptionOptions(
         document: gql(getExerciseDetailsSubscription),
         variables: {

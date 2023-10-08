@@ -24,6 +24,7 @@ export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
 
   // Check is path starts with "/graphql"
   if (req.path.startsWith("/graphql")) {
+    console.log("GraphQL request, continuing...")
     return next();
   }
 
@@ -31,7 +32,7 @@ export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
     return next();
   }
 
-  console.log("Not a dev request, continuing...", req.method, req.path);
+  // console.log("Not a dev request, continuing...", req.method, req.path);
 
   const token = req.headers.authorization?.split("Bearer ")[1];
   // console.log("Token:", token)
