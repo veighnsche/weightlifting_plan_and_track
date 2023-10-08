@@ -24,7 +24,7 @@ class Scr4ExerciseDetails {
 
     // Extracting linked workouts
     List<Scr4Workout> workoutsList = (exerciseData['wpt_workout_exercises']
-            as List)
+    as List)
         .map((workoutJson) => Scr4Workout.fromJson(workoutJson['wpt_workout']))
         .toList();
 
@@ -32,7 +32,7 @@ class Scr4ExerciseDetails {
     Map<String, List<dynamic>> completedWorkoutsGrouped = {};
     for (var completedSet in exerciseData['wpt_completed_sets']) {
       var workoutId =
-          completedSet['wpt_completed_workout']['completed_workout_id'];
+      completedSet['wpt_completed_workout']['completed_workout_id'];
       if (completedWorkoutsGrouped[workoutId] == null) {
         completedWorkoutsGrouped[workoutId] = [];
       }
@@ -51,14 +51,17 @@ class Scr4ExerciseDetails {
         .fold(0.0, (a, b) => a + b!);
 
     double avgDiffInTotalVolumeSum;
-    if (totalCompletedWorkoutsCount > 0) {
+    if (totalCompletedWorkoutsCount > 1) {
       avgDiffInTotalVolumeSum = completedWorkoutsList
-              .map((workout) => workout.differenceInTotalVolume ?? 0)
-              .reduce((a, b) => a + b) /
+          .map((workout) => workout.differenceInTotalVolume!)
+          .reduce((a, b) => a + b) /
           totalCompletedWorkoutsCount;
     } else {
       avgDiffInTotalVolumeSum = 0.0;
     }
+
+    print("avgDiffInTotalVolumeSum: $avgDiffInTotalVolumeSum");
+
 
     return Scr4ExerciseDetails(
       name: exerciseData['name'],
@@ -132,15 +135,15 @@ class Scr4CompletedWorkout {
 
     var totalVolume = sets.fold(
         0.0,
-        (sum, set) =>
-            sum +
+            (sum, set) =>
+        sum +
             ((set['rep_count'] as int) *
                 ((set['weight'] as num?)?.toDouble() ?? 0)));
 
     var plannedTotalVolume = sets.fold(
         0.0,
-        (sum, set) =>
-            sum +
+            (sum, set) =>
+        sum +
             ((set['wpt_set_detail']['rep_count'] as int) *
                 ((set['wpt_set_detail']['weight'] as num?)?.toDouble() ?? 0)));
 
@@ -169,14 +172,14 @@ class Scr4CompletedWorkout {
     });
 
     var avgRestTimeBefore =
-        (sets.fold(0, (sum, set) => sum + (set['rest_time_before'] as int)) /
-                sets.length)
-            .round();
+    (sets.fold(0, (sum, set) => sum + (set['rest_time_before'] as int)) /
+        sets.length)
+        .round();
 
     return Scr4CompletedWorkout(
       name: firstSet['wpt_completed_workout']['wpt_workout']['name'],
       completedWorkoutId: firstSet['wpt_completed_workout']
-          ['completed_workout_id'],
+      ['completed_workout_id'],
       startedAt: firstSet['wpt_completed_workout']['started_at'],
       note: firstSet['note'],
       completedSets: sets.length,

@@ -612,10 +612,11 @@ router.get("/", async (req, res) => {
 });
 
 function varyRepCount(repCount: number | undefined): number | undefined {
+  if (repCount === undefined || 0) return repCount;
+
   // 50% chance of varying the rep count
-  if (Math.random() < 0.5) {
-    const variation = Math.floor(Math.random() * 11) - 5;
-    return Math.max(0, (repCount || 0) + variation);
+  if (Math.random() < 0.2 && repCount > 2) {
+    return repCount - 1;
   }
 
   return repCount;
@@ -625,9 +626,8 @@ function varyWeight(weight: number | undefined): number | undefined {
   if (weight === undefined || 0) return weight;
 
   // 50% chance of varying the weight
-  if (Math.random() < 0.5) {
-    const variation = Math.floor(Math.random() * 21) - 10;
-    return Math.max(0, (weight || 0) + variation);
+  if (Math.random() < 0.2 && weight > 2) {
+    return weight - 2.5;
   }
 
   return weight;

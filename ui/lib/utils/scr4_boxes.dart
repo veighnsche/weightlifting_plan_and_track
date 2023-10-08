@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/utils/ints.dart';
 
 import '../models/app/screen_models/scr4_exercise_details.dart';
 
@@ -6,8 +7,7 @@ class Scr4ExerciseBoxes {
   final Scr4ExerciseDetails exercise;
   final Function(String name, String value, IconData iconData) addEntry;
 
-  Scr4ExerciseBoxes(
-      {required this.exercise, required this.addEntry}) {
+  Scr4ExerciseBoxes({required this.exercise, required this.addEntry}) {
     handleTotalCompletedWorkouts();
     handleTotalCompletedVolume();
     handleAvgDiffInTotalVolume();
@@ -22,9 +22,9 @@ class Scr4ExerciseBoxes {
 
   String formatVolume(double volume) {
     if (volume >= 1000) {
-      return '${(volume / 1000).toStringAsFixed(1)}t';
+      return '${(volume / 1000).toCustomString()}t';
     } else {
-      return '${volume.toString()}kg';
+      return '${volume.toCustomString()}kg';
     }
   }
 
@@ -39,7 +39,7 @@ class Scr4ExerciseBoxes {
   }
 
   void handleAvgDiffInTotalVolume() {
-    if (exercise.avgDiffInTotalVolume > 0) {
+    if (exercise.avgDiffInTotalVolume != 0) {
       addEntry(
         'Avg Diff. Volume',
         formatVolume(exercise.avgDiffInTotalVolume),
@@ -78,14 +78,18 @@ class Scr4CompletedWorkoutBoxes {
 
   void handleMinWeight() {
     if (completedWorkout.minWeight != null && completedWorkout.minWeight! > 0) {
-      addEntry('Min Weight', '${completedWorkout.minWeight}kg',
+      addEntry(
+          'Min Weight',
+          '${completedWorkout.minWeight?.toCustomString()}kg',
           Icons.arrow_downward);
     }
   }
 
   void handleMaxWeight() {
     if (completedWorkout.maxWeight != null && completedWorkout.maxWeight! > 0) {
-      addEntry('Max Weight', '${completedWorkout.maxWeight}kg',
+      addEntry(
+          'Max Weight',
+          '${completedWorkout.maxWeight?.toCustomString()}kg',
           Icons.arrow_upward);
     }
   }
@@ -93,7 +97,9 @@ class Scr4CompletedWorkoutBoxes {
   void handleTotalVolume() {
     if (completedWorkout.totalVolume != null &&
         completedWorkout.totalVolume! > 0) {
-      addEntry('Total Volume', '${completedWorkout.totalVolume}kg',
+      addEntry(
+          'Total Volume',
+          '${completedWorkout.totalVolume?.toCustomString()}kg',
           Icons.volume_up);
     }
   }
@@ -101,7 +107,9 @@ class Scr4CompletedWorkoutBoxes {
   void handlePlannedTotalVolume() {
     if (completedWorkout.plannedTotalVolume != null &&
         completedWorkout.plannedTotalVolume! > 0) {
-      addEntry('Planned Volume', '${completedWorkout.plannedTotalVolume}kg',
+      addEntry(
+          'Planned Volume',
+          '${completedWorkout.plannedTotalVolume?.toCustomString()}kg',
           Icons.calendar_view_day);
     }
   }

@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import '../../../utils/dates.dart';
 
 class Scr3WorkoutDetails {
@@ -191,19 +189,6 @@ Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
       totalTime += (restTimeBefore ?? 0) + 120;
     }
   }
-
-  debugPrint({
-    'repsList': repsList,
-    'volumeList': volumeList,
-    'restTimeBeforeList': restTimeBeforeList,
-    'totalVolume': totalVolume,
-    'maxReps': maxReps,
-    'minWeight': minWeight,
-    'maxWeight': maxWeight,
-    'totalReps': totalReps,
-    'maxRest': maxRest,
-    'totalTime': totalTime,
-  }.toString());
 
   return Scr3Exercise(
     exerciseId: json['wpt_exercise']['exercise_id'],
