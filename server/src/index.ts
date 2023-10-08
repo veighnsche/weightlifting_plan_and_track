@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
-import { execute, subscribe } from "graphql";
+import { execute, printSchema, subscribe } from "graphql";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { createServer } from "http";
 import "reflect-metadata";
@@ -19,6 +19,7 @@ import { authenticateRequest } from "./services/auth";
 import { connectDatabase } from "./services/database";
 import { connectDatabaseHasura } from "./services/databaseHasura";
 import { initializeFirebase } from "./services/firebase";
+import { getCombinedSchema } from "./services/graphql";
 import { HasuraRESTDataSource } from "./services/hasura";
 import { getRateLimiter } from "./services/rateLimiter";
 

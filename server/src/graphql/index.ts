@@ -15,8 +15,7 @@ const typeDefs: IExecutableSchemaDefinition["typeDefs"] = gql`
     }
 
     type Query {
-        hello: String
-        getWorkouts: [Workout!]!
+        search: String
     }
 
     type Subscription {
@@ -28,19 +27,7 @@ const typeDefs: IExecutableSchemaDefinition["typeDefs"] = gql`
 
 const resolvers: IExecutableSchemaDefinition["resolvers"] = {
   Query: {
-    hello: () => "Hello world!",
-    async getWorkouts(_, __, { dataSources, token }) {
-      const response = await dataSources.hasura.queryHasura(token, gql`
-          query GetWorkouts {
-              wpt_workouts {
-                  workout_id
-                  name
-              }
-          }
-      `);
-      console.log(response);
-      return response.data.wpt_workouts;  // Ensure this returns the array
-    },
+    search: () => "Hello World!",
   },
   Subscription: {
     somethingChanged: {
@@ -48,7 +35,6 @@ const resolvers: IExecutableSchemaDefinition["resolvers"] = {
     },
     getWorkouts: {
       subscribe: (_, __, { token }) => {
-        // where is the bearer token?
         startWorkoutsSubscription(token);
         return pubsub.asyncIterator([WORKOUTS_CHANGED_TOPIC]);
       },
@@ -75,8 +61,9 @@ function startWorkoutsSubscription(bearerToken: string) {
     { query: WORKOUTS_SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
-        // console.log("Received event:", data);
-        // Publish the data to your PubSub
+
+        // transform the data here
+
         pubsub.publish(WORKOUTS_CHANGED_TOPIC, { getWorkouts: data!.data!.wpt_workouts });
       },
       error: (error) => console.error("Subscription error:", error),
