@@ -55,6 +55,7 @@ const apolloServer = new ApolloServer({
   schema,
   context: ({ req }) => {
     const token = req.headers.authorization || "";
+    console.log("Apollo Token:", token);
     return { token };
   },
   dataSources: () => ({
@@ -82,6 +83,10 @@ Promise.all([
       },
       onDisconnect: () => {
         console.log("Client disconnected");
+      },
+      context: (ctx) => {
+        const token = ctx.extra.request.headers.authorization;
+        return { token };
       },
     },
     wsServer,
