@@ -1,9 +1,12 @@
 // src/graphql-client.ts
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { WebSocketLink } from "@apollo/client/link/ws";
 
-const client = new ApolloClient({
+const HASURA_ENDPOINT = "ws://your-hasura-instance:8080/v1/graphql";
+
+export const hasuraAdminClient = new ApolloClient({
   link: new HttpLink({
-    uri: "http://your-hasura-instance:8080/v1/graphql",
+    uri: HASURA_ENDPOINT,
     headers: {
       "x-hasura-admin-secret": process.env.HASURA_GRAPHQL_ADMIN_SECRET!,
     },
@@ -11,4 +14,12 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export default client;
+const hasuraWsClient = new ApolloClient({
+  link: new WebSocketLink({
+    uri: HASURA_ENDPOINT,
+    options: {
+      reconnect: true,
+    },
+  }),
+  cache: new InMemoryCache(),
+});
