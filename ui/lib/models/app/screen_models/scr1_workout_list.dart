@@ -6,7 +6,6 @@ class Scr1WorkoutList {
   Scr1WorkoutList({required this.workouts});
 
   factory Scr1WorkoutList.fromJson(Map<String, dynamic> json) {
-    print('Scr1WorkoutList.fromJson $json');
     List<Scr1WorkoutItem> workouts = (json['getWorkouts'] as List)
         .map((data) => Scr1WorkoutItem.fromJson(data))
         .toList()

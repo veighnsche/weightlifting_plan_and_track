@@ -13,8 +13,6 @@ router.post("/", async (req: AuthRequest, res) => {
 
   const { exercise } = req.body;
 
-  console.log(exercise)
-
   if (!exercise) {
     return res.status(400).send("Exercise not found.");
   }

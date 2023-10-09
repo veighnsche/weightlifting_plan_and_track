@@ -33,5 +33,5 @@ export const dataSourceHasura = new DataSource(options);
 
 export const connectDatabaseHasura = async () => {
   await dataSourceHasura.initialize();
-  console.log("DB Hasura connected");
+  console.info("DB Hasura connected");
 };

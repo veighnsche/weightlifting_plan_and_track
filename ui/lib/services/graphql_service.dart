@@ -82,13 +82,12 @@ class GraphQLService {
 
   GraphQLClient? _client;
 
-  GraphQLClient get client {
-    _client ??= _connect();
+  Future<GraphQLClient> get client async {
+    _client ??= await _connect();
     return _client!;
   }
 
-
-  GraphQLClient _connect() {
+  Future<GraphQLClient> _connect() async {
     // HTTP Link
     final httpLink = HttpLink('http://localhost:3000/graphql');
 
@@ -102,26 +101,24 @@ class GraphQLService {
 
     // WebSockets Link
     final WebSocketLink websocketLink = WebSocketLink(
-      'ws://localhost:3000/graphql', // Make sure to replace with your endpoint
+      'ws://localhost:3000/graphql',
+      subProtocol: 'graphql-transport-ws', // I don't even know why this is needed, I use graphql-ws on the server
       config: SocketClientConfig(
         autoReconnect: false,
+        delayBetweenReconnectionAttempts: const Duration(seconds: 15),
         inactivityTimeout: const Duration(seconds: 30),
-        initialPayload: () async {
-          final token = await _authService.token;
-          return {
-            'headers': {
-              'Authorization': 'Bearer $token',
-            },
-          };
+        headers: {
+          'Authorization': 'Bearer ${await _authService.token}',
         },
       ),
     );
+
 
     // Combining both links with a split function
     // If the request is a subscription, it uses the WebSockets link.
     // Otherwise, it defaults to the HTTP link.
     final link = Link.split(
-          (request) => request.isSubscription,
+      (request) => request.isSubscription,
       websocketLink,
       authLink.concat(httpLink),
     );
@@ -132,9 +129,8 @@ class GraphQLService {
     );
   }
 
-  Stream<QueryResult> subscribe(SubscriptionOptions options) {
-    return client.subscribe(options).map((event) {
-      print('event $event');
+  Future<Stream<QueryResult>> subscribe(SubscriptionOptions options) async {
+    return (await client).subscribe(options).map((event) {
       if (event.hasException) {
         if (kDebugMode) {
           print("GraphQL Exception: ${event.exception}");

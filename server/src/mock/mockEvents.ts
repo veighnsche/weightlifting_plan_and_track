@@ -158,7 +158,7 @@ async function insertnsertWorkouts(): Promise<WorkoutEntity[]> {
   try {
     savedWorkouts = await workoutRepository.save(workouts);
   } catch (error) {
-    console.log("Error while saving workouts:", error);
+    console.error("Error while saving workouts:", error);
   }
 
   return savedWorkouts;
@@ -283,7 +283,7 @@ async function insertExercises() {
   try {
     savedExercises = await exerciseRepository.save(exercises);
   } catch (error) {
-    console.log("Error while saving exercises:", error);
+    console.error("Error while saving exercises:", error);
   }
   return savedExercises;
 }
@@ -341,7 +341,7 @@ async function associateWorkoutExercises(savedWorkouts: WorkoutEntity[], savedEx
           order_number: exerciseOrder,
         });
       } else {
-        console.log(`Exercise ${exerciseName} not found`);
+        console.error(`Exercise ${exerciseName} not found`);
       }
     });
   });
@@ -350,7 +350,7 @@ async function associateWorkoutExercises(savedWorkouts: WorkoutEntity[], savedEx
   try {
     savedWorkoutExercises = await workoutExerciseRepository.save(workoutExercises);
   } catch (error) {
-    console.log("Error while saving workout exercises:", error);
+    console.error("Error while saving workout exercises:", error);
   }
   return savedWorkoutExercises;
 }
@@ -361,7 +361,7 @@ async function insertSetReferences(savedWorkoutExercises: WorkoutExerciseEntity[
   savedWorkoutExercises.forEach(workoutExercise => {
     const exercise = savedExercises.find(e => e.exercise_id === workoutExercise.exercise_id);
     if (!exercise) {
-      console.log(`Exercise with id ${workoutExercise.exercise_id} not found`);
+      console.error(`Exercise with id ${workoutExercise.exercise_id} not found`);
       return;
     }
     const exerciseType = inferExerciseTypeFromNote(exercise!.note!);
@@ -388,7 +388,7 @@ async function insertSetReferences(savedWorkoutExercises: WorkoutExerciseEntity[
   try {
     savedSetReferences = await setReferenceRepository.save(setReferences);
   } catch (error) {
-    console.log("Error while saving set references:", error);
+    console.error("Error while saving set references:", error);
   }
   return savedSetReferences;
 }
@@ -434,13 +434,13 @@ async function insertSetDetails(savedSetReferences: SetReferenceEntity[], savedW
 
     const workoutExercise = savedWorkoutExercises.find(e => e.workout_exercise_id === setReference.workout_exercise_id);
     if (!workoutExercise) {
-      console.log(`Workout Exercise with id ${setReference.workout_exercise_id} not found`);
+      console.error(`Workout Exercise with id ${setReference.workout_exercise_id} not found`);
       return;
     }
 
     const exercise = savedExercises.find(e => e.exercise_id === workoutExercise.exercise_id);
     if (!exercise) {
-      console.log(`Exercise with id ${workoutExercise.exercise_id} not found`);
+      console.error(`Exercise with id ${workoutExercise.exercise_id} not found`);
       return;
     }
 
@@ -471,7 +471,7 @@ async function insertSetDetails(savedSetReferences: SetReferenceEntity[], savedW
   try {
     savedSetDetails = await Promise.all(setDetails.map(sd => setDetailRepository.save(sd)));
   } catch (error) {
-    console.log("Error while saving set details:", error);
+    console.error("Error while saving set details:", error);
   }
   return savedSetDetails;
 }
@@ -497,7 +497,7 @@ async function insertCompletedWorkouts(savedWorkouts: WorkoutEntity[]) {
   try {
     savedCompletedWorkouts = await Promise.all(completedWorkouts.map(cw => completedWorkoutRepository.save(cw)));
   } catch (error) {
-    console.log("Error while saving completed workouts:", error);
+    console.error("Error while saving completed workouts:", error);
   }
   return savedCompletedWorkouts;
 }
@@ -509,25 +509,25 @@ async function insertCompletedSets(savedSetDetails: SetDetailEntity[][], savedSe
     setDetailsForWeek.forEach(setDetail => {
       const setReference = savedSetReferences.find(sr => sr.set_reference_id === setDetail.set_reference_id);
       if (!setReference) {
-        console.log(`Set reference with id ${setDetail.set_reference_id} not found`);
+        console.error(`Set reference with id ${setDetail.set_reference_id} not found`);
         return false;
       }
 
       const workoutExercise = savedWorkoutExercises.find(we => we.workout_exercise_id === setReference.workout_exercise_id);
       if (!workoutExercise) {
-        console.log(`Workout exercise with id ${setReference.workout_exercise_id} not found`);
+        console.error(`Workout exercise with id ${setReference.workout_exercise_id} not found`);
         return false;
       }
 
       const completedWorkout = [savedCompletedWorkouts[1], savedCompletedWorkouts[0]][weekIndex].find(cw => cw.workout_id === workoutExercise.workout_id);
       if (!completedWorkout) {
-        console.log(`Completed workout with id ${workoutExercise.workout_id} not found`);
+        console.error(`Completed workout with id ${workoutExercise.workout_id} not found`);
         return;
       }
 
       const exercise = savedExercises.find(e => e.exercise_id === workoutExercise.exercise_id);
       if (!exercise) {
-        console.log(`Exercise with id ${workoutExercise.exercise_id} not found`);
+        console.error(`Exercise with id ${workoutExercise.exercise_id} not found`);
         return;
       }
 
@@ -550,7 +550,7 @@ async function insertCompletedSets(savedSetDetails: SetDetailEntity[][], savedSe
   try {
     await completedSetRepository.save(completedSets);
   } catch (error) {
-    console.log("Error while saving completed sets:", error);
+    console.error("Error while saving completed sets:", error);
   }
 }
 

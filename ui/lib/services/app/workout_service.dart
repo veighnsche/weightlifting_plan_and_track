@@ -14,7 +14,7 @@ class AppWorkoutService {
       GraphQLServiceDeprecated();
   final GraphQLService _graphQLService = GraphQLService();
 
-  Stream<Scr1WorkoutList> workoutListSubscription() {
+  Future<Stream<Scr1WorkoutList>> workoutListSubscription() async {
     // language=GraphQL
     const String getWorkoutsSubscription = r"""
         subscription GetWorkouts {
@@ -31,12 +31,10 @@ class AppWorkoutService {
     """;
     // language=None
 
-    print('workoutListSubscription');
-
-    return _graphQLService
+    return (await _graphQLService
         .subscribe(SubscriptionOptions(
       document: gql(getWorkoutsSubscription),
-    ))
+    )))
         .map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
         if (kDebugMode) {

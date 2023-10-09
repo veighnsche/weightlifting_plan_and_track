@@ -38,7 +38,6 @@ const resolvers: IExecutableSchemaDefinition["resolvers"] = {
     getWorkouts: {
       subscribe: (_, __, { token, uid }) => {
         startWorkoutsSubscription(token);
-        console.log(uid);
         // connections[uid].push(startWorkoutsSubscription(token));
         return pubsub.asyncIterator([WORKOUTS_CHANGED_TOPIC]);
       },
@@ -139,13 +138,12 @@ function startWorkoutsSubscription(bearerToken: string) {
     { query: WORKOUTS_SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
-        console.log("Subscription data:", data);
         const transformed = transformData(data as ActualData);
 
         pubsub.publish(WORKOUTS_CHANGED_TOPIC, { getWorkouts: transformed.workouts });
       },
       error: (error) => console.error("Subscription error:", error),
-      complete: () => console.log("Subscription completed"),
+      complete: () => console.info("Subscription completed"),
     },
   );
 }

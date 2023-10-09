@@ -11,10 +11,9 @@ class AppWorkoutListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Scr1WorkoutList>(
-      stream: AppWorkoutService().workoutListSubscription(),
+    return FutureBuilder(
+      future: AppWorkoutService().workoutListSubscription(),
       builder: (context, snapshot) {
-        print(snapshot);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -26,13 +25,29 @@ class AppWorkoutListScreen extends StatelessWidget {
           return const Center(child: Text('Error loading workouts'));
         }
 
-        if (!snapshot.hasData || snapshot.data!.workouts.isEmpty) {
-          return const Center(child: Text('No workouts available'));
-        }
+        return StreamBuilder<Scr1WorkoutList>(
+          stream: snapshot.data,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-        final Scr1WorkoutList workoutListScreenModel = snapshot.data!;
+            if (snapshot.hasError) {
+              if (kDebugMode) {
+                print(snapshot.error);
+              }
+              return const Center(child: Text('Error loading workouts'));
+            }
 
-        return _buildWorkoutsList(workoutListScreenModel.workouts);
+            if (!snapshot.hasData || snapshot.data!.workouts.isEmpty) {
+              return const Center(child: Text('No workouts available'));
+            }
+
+            final Scr1WorkoutList workoutListScreenModel = snapshot.data!;
+
+            return _buildWorkoutsList(workoutListScreenModel.workouts);
+          },
+        );
       },
     );
   }

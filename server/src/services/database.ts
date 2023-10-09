@@ -22,5 +22,5 @@ export const dataSource = new DataSource(options);
 
 export const connectDatabase = async () => {
   await dataSource.initialize();
-  console.log("DB connected");
+  console.info("DB connected");
 };

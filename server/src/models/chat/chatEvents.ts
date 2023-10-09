@@ -63,7 +63,7 @@ router.get("/history", async (req: AuthRequest, res) => {
 router.delete("/history", async (req: AuthRequest, res) => {
   const userUid = req.user?.uid;
 
-  console.log(`Deleting chat history for ${userUid}`);
+  console.info(`Deleting chat history for ${userUid}`);
 
   if (!userUid) {
     return res.status(400).send("UID not found.");

@@ -60,9 +60,6 @@ class Scr4ExerciseDetails {
       avgDiffInTotalVolumeSum = 0.0;
     }
 
-    print("avgDiffInTotalVolumeSum: $avgDiffInTotalVolumeSum");
-
-
     return Scr4ExerciseDetails(
       name: exerciseData['name'],
       totalCompletedWorkouts: totalCompletedWorkoutsCount,
