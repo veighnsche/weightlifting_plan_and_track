@@ -1,10 +1,13 @@
 import admin from "firebase-admin";
 import { execute, subscribe } from "graphql";
 import { useServer } from "graphql-ws/lib/use/ws";
-import { Server as WsServer } from "ws";
-import { getSchema, stopSubscription } from "./graphql";
+import type { Server } from "http";
 
-export async function setupWebSocket(httpServer: any, path: string) {
+import { Server as WsServer } from "ws";
+import { getSchema } from "./graphql";
+import { stopHasuraSubscription } from "./hasuraSubscriptions";
+
+export async function setupWebSocket(httpServer: Server, path: string) {
   const schema = await getSchema();
 
   const wsServer = new WsServer({
@@ -22,6 +25,7 @@ export async function setupWebSocket(httpServer: any, path: string) {
       try {
         await admin.auth().verifyIdToken(token);
         done(true);
+
       } catch (error) {
         console.error(error);
         done(false, 401, "Unauthorized");
@@ -39,14 +43,14 @@ export async function setupWebSocket(httpServer: any, path: string) {
       },
       onDisconnect: async (ctx) => {
         const subscriptionKey = Object.keys(ctx.subscriptions)[0];
-        stopSubscription(subscriptionKey);
+        if (!subscriptionKey) return;
+        stopHasuraSubscription(subscriptionKey);
         console.info("Client disconnected");
       },
       context: async (ctx) => {
         const subscriptionKey = Object.keys(ctx.subscriptions)[0];
         const token = ctx.extra.request.headers.authorization;
-        const uid = await getUserUid(token);
-        return { token, uid, subscriptionKey };
+        return { token, subscriptionKey };
       },
       onError: (err) => {
         console.error(err);
@@ -54,21 +58,4 @@ export async function setupWebSocket(httpServer: any, path: string) {
     },
     wsServer,
   );
-}
-
-async function getUserUid(bearerToken?: string) {
-  if (!bearerToken) {
-    throw new Error("Missing auth token!");
-  }
-
-  const token = bearerToken.split("Bearer ")[1];
-
-  let verified;
-  try {
-    verified = await admin.auth().verifyIdToken(token);
-  } catch (error) {
-    throw new Error("Invalid auth token!");
-  }
-
-  return verified.uid;
 }
