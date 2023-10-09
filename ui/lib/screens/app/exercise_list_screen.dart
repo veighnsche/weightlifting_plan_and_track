@@ -13,8 +13,7 @@ class AppExerciseListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureStreamBuilder(
       futureStream: AppExerciseService().scr2exerciseListSubscription(),
-      builder: (context, snapshot) {
-        final Scr2ExerciseList workoutListScreenModel = snapshot.data!;
+      builder: (context, workoutListScreenModel) {
         return _buildExercisesList(workoutListScreenModel.exercises);
       },
     );

@@ -51,7 +51,7 @@ type DesiredData = {
 /** GRAPHQL */
 
 const WORKOUTS_SUBSCRIPTION = gql`
-    subscription GetWorkouts {
+    subscription get_workout_list {
         wpt_workouts {
             workout_id
             name

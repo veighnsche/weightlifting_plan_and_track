@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:flutter/cupertino.dart';
 
 import '../../../utils/dates.dart';
 
@@ -9,7 +9,7 @@ class Scr3WorkoutDetails {
   final String? note;
   final int totalExercises;
   final int totalSets;
-  final double totalVolume;
+  final num totalVolume;
   final int totalTime;
   final List<Scr3Exercise> exercises;
   final List<Scr3CompletedWorkout> completedWorkouts;
@@ -30,7 +30,22 @@ class Scr3WorkoutDetails {
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);
 
   factory Scr3WorkoutDetails.fromJson(Map<String, dynamic> json) {
-    return scr3WorkoutDetailsFromJson(json);
+    return Scr3WorkoutDetails(
+      workoutId: json['workout_id'],
+      name: json['name'],
+      dayOfWeek: json['day_of_week'],
+      note: json['note'],
+      totalExercises: json['total_exercises'],
+      totalSets: json['total_sets'],
+      totalVolume: json['total_volume'],
+      totalTime: json['total_time'],
+      exercises: (json['exercises'] as List)
+          .map((e) => Scr3Exercise.fromJson(e))
+          .toList(),
+      completedWorkouts: (json['completed_workouts'] as List)
+          .map((cw) => Scr3CompletedWorkout.fromJson(cw))
+          .toList(),
+    );
   }
 }
 
@@ -41,11 +56,11 @@ class Scr3Exercise {
   final int setsCount;
   final int maxReps;
   final int totalReps;
-  final double? minWeight;
-  final double? maxWeight;
+  final num? minWeight;
+  final num? maxWeight;
   final int? maxRest;
   final int totalTime;
-  final double? totalVolume;
+  final num? totalVolume;
   final List<Scr3Set> sets;
 
   Scr3Exercise({
@@ -64,7 +79,20 @@ class Scr3Exercise {
   });
 
   factory Scr3Exercise.fromJson(Map<String, dynamic> json) {
-    return scr3ExerciseFromJson(json);
+    return Scr3Exercise(
+      exerciseId: json['exercise_id'],
+      name: json['name'],
+      note: json['note'],
+      setsCount: json['sets_count'],
+      maxReps: json['max_reps'],
+      totalReps: json['total_reps'],
+      minWeight: json['min_weight'],
+      maxWeight: json['max_weight'],
+      maxRest: json['max_rest'],
+      totalTime: json['total_time'],
+      totalVolume: json['total_volume'],
+      sets: (json['sets'] as List).map((s) => Scr3Set.fromJson(s)).toList(),
+    );
   }
 }
 
@@ -84,7 +112,13 @@ class Scr3CompletedWorkout {
   });
 
   factory Scr3CompletedWorkout.fromJson(Map<String, dynamic> json) {
-    return scr3CompletedWorkoutFromJson(json);
+    return Scr3CompletedWorkout(
+      completedWorkoutId: json['completed_workout_id'],
+      startedAt: json['started_at'],
+      note: json['note'],
+      isActive: json['is_active'],
+      completedRepsAmount: json['completed_reps_amount'],
+    );
   }
 }
 
@@ -108,144 +142,15 @@ class Scr3Set {
   });
 
   factory Scr3Set.fromJson(Map<String, dynamic> json) {
-    return scr3setsFromJson(json);
+    return Scr3Set(
+      setNumber: json['set_number'],
+      reps: json['reps'],
+      weight: json['weight'],
+      weightText: json['weight_text'],
+      weightAdjustments: (json['weight_adjustments'] as Map?)
+          ?.map((key, value) => MapEntry(int.parse(key), value)),
+      restTimeBefore: json['rest_time_before'],
+      note: json['note'],
+    );
   }
-}
-
-Scr3WorkoutDetails scr3WorkoutDetailsFromJson(Map<String, dynamic> json) {
-  var workout = json['wpt_workouts_by_pk'];
-
-  List<Scr3Exercise> exercises = (workout['wpt_workout_exercises'] as List)
-      .map((e) => Scr3Exercise.fromJson(e))
-      .toList();
-
-  int totalExercises = exercises.length;
-
-  int totalSets = exercises.fold(0, (prev, e) => prev + e.setsCount);
-
-  double totalVolume =
-      exercises.fold(0.0, (prev, e) => prev + (e.totalVolume ?? 0));
-
-  int totalTime = exercises.fold(0, (prev, e) => prev + e.totalTime);
-
-  return Scr3WorkoutDetails(
-    workoutId: workout['workout_id'],
-    name: workout['name'],
-    dayOfWeek: workout['day_of_week'] as int?,
-    note: workout['note'],
-    totalExercises: totalExercises,
-    totalSets: totalSets,
-    totalVolume: totalVolume,
-    totalTime: totalTime,
-    exercises: exercises,
-    completedWorkouts: (workout['wpt_completed_workouts'] as List)
-        .map((e) => Scr3CompletedWorkout.fromJson(e))
-        .toList(),
-  );
-}
-
-Scr3Exercise scr3ExerciseFromJson(Map<String, dynamic> json) {
-  List<int> repsList = [];
-  List<double> volumeList = [];
-  List<int> restTimeBeforeList = [];
-
-  double totalVolume = 0.0;
-  int maxReps = 0;
-  double? minWeight;
-  double maxWeight = 0.0;
-  int totalReps = 0;
-  int maxRest = 0;
-  int totalTime = 0;
-
-  for (var setRef in json['wpt_set_references']) {
-    var details = setRef['wpt_set_details']?.isNotEmpty == true
-        ? setRef['wpt_set_details'][0]
-        : null;
-
-    if (details != null) {
-      int reps = details['rep_count'];
-      double? weight = (details['weight'] as num?)?.toDouble();
-      int? restTimeBefore = details['rest_time_before'];
-
-      repsList.add(reps);
-      totalReps += reps;
-      maxReps = max(maxReps, reps);
-
-      if (weight != null) {
-        minWeight ??= weight;
-        minWeight = min(minWeight, weight);
-        maxWeight = max(maxWeight, weight);
-
-        double volume = double.parse((reps * weight).toStringAsFixed(1));
-        volumeList.add(volume);
-        totalVolume += volume;
-      }
-
-      if (restTimeBefore != null) {
-        restTimeBeforeList.add(restTimeBefore);
-        maxRest = max(maxRest, restTimeBefore);
-      }
-
-      totalTime += (restTimeBefore ?? 0) + 120;
-    }
-  }
-
-  return Scr3Exercise(
-    exerciseId: json['wpt_exercise']['exercise_id'],
-    name: json['wpt_exercise']['name'],
-    note: json['wpt_exercise']['note'],
-    setsCount: json['wpt_set_references'].length,
-    maxReps: maxReps,
-    totalReps: totalReps,
-    minWeight: minWeight,
-    maxWeight: maxWeight,
-    maxRest: maxRest,
-    totalTime: totalTime,
-    totalVolume: totalVolume,
-    sets: (json['wpt_set_references'] as List)
-        .map((e) => Scr3Set.fromJson(e))
-        .toList(),
-  );
-}
-
-Scr3CompletedWorkout scr3CompletedWorkoutFromJson(Map<String, dynamic> json) {
-  return Scr3CompletedWorkout(
-    completedWorkoutId: json['completed_workout_id'],
-    startedAt: json['started_at'],
-    note: json['note'],
-    isActive: json['is_active'],
-    completedRepsAmount: json['wpt_completed_sets_aggregate']['aggregate']
-            ['completedRepsAmount'] ??
-        0,
-  );
-}
-
-Scr3Set scr3setsFromJson(Map<String, dynamic> json) {
-  return Scr3Set(
-      setNumber: json['order_number'] + 1,
-      reps: json['wpt_set_details'][0]['rep_count'],
-      weight: json['wpt_set_details'][0]['weight'],
-      weightText: json['wpt_set_details'][0]['weight_text'],
-      weightAdjustments: json['wpt_set_details'][0]['weight_adjustments'],
-      restTimeBefore: json['wpt_set_details'][0]['rest_time_before'],
-      note: _buildNote(
-        json['note'],
-        json['wpt_set_details'][0]['note'],
-      ));
-}
-
-String? _buildNote(String? refNote, String? detailNote) {
-  if (refNote == null && detailNote == null) {
-    return null;
-  }
-
-  if (refNote == null) {
-    return detailNote;
-  }
-
-  if (detailNote == null) {
-    return refNote;
-  }
-
-  return '$refNote\n$detailNote';
 }

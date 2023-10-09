@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class FutureStreamBuilder<T> extends StatelessWidget {
   final Future<Stream<T>> futureStream;
-  final Function(BuildContext context, AsyncSnapshot<T> snapshot) builder;
+  final Function(BuildContext context, T data) builder;
 
   const FutureStreamBuilder({super.key, required this.futureStream, required this.builder});
 
@@ -41,7 +41,7 @@ class FutureStreamBuilder<T> extends StatelessWidget {
               return const Center(child: Text('No data available'));
             }
 
-            return builder(context, snapshot);
+            return builder(context, snapshot.data as T);
           },
         );
       },

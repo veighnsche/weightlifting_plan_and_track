@@ -10,14 +10,12 @@ import '../graphql_service.dart';
 
 class AppWorkoutService {
   final ApiService _apiService = ApiService();
-  final GraphQLServiceDeprecated _graphQLServiceDeprecated =
-      GraphQLServiceDeprecated();
   final GraphQLService _graphQLService = GraphQLService();
 
   Future<Stream<Scr1WorkoutList>> scr1workoutListSubscription() async {
     // language=GraphQL
     const String getWorkoutsSubscription = r"""
-        subscription GetWorkouts {
+        subscription get_workouts {
             scr1_workout_list {
                 name
                 day_of_week
@@ -49,60 +47,63 @@ class AppWorkoutService {
     });
   }
 
-  Stream<Scr3WorkoutDetails> workoutDetailsSubscription(String workoutId) {
+  Future<Stream<Scr3WorkoutDetails>> workoutDetailsSubscription(String workoutId) async {
     // language=GraphQL
     const String getWorkoutSubscription = r"""
-      subscription GetWorkoutDetails($workoutId: uuid!) {
-        wpt_workouts_by_pk(workout_id: $workoutId) {
+      subscription get_workout_details($workout_id: String!) {
+        scr3_workout_details(workout_id: $workout_id) {
           workout_id
           name
           day_of_week
           note
-          wpt_workout_exercises(order_by: {order_number: asc}) {
-            wpt_exercise {
-              exercise_id
-              name
+          total_exercises
+          total_sets
+          total_volume
+          total_time
+          exercises {
+            exercise_id
+            name
+            note
+            sets_count
+            max_reps
+            total_reps
+            min_weight
+            max_weight
+            max_rest
+            total_time
+            total_volume
+            sets {
+              set_number
+              reps
+              weight
+              weight_text
+              weight_adjustments
+              rest_time_before
               note
-            }
-            wpt_set_references(order_by: {order_number: asc}) {
-              order_number
-              note
-              wpt_set_details(order_by: {created_at: desc}, limit: 1) {
-                rep_count
-                weight
-                weight_text
-                weight_adjustment
-                rest_time_before
-                note
-              }
             }
           }
-          wpt_completed_workouts(order_by: {started_at: desc}) {
+          completed_workouts {
             completed_workout_id
             started_at
             note
             is_active
-            wpt_completed_sets_aggregate {
-              aggregate {
-                completedRepsAmount: count
-              }
-            }
+            completed_reps_amount
           }
         }
       }
     """;
     // language=None
 
-    return _graphQLServiceDeprecated
-        .subscribeDeprecated(
+    Stream<QueryResult> result = await _graphQLService.subscribe(
       SubscriptionOptions(
         document: gql(getWorkoutSubscription),
-        variables: <String, dynamic>{
-          'workoutId': workoutId,
+        variables: {
+          'workout_id': workoutId,
         },
       ),
-    )
-        .map((QueryResult<Object?> queryResult) {
+    );
+
+    return result.map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
         if (kDebugMode) {
           print("error ${queryResult.exception}");
@@ -110,7 +111,7 @@ class AppWorkoutService {
         throw queryResult.exception!;
       }
 
-      return Scr3WorkoutDetails.fromJson(queryResult.data!);
+      return Scr3WorkoutDetails.fromJson(queryResult.data!['scr3_workout_details']);
     });
   }
 

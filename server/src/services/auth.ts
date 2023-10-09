@@ -35,7 +35,7 @@ export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
   // console.log("Not a dev request, continuing...", req.method, req.path);
 
   const token = req.headers.authorization?.split("Bearer ")[1];
-  // console.log(req.path, "Token:", token);
+  console.log(req.path, "Token:", token);
   if (!token) {
     return res.status(401).send("Authentication required.");
   }

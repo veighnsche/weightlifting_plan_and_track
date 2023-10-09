@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/widgets/future_stream_builder.dart';
 
 import '../../models/app/screen_models/scr3_workout_details.dart';
 import '../../services/app/workout_service.dart';
@@ -19,47 +19,28 @@ class AppWorkoutDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: AppWorkoutService().workoutDetailsSubscription(workoutId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (snapshot.hasError || !snapshot.hasData) {
-          if (kDebugMode) {
-            print(snapshot.error);
-          }
-          return Scaffold(
-            appBar: AppBar(),
-            body: const Center(child: Text('Error loading workout')),
-          );
-        }
-
-        final workout = snapshot.data!;
-
-        return _buildWorkoutDetails(workout);
-      },
+    return AppDetailShell(
+      title: "Workout Details",
+      body: FutureStreamBuilder(
+        futureStream: AppWorkoutService().workoutDetailsSubscription(workoutId),
+        builder: (BuildContext context, Scr3WorkoutDetails workout) {
+          return _buildWorkoutDetails(workout);
+        },
+      ),
     );
   }
 
   Widget _buildWorkoutDetails(Scr3WorkoutDetails workout) {
-    return AppDetailShell(
-      title: "Workout Details",
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Scr3WorkoutDetailsCard(workout: workout),
-            _buildSectionTitle('Exercises', Colors.blueGrey[200]!),
-            ..._buildExercises(workout),
-            _buildSectionTitle('Completed Workouts', Colors.blueGrey[200]!),
-            ..._buildCompletedWorkouts(workout),
-          ],
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Scr3WorkoutDetailsCard(workout: workout),
+          _buildSectionTitle('Exercises', Colors.blueGrey[200]!),
+          ..._buildExercises(workout),
+          _buildSectionTitle('Completed Workouts', Colors.blueGrey[200]!),
+          ..._buildCompletedWorkouts(workout),
+        ],
       ),
     );
   }

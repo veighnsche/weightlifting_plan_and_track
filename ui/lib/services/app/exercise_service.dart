@@ -14,7 +14,7 @@ class AppExerciseService {
   Future<Stream<Scr2ExerciseList>> scr2exerciseListSubscription() async {
     // language=GraphQL
     const String getExercisesSubscription = r"""
-      subscription GetExercises {
+      subscription get_exercises {
           scr2_exercise_list {
               exercise_id
               name
@@ -102,7 +102,7 @@ class AppExerciseService {
       SubscriptionOptions(
         document: gql(getExerciseDetailsSubscription),
         variables: {
-          'exerciseId': exerciseId,
+          'exercise_id': exerciseId,
         },
       ),
     )
