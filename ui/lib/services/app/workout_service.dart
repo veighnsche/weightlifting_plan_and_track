@@ -14,28 +14,30 @@ class AppWorkoutService {
       GraphQLServiceDeprecated();
   final GraphQLService _graphQLService = GraphQLService();
 
-  Future<Stream<Scr1WorkoutList>> workoutListSubscription() async {
+  Future<Stream<Scr1WorkoutList>> scr1workoutListSubscription() async {
     // language=GraphQL
     const String getWorkoutsSubscription = r"""
         subscription GetWorkouts {
-            scr1WorkoutList {
+            scr1_workout_list {
                 name
                 day_of_week
                 note
                 workout_id
                 exercises
-                totalExercises
-                totalSets
+                total_exercises
+                total_sets
             }
         }
     """;
     // language=None
 
-    return (await _graphQLService
-        .subscribe(SubscriptionOptions(
-      document: gql(getWorkoutsSubscription),
-    )))
-        .map((QueryResult<Object?> queryResult) {
+    Stream<QueryResult> result = await _graphQLService.subscribe(
+      SubscriptionOptions(
+        document: gql(getWorkoutsSubscription),
+      ),
+    );
+
+    return result.map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
         if (kDebugMode) {
           print("error ${queryResult.exception}");
@@ -45,7 +47,6 @@ class AppWorkoutService {
 
       return Scr1WorkoutList.fromJson(queryResult.data!);
     });
-    // mock
   }
 
   Stream<Scr3WorkoutDetails> workoutDetailsSubscription(String workoutId) {

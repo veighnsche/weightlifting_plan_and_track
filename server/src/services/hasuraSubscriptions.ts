@@ -1,6 +1,6 @@
 let hasuraSubscriptions: Record<string, () => void> = {};
 
-export function startHasuraSubscription(subscriptionKey: string, subscription: () => void) {
+export function saveHasuraSubscription(subscriptionKey: string, subscription: () => void) {
   if (hasuraSubscriptions[subscriptionKey]) {
     hasuraSubscriptions[subscriptionKey]();
   }

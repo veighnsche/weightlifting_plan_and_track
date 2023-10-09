@@ -9,43 +9,34 @@ import '../graphql_service.dart';
 class AppExerciseService {
   final ApiService _apiService = ApiService();
   final GraphQLServiceDeprecated _graphQLServiceDeprecated = GraphQLServiceDeprecated();
+  final GraphQLService _graphQLService = GraphQLService();
 
-  Stream<Scr2ExerciseList> exerciseListSubscription() {
+  Future<Stream<Scr2ExerciseList>> scr2exerciseListSubscription() async {
     // language=GraphQL
     const String getExercisesSubscription = r"""
       subscription GetExercises {
-        wpt_exercises(order_by: {wpt_workout_exercises_aggregate: {avg: {order_number: asc}}}) {
-          exercise_id
-          name
-          note
-          wpt_completed_sets_aggregate {
-            aggregate {
-              max {
-                personalRecord: weight
-              }
-            }
-          }
-          workouts: wpt_workout_exercises {
-            wpt_workout {
+          scr2_exercise_list {
+              exercise_id
               name
-              day_of_week
-            }
-            wpt_set_references(limit: 1, order_by: {wpt_set_details_aggregate: {max: {weight: desc}}}) {
-              wpt_set_details(order_by: {created_at: desc}, limit: 1) {
-                workingWeight: weight
+              note
+              personal_record
+              workouts {
+                  name
+                  day_of_week
+                  working_weight
               }
-            }
           }
-        }
       }
-    """;
+  """;
     // language=None
 
-    return _graphQLServiceDeprecated
-        .subscribeDeprecated(
-      SubscriptionOptions(document: gql(getExercisesSubscription)),
-    )
-        .map((QueryResult<Object?> queryResult) {
+    Stream<QueryResult> result = await _graphQLService.subscribe(
+      SubscriptionOptions(
+        document: gql(getExercisesSubscription),
+      ),
+    );
+
+    return result.map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
         if (kDebugMode) {
           print("error ${queryResult.exception}");
@@ -56,6 +47,7 @@ class AppExerciseService {
       return Scr2ExerciseList.fromJson(queryResult.data!);
     });
   }
+
 
   Stream<Scr4ExerciseDetails> exerciseDetailsSubscription(String exerciseId) {
     // language=GraphQL

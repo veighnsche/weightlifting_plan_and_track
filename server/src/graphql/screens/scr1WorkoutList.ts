@@ -1,50 +1,11 @@
 import { IResolvers } from "@graphql-tools/utils/typings/Interfaces";
 import { gql } from "apollo-server-express";
 import { hasuraSubscriptionClient } from "../../services/hasura";
-import { startHasuraSubscription } from "../../services/hasuraSubscriptions";
+import { saveHasuraSubscription } from "../../services/hasuraSubscriptions";
 import { pubsub } from "../../services/pubsub";
 import { sortByDayOfWeek } from "../../utils/date";
 
-const WORKOUTS_SUBSCRIPTION = gql`
-    subscription GetWorkouts {
-        wpt_workouts {
-            workout_id
-            name
-            day_of_week
-            note
-            wpt_workout_exercises(limit: 3, order_by: {order_number: asc}) {
-                wpt_exercise {
-                    name
-                }
-            }
-            wpt_workout_exercises_aggregate {
-                aggregate {
-                    totalExercises: count
-                }
-            }
-            totalSetsAggragate: wpt_workout_exercises {
-                wpt_set_references_aggregate {
-                    aggregate {
-                        totalSets: count
-                    }
-                }
-            }
-        }
-    }
-`;
-
-export const scr1WorkoutListTypeDefs = gql`
-    type scr1_workout {
-        workout_id: String!
-        name: String!
-        day_of_week: Int
-        day_of_week_name: String
-        note: String
-        exercises: [String]
-        totalExercises: Int!
-        totalSets: Int!
-    }
-`;
+/** TYPES */
 
 type ActualData = {
   data: {
@@ -60,13 +21,13 @@ type ActualData = {
       }[];
       wpt_workout_exercises_aggregate: {
         aggregate: {
-          totalExercises: number;
+          total_exercises: number;
         }
       };
-      totalSetsAggragate: {
+      total_sets_aggragate: {
         wpt_set_references_aggregate: {
           aggregate: {
-            totalSets: number;
+            total_sets: number;
           }
         }
       }[];
@@ -82,10 +43,59 @@ type DesiredData = {
     day_of_week_name: string;
     note: string;
     exercises: string[];
-    totalExercises: number;
-    totalSets: number;
+    total_exercises: number;
+    total_sets: number;
   }[];
 };
+
+/** GRAPHQL */
+
+const WORKOUTS_SUBSCRIPTION = gql`
+    subscription GetWorkouts {
+        wpt_workouts {
+            workout_id
+            name
+            day_of_week
+            note
+            wpt_workout_exercises(limit: 3, order_by: {order_number: asc}) {
+                wpt_exercise {
+                    name
+                }
+            }
+            wpt_workout_exercises_aggregate {
+                aggregate {
+                    total_exercises: count
+                }
+            }
+            total_sets_aggragate: wpt_workout_exercises {
+                wpt_set_references_aggregate {
+                    aggregate {
+                        total_sets: count
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const scr1WorkoutListTypeDefs = gql`
+    extend type subscription_root {
+        scr1_workout_list: [scr1_workout]
+    }
+
+    type scr1_workout {
+        workout_id: String!
+        name: String!
+        day_of_week: Int
+        day_of_week_name: String
+        note: String
+        exercises: [String]
+        total_exercises: Int!
+        total_sets: Int!
+    }
+`;
+
+/** TRANSFORMER */
 
 function transformData(input: ActualData): DesiredData {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -97,30 +107,33 @@ function transformData(input: ActualData): DesiredData {
       day_of_week_name: daysOfWeek[workout.day_of_week],
       note: workout.note,
       exercises: workout.wpt_workout_exercises.map(exercise => exercise.wpt_exercise.name),
-      totalExercises: workout.wpt_workout_exercises_aggregate.aggregate.totalExercises,
-      totalSets: workout.totalSetsAggragate.reduce((sum, aggr) => sum + aggr.wpt_set_references_aggregate.aggregate.totalSets, 0),
+      total_exercises: workout.wpt_workout_exercises_aggregate.aggregate.total_exercises,
+      total_sets: workout.total_sets_aggragate.reduce((sum, aggr) => sum + aggr.wpt_set_references_aggregate.aggregate.total_sets, 0),
     })).sort(sortByDayOfWeek),
   };
 }
 
+/** RESOLVERS */
+
 export const scr1WorkoutListResolvers: IResolvers = {
-  Subscription: {
-    scr1WorkoutList: {
-      subscribe: (_, __, { token, subscriptionKey }) => {
-        startHasuraSubscription(subscriptionKey, startWorkoutsSubscription(token, subscriptionKey));
+  subscription_root: {
+    scr1_workout_list: {
+      subscribe: (_, __, { subscriptionKey, token }) => {
+        const subscription = startWorkoutsSubscription(subscriptionKey, token);
+        saveHasuraSubscription(subscriptionKey, subscription);
         return pubsub.asyncIterator([subscriptionKey]);
-      }
-    }
-  }
-}
-function startWorkoutsSubscription(bearerToken: string, subscriptionKey: string) {
+      },
+    },
+  },
+};
+
+function startWorkoutsSubscription(subscriptionKey: string, bearerToken: string) {
   return hasuraSubscriptionClient(bearerToken).subscribe(
     { query: WORKOUTS_SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
         const transformed = transformData(data as ActualData);
-
-        pubsub.publish(subscriptionKey, { scr1WorkoutList: transformed.workouts });
+        pubsub.publish(subscriptionKey, { scr1_workout_list: transformed.workouts }).catch(console.error);
       },
       error: (error) => console.error("Subscription error:", error),
       complete: () => console.info("Subscription completed"),

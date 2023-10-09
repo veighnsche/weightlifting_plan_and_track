@@ -6,11 +6,11 @@ class Scr2ExerciseList {
   Scr2ExerciseList({required this.exercises});
 
   factory Scr2ExerciseList.fromJson(Map<String, dynamic> json) {
-    List<Scr2ExerciseItem> unsortedWorkouts = (json['wpt_exercises'] as List)
+    List<Scr2ExerciseItem> exercises = (json['scr2_exercise_list'] as List)
         .map((data) => Scr2ExerciseItem.fromJson(data))
         .toList();
 
-    return Scr2ExerciseList(exercises: unsortedWorkouts);
+    return Scr2ExerciseList(exercises: exercises);
   }
 
   bool get isEmpty => exercises.isEmpty;
@@ -32,25 +32,18 @@ class Scr2ExerciseItem {
   });
 
   factory Scr2ExerciseItem.fromJson(Map<String, dynamic> json) {
-    var pr = json['wpt_completed_sets_aggregate']['aggregate']['max']
-        ['personalRecord'];
-
-    double? personalRecordValue;
-    if (pr is int) {
-      personalRecordValue = pr.toDouble();
-    } else if (pr is double) {
-      personalRecordValue = pr;
-    }
-
     return Scr2ExerciseItem(
-        exerciseId: json['exercise_id'],
-        name: json['name'],
-        note: json['note'],
-        personalRecord: personalRecordValue,
-        workouts: (json['workouts'] as List)
-            .map((e) => Scr2WorkoutItem.fromJson(e))
-            .toList()
-          ..sort(sortByDayOfWeek));
+      exerciseId: json['exercise_id'],
+      name: json['name'],
+      note: json['note'],
+      personalRecord: (json['personal_record'] is int)
+          ? (json['personal_record'] as int).toDouble()
+          : json['personal_record'],
+      workouts: (json['workouts'] as List)
+          .map((e) => Scr2WorkoutItem.fromJson(e))
+          .toList()
+        ..sort(sortByDayOfWeek),
+    );
   }
 }
 
@@ -68,25 +61,12 @@ class Scr2WorkoutItem {
   get dayOfWeekName => getDayOfWeekName(dayOfWeek);
 
   factory Scr2WorkoutItem.fromJson(Map<String, dynamic> json) {
-    double? workingWeight;
-
-    if (json['wpt_set_references'] != null &&
-        json['wpt_set_references'].isNotEmpty &&
-        json['wpt_set_references'][0]['wpt_set_details'] != null &&
-        json['wpt_set_references'][0]['wpt_set_details'].isNotEmpty) {
-      var ww =
-          json['wpt_set_references'][0]['wpt_set_details'][0]['workingWeight'];
-      if (ww is int) {
-        workingWeight = ww.toDouble();
-      } else if (ww is double) {
-        workingWeight = (ww * 10).roundToDouble() / 10;
-      }
-    }
-
     return Scr2WorkoutItem(
-      name: json['wpt_workout']['name'],
-      dayOfWeek: json['wpt_workout']['day_of_week'],
-      workingWeight: workingWeight,
+      name: json['name'],
+      dayOfWeek: json['day_of_week'],
+      workingWeight: (json['working_weight'] is int)
+          ? (json['working_weight'] as int).toDouble()
+          : json['working_weight'],
     );
   }
 }

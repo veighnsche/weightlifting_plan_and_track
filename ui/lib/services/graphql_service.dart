@@ -102,9 +102,9 @@ class GraphQLService {
     // WebSockets Link
     final WebSocketLink websocketLink = WebSocketLink(
       'ws://localhost:3000/graphql',
-      subProtocol: 'graphql-transport-ws', // I don't even know why this is needed, I use graphql-ws on the server
+      subProtocol: 'graphql-transport-ws', /** DO NOT TOUCH! This is required! even though it's not even the right value */
       config: SocketClientConfig(
-        autoReconnect: false,
+        autoReconnect: true,
         delayBetweenReconnectionAttempts: const Duration(seconds: 15),
         inactivityTimeout: const Duration(seconds: 30),
         headers: {
