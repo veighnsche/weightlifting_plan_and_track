@@ -64,8 +64,6 @@ const apolloServer = new ApolloServer({
   }),
 });
 
-const httpServer = createServer(app);
-const wsServer = new WsServer({ server: httpServer, path: "/graphql" });
 
 // export let connections: Record<string, (() => void)[]> = {};
 
@@ -92,6 +90,9 @@ Promise.all([
   apolloServer.start(),
 ]).then(() => {
   apolloServer.applyMiddleware({ app, path: "/graphql" });
+
+  const httpServer = createServer(app);
+  const wsServer = new WsServer({ server: httpServer, path: "/graphql" });
 
   useServer(
     {

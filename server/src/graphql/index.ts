@@ -139,7 +139,7 @@ function startWorkoutsSubscription(bearerToken: string) {
     { query: WORKOUTS_SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
-        const workouts = data?.data?.wpt_workouts ?? [];
+        console.log("Subscription data:", data);
         const transformed = transformData(data as ActualData);
 
         pubsub.publish(WORKOUTS_CHANGED_TOPIC, { getWorkouts: transformed.workouts });

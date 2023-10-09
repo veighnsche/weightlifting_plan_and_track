@@ -3,13 +3,11 @@ import 'package:graphql/client.dart';
 
 import 'auth_service.dart';
 
-class GraphQLService {
+class GraphQLServiceDeprecated {
   final AuthService _authService = AuthService();
 
   GraphQLClient? _wsClientDeprecated;
   GraphQLClient? _httpClientDeprecated;
-
-  GraphQLClient? _wsClient;
 
   GraphQLClient get wsClientDeprecated {
     _wsClientDeprecated ??= _wsConnectDeprecated();
@@ -21,39 +19,11 @@ class GraphQLService {
     return _httpClientDeprecated!;
   }
 
-  GraphQLClient get wsClient {
-    _wsClient ??= _wsConnect();
-    return _wsClient!;
-  }
-
   GraphQLClient _wsConnectDeprecated() {
     final websocketLink = WebSocketLink(
       'ws://localhost:8080/v1/graphql',
       config: SocketClientConfig(
         autoReconnect: true,
-        inactivityTimeout: const Duration(seconds: 30),
-        initialPayload: () async {
-          final token = await _authService.token;
-          return {
-            'headers': {
-              'Authorization': 'Bearer $token',
-            },
-          };
-        },
-      ),
-    );
-
-    return GraphQLClient(
-      cache: GraphQLCache(),
-      link: websocketLink,
-    );
-  }
-
-  GraphQLClient _wsConnect() {
-    final websocketLink = WebSocketLink(
-      'ws://localhost:3000/graphql',
-      config: SocketClientConfig(
-        autoReconnect: false,
         inactivityTimeout: const Duration(seconds: 30),
         initialPayload: () async {
           final token = await _authService.token;
@@ -102,8 +72,68 @@ class GraphQLService {
     });
   }
 
+  Future<QueryResult> queryDeprecated(QueryOptions options) {
+    return httpClientDeprecated.query(options);
+  }
+}
+
+class GraphQLService {
+  final AuthService _authService = AuthService();
+
+  GraphQLClient? _client;
+
+  GraphQLClient get client {
+    _client ??= _connect();
+    return _client!;
+  }
+
+
+  GraphQLClient _connect() {
+    // HTTP Link
+    final httpLink = HttpLink('http://localhost:3000/graphql');
+
+    // Authentication Link
+    final authLink = AuthLink(
+      getToken: () async {
+        final token = await _authService.token;
+        return 'Bearer $token';
+      },
+    );
+
+    // WebSockets Link
+    final WebSocketLink websocketLink = WebSocketLink(
+      'ws://localhost:3000/graphql', // Make sure to replace with your endpoint
+      config: SocketClientConfig(
+        autoReconnect: false,
+        inactivityTimeout: const Duration(seconds: 30),
+        initialPayload: () async {
+          final token = await _authService.token;
+          return {
+            'headers': {
+              'Authorization': 'Bearer $token',
+            },
+          };
+        },
+      ),
+    );
+
+    // Combining both links with a split function
+    // If the request is a subscription, it uses the WebSockets link.
+    // Otherwise, it defaults to the HTTP link.
+    final link = Link.split(
+          (request) => request.isSubscription,
+      websocketLink,
+      authLink.concat(httpLink),
+    );
+
+    return GraphQLClient(
+      cache: GraphQLCache(),
+      link: link,
+    );
+  }
+
   Stream<QueryResult> subscribe(SubscriptionOptions options) {
-    return wsClient.subscribe(options).map((event) {
+    return client.subscribe(options).map((event) {
       print('event $event');
       if (event.hasException) {
         if (kDebugMode) {
@@ -113,9 +143,5 @@ class GraphQLService {
       }
       return event;
     });
-  }
-
-  Future<QueryResult> queryDeprecated(QueryOptions options) {
-    return httpClientDeprecated.query(options);
   }
 }

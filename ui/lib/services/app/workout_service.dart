@@ -10,6 +10,8 @@ import '../graphql_service.dart';
 
 class AppWorkoutService {
   final ApiService _apiService = ApiService();
+  final GraphQLServiceDeprecated _graphQLServiceDeprecated =
+      GraphQLServiceDeprecated();
   final GraphQLService _graphQLService = GraphQLService();
 
   Stream<Scr1WorkoutList> workoutListSubscription() {
@@ -92,7 +94,7 @@ class AppWorkoutService {
     """;
     // language=None
 
-    return _graphQLService
+    return _graphQLServiceDeprecated
         .subscribeDeprecated(
       SubscriptionOptions(
         document: gql(getWorkoutSubscription),
