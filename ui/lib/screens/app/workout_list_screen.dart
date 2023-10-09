@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/widgets/future_stream_builder.dart';
 
 import '../../animations/card_animation.dart';
 import '../../models/app/screen_models/scr1_workout_list.dart';
@@ -11,43 +11,11 @@ class AppWorkoutListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: AppWorkoutService().workoutListSubscription(),
+    return FutureStreamBuilder(
+      futureStream: AppWorkoutService().workoutListSubscription(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          if (kDebugMode) {
-            print(snapshot.error);
-          }
-          return const Center(child: Text('Error loading workouts'));
-        }
-
-        return StreamBuilder<Scr1WorkoutList>(
-          stream: snapshot.data,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (snapshot.hasError) {
-              if (kDebugMode) {
-                print(snapshot.error);
-              }
-              return const Center(child: Text('Error loading workouts'));
-            }
-
-            if (!snapshot.hasData || snapshot.data!.workouts.isEmpty) {
-              return const Center(child: Text('No workouts available'));
-            }
-
-            final Scr1WorkoutList workoutListScreenModel = snapshot.data!;
-
-            return _buildWorkoutsList(workoutListScreenModel.workouts);
-          },
-        );
+        final Scr1WorkoutList workoutListScreenModel = snapshot.data!;
+        return _buildWorkoutsList(workoutListScreenModel.workouts);
       },
     );
   }

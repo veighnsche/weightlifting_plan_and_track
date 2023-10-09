@@ -14,26 +14,31 @@ config();
 
 const PORT = process.env.PORT || 3000;
 
-const app = express();
+async function main() {
+  const app = express();
 
-initializeFirebase();
+  initializeFirebase();
 
-setupMiddlewares(app);
+  setupMiddlewares(app);
 
-setupRoutes(app);
+  setupRoutes(app);
 
-const apolloServer = setupApolloServer();
+  const apolloServer = await setupApolloServer();
 
-Promise.all([
-  connectDatabase(),
-  connectDatabaseHasura(),
-  apolloServer.start(),
-]).then(() => {
+  await Promise.all([
+    connectDatabase(),
+    connectDatabaseHasura(),
+    apolloServer.start(),
+  ]);
+
   apolloServer.applyMiddleware({ app, path: "/graphql" });
   const httpServer = createServer(app);
-  setupWebSocket(httpServer, "/graphql");
+
+  await setupWebSocket(httpServer, "/graphql");
 
   httpServer.listen(PORT, () => {
     console.info(`Server is running on http://localhost:${PORT}`);
   });
-});
+}
+
+main().catch(console.error);

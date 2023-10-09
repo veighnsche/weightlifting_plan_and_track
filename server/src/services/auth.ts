@@ -23,10 +23,10 @@ export const authenticateRequest: AuthMiddleware = async (req, res, next) => {
   }
 
   // Check is path starts with "/graphql"
-  // if (req.path.startsWith("/graphql")) {
-  //   console.log("GraphQL request, continuing...")
-  //   return next();
-  // }
+  if (req.path.startsWith("/graphql")) {
+    console.log("GraphQL request, continuing...")
+    return next();
+  }
   //
   // if (req.method === "GET" && req.path === "/whatever") {
   //   return next();

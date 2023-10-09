@@ -18,7 +18,7 @@ class AppWorkoutService {
     // language=GraphQL
     const String getWorkoutsSubscription = r"""
         subscription GetWorkouts {
-            getWorkouts {
+            scr1WorkoutList {
                 name
                 day_of_week
                 note

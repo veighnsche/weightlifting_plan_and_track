@@ -1,54 +1,6 @@
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { IExecutableSchemaDefinition } from "@graphql-tools/schema/typings/types";
 import { gql } from "apollo-server-express";
-import { PubSub } from "graphql-subscriptions";
-// import { connections } from "../index";
-import { hasuraSubscriptionClient } from "../services/hasura";
-
-const pubsub = new PubSub();
-const WORKOUTS_CHANGED_TOPIC = "workoutsChanged";
-
-
-const typeDefs: IExecutableSchemaDefinition["typeDefs"] = gql`
-    type scr1_workout {
-        workout_id: String!
-        name: String!
-        day_of_week: Int
-        note: String
-        exercises: [String]
-        totalExercises: Int!
-        totalSets: Int!
-    }
-
-    type Query {
-        search: String
-    }
-
-    type Subscription {
-        getWorkouts: [scr1_workout!]!
-    }
-`;
-
-
-const resolvers: IExecutableSchemaDefinition["resolvers"] = {
-  Query: {
-    search: () => "Hello World!",
-  },
-  Subscription: {
-    getWorkouts: {
-      subscribe: (_, __, { token, uid }) => {
-        startWorkoutsSubscription(token);
-        // connections[uid].push(startWorkoutsSubscription(token));
-        return pubsub.asyncIterator([WORKOUTS_CHANGED_TOPIC]);
-      },
-    },
-  },
-};
-
-export const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
+import { hasuraSubscriptionClient } from "../../services/hasura";
+import { pubsub } from "../../services/pubsub";
 
 const WORKOUTS_SUBSCRIPTION = gql`
     subscription GetWorkouts {
@@ -118,6 +70,18 @@ type DesiredData = {
   }[];
 };
 
+export const Scr1WorkoutListTypeDefs = gql`
+    type scr1_workout {
+        workout_id: String!
+        name: String!
+        day_of_week: Int
+        note: String
+        exercises: [String]
+        totalExercises: Int!
+        totalSets: Int!
+    }
+`;
+
 function transformData(input: ActualData): DesiredData {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   return {
@@ -133,14 +97,14 @@ function transformData(input: ActualData): DesiredData {
   };
 }
 
-function startWorkoutsSubscription(bearerToken: string) {
+export function startWorkoutsSubscription(bearerToken: string, subscriptionKey: string) {
   return hasuraSubscriptionClient(bearerToken).subscribe(
     { query: WORKOUTS_SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
         const transformed = transformData(data as ActualData);
 
-        pubsub.publish(WORKOUTS_CHANGED_TOPIC, { getWorkouts: transformed.workouts });
+        pubsub.publish(subscriptionKey, { scr1WorkoutList: transformed.workouts });
       },
       error: (error) => console.error("Subscription error:", error),
       complete: () => console.info("Subscription completed"),

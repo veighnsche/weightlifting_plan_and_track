@@ -1,10 +1,12 @@
 // setupApolloServer.ts
 
 import { ApolloServer } from "apollo-server-express";
-import { schema } from "../graphql";
+import { getSchema } from "./graphql";
 import { HasuraRESTDataSource } from "./hasura";
 
-export function setupApolloServer(): ApolloServer {
+export async function setupApolloServer(): Promise<ApolloServer> {
+  const schema = await getSchema();
+
   // Apollo Server setup
   return new ApolloServer({
     schema,

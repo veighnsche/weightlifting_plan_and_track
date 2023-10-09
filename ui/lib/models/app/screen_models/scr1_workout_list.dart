@@ -6,7 +6,7 @@ class Scr1WorkoutList {
   Scr1WorkoutList({required this.workouts});
 
   factory Scr1WorkoutList.fromJson(Map<String, dynamic> json) {
-    List<Scr1WorkoutItem> workouts = (json['getWorkouts'] as List)
+    List<Scr1WorkoutItem> workouts = (json['scr1WorkoutList'] as List)
         .map((data) => Scr1WorkoutItem.fromJson(data))
         .toList()
       ..sort(sortByDayOfWeek);

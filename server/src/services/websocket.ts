@@ -2,9 +2,11 @@ import admin from "firebase-admin";
 import { execute, subscribe } from "graphql";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { Server as WsServer } from "ws";
-import { schema } from "../graphql";
+import { getSchema, stopSubscription } from "./graphql";
 
-export function setupWebSocket(httpServer: any, path: string) {
+export async function setupWebSocket(httpServer: any, path: string) {
+  const schema = await getSchema();
+
   const wsServer = new WsServer({
     server: httpServer,
     path: path,
@@ -32,19 +34,19 @@ export function setupWebSocket(httpServer: any, path: string) {
       schema,
       execute,
       subscribe,
-      onConnect: async (ctx) => {
-        console.info("onConnect");
-        const uid = await getUserUid(ctx.extra.request.headers.authorization);
+      onConnect: async () => {
         console.info("Client connected");
       },
       onDisconnect: async (ctx) => {
-        const uid = await getUserUid(ctx.extra.request.headers.authorization);
+        const subscriptionKey = Object.keys(ctx.subscriptions)[0];
+        stopSubscription(subscriptionKey);
         console.info("Client disconnected");
       },
       context: async (ctx) => {
+        const subscriptionKey = Object.keys(ctx.subscriptions)[0];
         const token = ctx.extra.request.headers.authorization;
         const uid = await getUserUid(token);
-        return { token, uid };
+        return { token, uid, subscriptionKey };
       },
       onError: (err) => {
         console.error(err);
