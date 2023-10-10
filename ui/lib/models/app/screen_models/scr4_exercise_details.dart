@@ -32,6 +32,18 @@ class Scr4ExerciseDetails {
           .toList(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'totalCompletedWorkouts': totalCompletedWorkouts,
+      'totalCompletedVolume': totalCompletedVolume,
+      'avgDiffInTotalVolume': avgDiffInTotalVolume,
+      'note': note,
+      'workouts': workouts.map((workout) => workout.toJson()).toList(),
+      'completedWorkouts': completedWorkouts.map((cw) => cw.toJson()).toList(),
+    };
+  }
 }
 
 class Scr4Workout {
@@ -54,6 +66,15 @@ class Scr4Workout {
       note: json['note'],
       dayOfWeek: json['dayOfWeek'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'workoutId': workoutId,
+      'name': name,
+      'note': note,
+      'dayOfWeek': dayOfWeek,
+    };
   }
 }
 
@@ -104,5 +125,23 @@ class Scr4CompletedWorkout {
       plannedTotalVolume: json['plannedTotalVolume'].toDouble(),
       differenceInTotalVolume: json['differenceInTotalVolume'].toDouble(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'completedWorkoutId': completedWorkoutId,
+      'startedAt': startedAt,
+      'note': note,
+      'completedSets': completedSets,
+      'maxReps': maxReps,
+      'minWeight': minWeight,
+      'maxWeight': maxWeight,
+      'avgRestTimeBefore': avgRestTimeBefore,
+      'completedRepsAmount': completedRepsAmount,
+      'totalVolume': totalVolume,
+      'plannedTotalVolume': plannedTotalVolume,
+      'differenceInTotalVolume': differenceInTotalVolume,
+    };
   }
 }

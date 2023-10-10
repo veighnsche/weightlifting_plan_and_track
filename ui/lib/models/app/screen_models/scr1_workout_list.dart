@@ -5,6 +5,8 @@ class Scr1WorkoutList {
 
   Scr1WorkoutList({required this.workouts});
 
+  bool get isEmpty => workouts.isEmpty;
+
   factory Scr1WorkoutList.fromJson(Map<String, dynamic> json) {
     List<Scr1WorkoutItem> workouts = (json['scr1_workout_list'] as List)
         .map((data) => Scr1WorkoutItem.fromJson(data))
@@ -13,7 +15,11 @@ class Scr1WorkoutList {
     return Scr1WorkoutList(workouts: workouts);
   }
 
-  bool get isEmpty => workouts.isEmpty;
+  Map<String, dynamic> toJson() {
+    return {
+      'scr1_workout_list': workouts.map((workout) => workout.toJson()).toList(),
+    };
+  }
 }
 
 class Scr1WorkoutItem {
@@ -47,5 +53,17 @@ class Scr1WorkoutItem {
       totalExercises: json['total_exercises'],
       totalSets: json['total_sets'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'workout_id': workoutId,
+      'name': name,
+      'day_of_week': dayOfWeek,
+      'note': note,
+      'exercises': exercises,
+      'total_exercises': totalExercises,
+      'total_sets': totalSets,
+    };
   }
 }

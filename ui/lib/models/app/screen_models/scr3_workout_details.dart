@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import '../../../utils/dates.dart';
 
 class Scr3WorkoutDetails {
@@ -46,6 +44,21 @@ class Scr3WorkoutDetails {
           .map((cw) => Scr3CompletedWorkout.fromJson(cw))
           .toList(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'workout_id': workoutId,
+      'name': name,
+      'day_of_week': dayOfWeek,
+      'note': note,
+      'total_exercises': totalExercises,
+      'total_sets': totalSets,
+      'total_volume': totalVolume,
+      'total_time': totalTime,
+      'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
+      'completed_workouts': completedWorkouts.map((cw) => cw.toJson()).toList(),
+    };
   }
 }
 
@@ -94,6 +107,23 @@ class Scr3Exercise {
       sets: (json['sets'] as List).map((s) => Scr3Set.fromJson(s)).toList(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'exercise_id': exerciseId,
+      'name': name,
+      'note': note,
+      'sets_count': setsCount,
+      'max_reps': maxReps,
+      'total_reps': totalReps,
+      'min_weight': minWeight,
+      'max_weight': maxWeight,
+      'max_rest': maxRest,
+      'total_time': totalTime,
+      'total_volume': totalVolume,
+      'sets': sets.map((set) => set.toJson()).toList(),
+    };
+  }
 }
 
 class Scr3CompletedWorkout {
@@ -119,6 +149,16 @@ class Scr3CompletedWorkout {
       isActive: json['is_active'],
       completedRepsAmount: json['completed_reps_amount'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'completed_workout_id': completedWorkoutId,
+      'started_at': startedAt,
+      'note': note,
+      'is_active': isActive,
+      'completed_reps_amount': completedRepsAmount,
+    };
   }
 }
 
@@ -152,5 +192,17 @@ class Scr3Set {
       restTimeBefore: json['rest_time_before'],
       note: json['note'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'set_number': setNumber,
+      'reps': reps,
+      'weight': weight,
+      'weight_text': weightText,
+      'weight_adjustments': weightAdjustments?.map((key, value) => MapEntry(key.toString(), value)),
+      'rest_time_before': restTimeBefore,
+      'note': note,
+    };
   }
 }

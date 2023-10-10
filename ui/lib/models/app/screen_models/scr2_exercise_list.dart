@@ -5,6 +5,8 @@ class Scr2ExerciseList {
 
   Scr2ExerciseList({required this.exercises});
 
+  bool get isEmpty => exercises.isEmpty;
+
   factory Scr2ExerciseList.fromJson(Map<String, dynamic> json) {
     List<Scr2ExerciseItem> exercises = (json['scr2_exercise_list'] as List)
         .map((data) => Scr2ExerciseItem.fromJson(data))
@@ -13,7 +15,11 @@ class Scr2ExerciseList {
     return Scr2ExerciseList(exercises: exercises);
   }
 
-  bool get isEmpty => exercises.isEmpty;
+  Map<String, dynamic> toJson() {
+    return {
+      'scr2_exercise_list': exercises.map((exercise) => exercise.toJson()).toList(),
+    };
+  }
 }
 
 class Scr2ExerciseItem {
@@ -45,6 +51,16 @@ class Scr2ExerciseItem {
         ..sort(sortByDayOfWeek),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'exercise_id': exerciseId,
+      'name': name,
+      'note': note,
+      'personal_record': personalRecord,
+      'workouts': workouts.map((workout) => workout.toJson()).toList(),
+    };
+  }
 }
 
 class Scr2WorkoutItem {
@@ -68,5 +84,13 @@ class Scr2WorkoutItem {
           ? (json['working_weight'] as int).toDouble()
           : json['working_weight'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'day_of_week': dayOfWeek,
+      'working_weight': workingWeight,
+    };
   }
 }
