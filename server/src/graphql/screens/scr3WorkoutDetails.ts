@@ -1,5 +1,6 @@
 import { IResolvers } from "@graphql-tools/utils/typings/Interfaces";
 import { gql } from "apollo-server-express";
+import Decimal from "decimal.js";
 import { hasuraSubscriptionClient } from "../../services/hasura";
 import { saveHasuraSubscription } from "../../services/hasuraSubscriptions";
 import { pubsub } from "../../services/pubsub";
@@ -11,31 +12,31 @@ type ActualData = {
     wpt_workouts_by_pk: {
       workout_id: string;
       name: string;
-      day_of_week: number;
-      note: string;
+      day_of_week?: number;
+      note?: string;
       wpt_workout_exercises: {
         wpt_exercise: {
           exercise_id: string;
           name: string;
-          note: string;
+          note?: string;
         };
         wpt_set_references: {
           order_number: number;
-          note: string;
+          note?: string;
           wpt_set_details: {
             rep_count: number;
-            weight: number;
-            weight_text: string | null;
-            weight_adjustment: { [key: number]: number } | null;
-            rest_time_before: number;
-            note: string | null;
+            weight?: number;
+            weight_text?: string;
+            weight_adjustment?: Record<number, number>;
+            rest_time_before?: number;
+            note?: string;
           }[];
         }[];
       }[];
       wpt_completed_workouts: {
         completed_workout_id: string;
         started_at: string;
-        note: string | null;
+        note?: string;
         is_active: boolean;
         wpt_completed_sets_aggregate: {
           aggregate: {
@@ -50,8 +51,8 @@ type ActualData = {
 type DesiredData = {
   workout_id: string;
   name: string;
-  day_of_week?: number | null;
-  note?: string | null;
+  day_of_week?: number;
+  note?: string;
   total_exercises: number;
   total_sets: number;
   total_volume: number;
@@ -59,29 +60,29 @@ type DesiredData = {
   exercises: {
     exercise_id: string;
     name: string;
-    note?: string | null;
+    note?: string;
     sets_count: number;
     max_reps: number;
     total_reps: number;
-    min_weight?: number | null;
-    max_weight?: number | null;
-    max_rest?: number | null;
+    min_weight?: number;
+    max_weight?: number;
+    max_rest?: number;
     total_time: number;
-    total_volume?: number | null;
+    total_volume?: number;
     sets: {
       set_number: number;
       reps: number;
-      weight?: number | null;
-      weight_text?: string | null;
-      weight_adjustments?: Record<number, number> | null;
-      rest_time_before?: number | null;
-      note?: string | null;
+      weight?: number;
+      weight_text?: string;
+      weight_adjustments?: Record<number, number>;
+      rest_time_before?: number;
+      note?: string;
     }[];
   }[];
   completed_workouts: {
     completed_workout_id: string;
     started_at: string;
-    note?: string | null;
+    note?: string;
     is_active: boolean;
     completed_reps_amount: number;
   }[];
@@ -89,7 +90,7 @@ type DesiredData = {
 
 /** GRAPHQL */
 
-const WORKOUT_DETAILS_SUBSCRIPTION = gql`
+const SUBSCRIPTION = gql`
     subscription get_workout_details($workout_id: uuid!) {
         wpt_workouts_by_pk(workout_id: $workout_id) {
             workout_id
@@ -132,7 +133,7 @@ const WORKOUT_DETAILS_SUBSCRIPTION = gql`
 
 export const scr3WorkoutDetailsTypeDefs = gql`
     extend type subscription_root {
-        scr3_workout_details(workout_id: String!): scr3_workout
+        scr3_workout_details(workout_id: String!): scr3_workout!
     }
 
     type scr3_workout {
@@ -185,12 +186,12 @@ export const scr3WorkoutDetailsTypeDefs = gql`
 
 /** TRANSFORMER */
 
-function transformWorkoutDetails(input: ActualData): DesiredData {
+function transformData(input: ActualData): DesiredData {
   const workout = input.data.wpt_workouts_by_pk;
 
   let total_sets = 0;
-  let total_volume = 0;
-  let total_time = 0;
+  let total_volume = new Decimal(0);
+  let total_time = new Decimal(0);
 
   const exercises = workout.wpt_workout_exercises.map(exercise => {
     const sets_count = exercise.wpt_set_references.length;
@@ -198,38 +199,38 @@ function transformWorkoutDetails(input: ActualData): DesiredData {
 
     let max_reps = 0;
     let total_reps = 0;
-    let min_weight = Infinity;
-    let max_weight = 0;
-    let max_rest = 0;
-    let exercise_total_time = 0;
-    let exercise_total_volume = 0;
+    let min_weight = new Decimal(Infinity);
+    let max_weight = new Decimal(0);
+    let max_rest = new Decimal(0);
+    let exercise_total_time = new Decimal(0);
+    let exercise_total_volume = new Decimal(0);
 
     const sets = exercise.wpt_set_references.map(set_ref => {
       const reps = set_ref.wpt_set_details[0]?.rep_count || 0;
-      const weight = set_ref.wpt_set_details[0]?.weight || 0;
-      const rest_time_before = set_ref.wpt_set_details[0]?.rest_time_before || 0;
+      const weight = new Decimal(set_ref.wpt_set_details[0]?.weight || 0);
+      const rest_time_before = new Decimal(set_ref.wpt_set_details[0]?.rest_time_before || 0);
 
       max_reps = Math.max(max_reps, reps);
       total_reps += reps;
-      min_weight = Math.min(min_weight, weight);
-      max_weight = Math.max(max_weight, weight);
-      max_rest = Math.max(max_rest, rest_time_before);
-      exercise_total_time += rest_time_before;
-      exercise_total_volume += reps * weight;
+      min_weight = Decimal.min(min_weight, weight);
+      max_weight = Decimal.max(max_weight, weight);
+      max_rest = Decimal.max(max_rest, rest_time_before);
+      exercise_total_time = exercise_total_time.plus(rest_time_before);
+      exercise_total_volume = exercise_total_volume.plus(weight.times(reps));
 
       return {
         set_number: set_ref.order_number,
         reps,
-        weight,
+        weight: weight.toNumber(),
         weight_text: set_ref.wpt_set_details[0]?.weight_text,
         weight_adjustments: set_ref.wpt_set_details[0]?.weight_adjustment,
-        rest_time_before,
+        rest_time_before: rest_time_before.toNumber(),
         note: set_ref.note,
       };
     });
 
-    total_volume += exercise_total_volume;
-    total_time += exercise_total_time;
+    total_volume = total_volume.plus(exercise_total_volume);
+    total_time = total_time.plus(exercise_total_time);
 
     return {
       exercise_id: exercise.wpt_exercise.exercise_id,
@@ -238,11 +239,11 @@ function transformWorkoutDetails(input: ActualData): DesiredData {
       sets_count,
       max_reps,
       total_reps,
-      min_weight,
-      max_weight,
-      max_rest,
-      total_time: exercise_total_time,
-      total_volume: exercise_total_volume,
+      min_weight: min_weight.toNumber(),
+      max_weight: max_weight.toNumber(),
+      max_rest: max_rest.toNumber(),
+      total_time: exercise_total_time.toNumber(),
+      total_volume: exercise_total_volume.toNumber(),
       sets,
     };
   });
@@ -255,8 +256,6 @@ function transformWorkoutDetails(input: ActualData): DesiredData {
     completed_reps_amount: completed_workout.wpt_completed_sets_aggregate.aggregate.completed_reps_amount,
   }));
 
-  console.log("id", workout.workout_id);
-
   return {
     workout_id: workout.workout_id,
     name: workout.name,
@@ -264,12 +263,13 @@ function transformWorkoutDetails(input: ActualData): DesiredData {
     note: workout.note,
     total_exercises: exercises.length,
     total_sets,
-    total_volume,
-    total_time,
+    total_volume: total_volume.toNumber(),
+    total_time: total_time.toNumber(),
     exercises,
     completed_workouts,
   };
 }
+
 
 /** RESOLVERS */
 
@@ -277,7 +277,7 @@ export const scr3WorkoutDetailsResolvers: IResolvers = {
   subscription_root: {
     scr3_workout_details: {
       subscribe: (_, { workout_id }, { subscriptionKey, token }) => {
-        const subscription = startWorkoutDetailsSubscription(subscriptionKey, token, workout_id);
+        const subscription = startSubscription(subscriptionKey, token, workout_id);
         saveHasuraSubscription(subscriptionKey, subscription);
         return pubsub.asyncIterator([subscriptionKey]);
       },
@@ -285,12 +285,12 @@ export const scr3WorkoutDetailsResolvers: IResolvers = {
   },
 };
 
-function startWorkoutDetailsSubscription(subscriptionKey: string, bearerToken: string, workout_id: string) {
+function startSubscription(subscriptionKey: string, bearerToken: string, workout_id: string) {
   return hasuraSubscriptionClient(bearerToken).subscribe(
-    { query: WORKOUT_DETAILS_SUBSCRIPTION.loc?.source.body!, variables: { workout_id } },
+    { query: SUBSCRIPTION.loc?.source.body!, variables: { workout_id } },
     {
       next: (data) => {
-        const transformed = transformWorkoutDetails(data as ActualData);
+        const transformed = transformData(data as ActualData);
         pubsub.publish(subscriptionKey, { scr3_workout_details: transformed }).catch(console.error);
       },
       error: (error) => console.error("Subscription error:", error),

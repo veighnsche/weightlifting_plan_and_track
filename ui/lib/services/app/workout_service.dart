@@ -29,13 +29,13 @@ class AppWorkoutService {
     """;
     // language=None
 
-    Stream<QueryResult> result = await _graphQLService.subscribe(
+    Stream<QueryResult> resultStream = await _graphQLService.subscribe(
       SubscriptionOptions(
         document: gql(getWorkoutsSubscription),
       ),
     );
 
-    return result.map((QueryResult<Object?> queryResult) {
+    return resultStream.map((QueryResult<Object?> queryResult) {
       if (queryResult.hasException) {
         if (kDebugMode) {
           print("error ${queryResult.exception}");

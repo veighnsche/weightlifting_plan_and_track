@@ -22,7 +22,7 @@ class Scr4ExerciseDetailsCard extends StatelessWidget {
         _buildHeaderRow(),
         const SizedBox(height: 16.0),
         _buildExerciseDetails(),
-        if (exercise.note.isNotEmpty) ...[
+        if (exercise.note != null) ...[
           const SizedBox(height: 16.0),
           _buildNoteText(),
         ],
@@ -88,7 +88,7 @@ class Scr4ExerciseDetailsCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Text(
-        exercise.note,
+        exercise.note!,
         style: const TextStyle(
           fontSize: 16,
           fontStyle: FontStyle.italic,

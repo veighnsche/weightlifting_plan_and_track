@@ -1,11 +1,9 @@
-import 'dart:math';
-
 class Scr4ExerciseDetails {
   String name;
   int totalCompletedWorkouts;
   double totalCompletedVolume;
   double avgDiffInTotalVolume;
-  String note;
+  String? note;
   List<Scr4Workout> workouts;
   List<Scr4CompletedWorkout> completedWorkouts;
 
@@ -20,54 +18,18 @@ class Scr4ExerciseDetails {
   });
 
   factory Scr4ExerciseDetails.fromJson(Map<String, dynamic> json) {
-    var exerciseData = json['wpt_exercises_by_pk'];
-
-    // Extracting linked workouts
-    List<Scr4Workout> workoutsList = (exerciseData['wpt_workout_exercises']
-    as List)
-        .map((workoutJson) => Scr4Workout.fromJson(workoutJson['wpt_workout']))
-        .toList();
-
-    // Grouping and aggregating completed workouts
-    Map<String, List<dynamic>> completedWorkoutsGrouped = {};
-    for (var completedSet in exerciseData['wpt_completed_sets']) {
-      var workoutId =
-      completedSet['wpt_completed_workout']['completed_workout_id'];
-      if (completedWorkoutsGrouped[workoutId] == null) {
-        completedWorkoutsGrouped[workoutId] = [];
-      }
-      completedWorkoutsGrouped[workoutId]!.add(completedSet);
-    }
-
-    List<Scr4CompletedWorkout> completedWorkoutsList = completedWorkoutsGrouped
-        .values
-        .map((sets) => Scr4CompletedWorkout.fromSets(sets))
-        .toList();
-
-    int totalCompletedWorkoutsCount = completedWorkoutsList.length;
-
-    double totalCompletedVolumeSum = completedWorkoutsList
-        .map((workout) => workout.totalVolume)
-        .fold(0.0, (a, b) => a + b!);
-
-    double avgDiffInTotalVolumeSum;
-    if (totalCompletedWorkoutsCount > 1) {
-      avgDiffInTotalVolumeSum = completedWorkoutsList
-          .map((workout) => workout.differenceInTotalVolume!)
-          .reduce((a, b) => a + b) /
-          totalCompletedWorkoutsCount;
-    } else {
-      avgDiffInTotalVolumeSum = 0.0;
-    }
-
     return Scr4ExerciseDetails(
-      name: exerciseData['name'],
-      totalCompletedWorkouts: totalCompletedWorkoutsCount,
-      totalCompletedVolume: totalCompletedVolumeSum,
-      avgDiffInTotalVolume: avgDiffInTotalVolumeSum,
-      note: exerciseData['note'],
-      workouts: workoutsList,
-      completedWorkouts: completedWorkoutsList,
+      name: json['name'],
+      totalCompletedWorkouts: json['totalCompletedWorkouts'],
+      totalCompletedVolume: json['totalCompletedVolume'].toDouble(),
+      avgDiffInTotalVolume: json['avgDiffInTotalVolume'].toDouble(),
+      note: json['note'],
+      workouts: (json['workouts'] as List)
+          .map((workoutJson) => Scr4Workout.fromJson(workoutJson as Map<String, dynamic>))
+          .toList(),
+      completedWorkouts: (json['completedWorkouts'] as List)
+          .map((completedWorkoutJson) => Scr4CompletedWorkout.fromJson(completedWorkoutJson as Map<String, dynamic>))
+          .toList(),
     );
   }
 }
@@ -87,10 +49,10 @@ class Scr4Workout {
 
   factory Scr4Workout.fromJson(Map<String, dynamic> json) {
     return Scr4Workout(
-      workoutId: json['workout_id'],
+      workoutId: json['workoutId'],
       name: json['name'],
       note: json['note'],
-      dayOfWeek: json['day_of_week'],
+      dayOfWeek: json['dayOfWeek'],
     );
   }
 }
@@ -101,14 +63,14 @@ class Scr4CompletedWorkout {
   String startedAt;
   String? note;
   int completedSets;
-  int? maxReps;
-  double? minWeight;
-  double? maxWeight;
-  int? avgRestTimeBefore;
-  int? completedRepsAmount;
-  double? totalVolume;
-  double? plannedTotalVolume;
-  double? differenceInTotalVolume;
+  int maxReps;
+  double minWeight;
+  double maxWeight;
+  double avgRestTimeBefore;
+  int completedRepsAmount;
+  double totalVolume;
+  double plannedTotalVolume;
+  double differenceInTotalVolume;
 
   Scr4CompletedWorkout({
     required this.name,
@@ -126,68 +88,21 @@ class Scr4CompletedWorkout {
     required this.differenceInTotalVolume,
   });
 
-  factory Scr4CompletedWorkout.fromSets(List<dynamic> sets) {
-    var firstSet = sets[0];
-    var totalReps = sets.fold(0, (sum, set) => sum + (set['rep_count'] as int));
-
-    var totalVolume = sets.fold(
-        0.0,
-            (sum, set) =>
-        sum +
-            ((set['rep_count'] as int) *
-                ((set['weight'] as num?)?.toDouble() ?? 0)));
-
-    var plannedTotalVolume = sets.fold(
-        0.0,
-            (sum, set) =>
-        sum +
-            ((set['wpt_set_detail']['rep_count'] as int) *
-                ((set['wpt_set_detail']['weight'] as num?)?.toDouble() ?? 0)));
-
-    var maxReps = sets.fold(0, (maxVal, set) {
-      int? currentReps = set['rep_count'] as int?;
-      if (currentReps == null) {
-        return maxVal;
-      }
-      return max(currentReps, maxVal);
-    });
-
-    var minWeight = sets.fold(double.infinity, (minVal, set) {
-      double? currentWeight = (set['weight'] as num?)?.toDouble();
-      if (currentWeight == null) {
-        return minVal;
-      }
-      return min(currentWeight, minVal);
-    });
-
-    var maxWeight = sets.fold(0.0, (maxVal, set) {
-      double? currentWeight = (set['weight'] as num?)?.toDouble();
-      if (currentWeight == null) {
-        return maxVal;
-      }
-      return max(currentWeight, maxVal);
-    });
-
-    var avgRestTimeBefore =
-    (sets.fold(0, (sum, set) => sum + (set['rest_time_before'] as int)) /
-        sets.length)
-        .round();
-
+  factory Scr4CompletedWorkout.fromJson(Map<String, dynamic> json) {
     return Scr4CompletedWorkout(
-      name: firstSet['wpt_completed_workout']['wpt_workout']['name'],
-      completedWorkoutId: firstSet['wpt_completed_workout']
-      ['completed_workout_id'],
-      startedAt: firstSet['wpt_completed_workout']['started_at'],
-      note: firstSet['note'],
-      completedSets: sets.length,
-      maxReps: maxReps,
-      minWeight: minWeight,
-      maxWeight: maxWeight,
-      avgRestTimeBefore: avgRestTimeBefore,
-      completedRepsAmount: totalReps,
-      totalVolume: totalVolume,
-      plannedTotalVolume: plannedTotalVolume,
-      differenceInTotalVolume: totalVolume - plannedTotalVolume,
+      name: json['name'],
+      completedWorkoutId: json['completedWorkoutId'],
+      startedAt: json['startedAt'],
+      note: json['note'],
+      completedSets: json['completedSets'],
+      maxReps: json['maxReps'],
+      minWeight: json['minWeight'].toDouble(),
+      maxWeight: json['maxWeight'].toDouble(),
+      avgRestTimeBefore: json['avgRestTimeBefore'],
+      completedRepsAmount: json['completedRepsAmount'],
+      totalVolume: json['totalVolume'].toDouble(),
+      plannedTotalVolume: json['plannedTotalVolume'].toDouble(),
+      differenceInTotalVolume: json['differenceInTotalVolume'].toDouble(),
     );
   }
 }

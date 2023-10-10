@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+
 class FutureStreamBuilder<T> extends StatelessWidget {
   final Future<Stream<T>> futureStream;
   final Function(BuildContext context, T data) builder;

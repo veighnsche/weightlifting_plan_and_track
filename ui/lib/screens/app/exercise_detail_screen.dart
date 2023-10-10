@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:weightlifting_plan_and_track/widgets/future_stream_builder.dart';
 
 import '../../models/app/screen_models/scr4_exercise_details.dart';
 import '../../services/app/exercise_service.dart';
@@ -18,48 +18,30 @@ class AppExerciseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: AppExerciseService().exerciseDetailsSubscription(exerciseId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (snapshot.hasError || !snapshot.hasData) {
-          if (kDebugMode) {
-            print(snapshot.error);
-          }
-          return Scaffold(
-            appBar: AppBar(),
-            body: const Center(child: Text('Error loading exercise')),
-          );
-        }
-
-        final exercise = snapshot.data!;
-
-        return _buildExerciseDetails(exercise);
-      },
+    return AppDetailShell(
+      title: "Exercise Details",
+      body: FutureStreamBuilder(
+        futureStream:
+            AppExerciseService().exerciseDetailsSubscription(exerciseId),
+        builder: (context, exercise) {
+          return _buildExerciseDetails(exercise);
+        },
+      ),
     );
   }
 
   Widget _buildExerciseDetails(Scr4ExerciseDetails exercise) {
-    return AppDetailShell(
-      title: "Exercise Details",
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Scr4ExerciseDetailsCard(exercise: exercise),
-            const Divider(),
-            ...exercise.workouts
-                .map((workout) => Scr4WorkoutCard(workout: workout)),
-            const Divider(),
-            ...exercise.completedWorkouts.map((completedWorkout) =>
-                Scr4CompletedWorkoutCard(completedWorkout: completedWorkout)),
-          ],
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Scr4ExerciseDetailsCard(exercise: exercise),
+          const Divider(),
+          ...exercise.workouts
+              .map((workout) => Scr4WorkoutCard(workout: workout)),
+          const Divider(),
+          ...exercise.completedWorkouts.map((completedWorkout) =>
+              Scr4CompletedWorkoutCard(completedWorkout: completedWorkout)),
+        ],
       ),
     );
   }

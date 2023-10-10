@@ -50,7 +50,7 @@ type DesiredData = {
 
 /** GRAPHQL */
 
-const WORKOUTS_SUBSCRIPTION = gql`
+const SUBSCRIPTION = gql`
     subscription get_workout_list {
         wpt_workouts {
             workout_id
@@ -119,7 +119,7 @@ export const scr1WorkoutListResolvers: IResolvers = {
   subscription_root: {
     scr1_workout_list: {
       subscribe: (_, __, { subscriptionKey, token }) => {
-        const subscription = startWorkoutsSubscription(subscriptionKey, token);
+        const subscription = startSubscription(subscriptionKey, token);
         saveHasuraSubscription(subscriptionKey, subscription);
         return pubsub.asyncIterator([subscriptionKey]);
       },
@@ -127,9 +127,9 @@ export const scr1WorkoutListResolvers: IResolvers = {
   },
 };
 
-function startWorkoutsSubscription(subscriptionKey: string, bearerToken: string) {
+function startSubscription(subscriptionKey: string, bearerToken: string) {
   return hasuraSubscriptionClient(bearerToken).subscribe(
-    { query: WORKOUTS_SUBSCRIPTION.loc?.source.body! },
+    { query: SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
         const transformed = transformData(data as ActualData);

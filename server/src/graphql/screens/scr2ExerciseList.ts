@@ -50,7 +50,7 @@ type DesiredData = {
 
 /** GRAPHQL */
 
-const EXERCISES_SUBSCRIPTION = gql`
+const SUBSCRIPTION = gql`
     subscription get_exercise_list {
         wpt_exercises(order_by: {wpt_workout_exercises_aggregate: {avg: {order_number: asc}}}) {
             exercise_id
@@ -100,7 +100,7 @@ export const scr2ExerciseListTypeDefs = gql`
 
 /** TRANSFORMER */
 
-function transformExerciseData(input: ActualData): DesiredData {
+function transformData(input: ActualData): DesiredData {
   return {
     exercises: input.data.wpt_exercises.map(exercise => ({
       exercise_id: exercise.exercise_id,
@@ -122,7 +122,7 @@ export const scr2ExerciseListResolvers: IResolvers = {
   subscription_root: {
     scr2_exercise_list: {
       subscribe: (_, __, { subscriptionKey, token }) => {
-        const subscription = startExerciseSubscription(subscriptionKey, token);
+        const subscription = startSubscription(subscriptionKey, token);
         saveHasuraSubscription(subscriptionKey, subscription)
         return pubsub.asyncIterator([subscriptionKey]);
       },
@@ -130,12 +130,12 @@ export const scr2ExerciseListResolvers: IResolvers = {
   },
 };
 
-function startExerciseSubscription(subscriptionKey: string, bearerToken: string) {
+function startSubscription(subscriptionKey: string, bearerToken: string) {
   return hasuraSubscriptionClient(bearerToken).subscribe(
-    { query: EXERCISES_SUBSCRIPTION.loc?.source.body! },
+    { query: SUBSCRIPTION.loc?.source.body! },
     {
       next: (data) => {
-        const transformed = transformExerciseData(data as ActualData);
+        const transformed = transformData(data as ActualData);
         pubsub.publish(subscriptionKey, { scr2_exercise_list: transformed.exercises }).catch(console.error);
       },
       error: (error) => console.error("Subscription error:", error),
