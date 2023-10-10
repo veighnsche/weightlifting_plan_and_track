@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-import '../models/chat_model.dart';
-import 'api_service.dart';
+import '../../models/chat_model.dart';
+import '../api_service.dart';
 
 class ChatService {
   final ApiService _apiService = ApiService();

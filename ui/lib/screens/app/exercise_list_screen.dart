@@ -7,6 +7,7 @@ import '../../widgets/app/scr2_exercise_card.dart';
 import '../../widgets/future_stream_builder.dart';
 
 class AppExerciseListScreen extends StatelessWidget {
+
   const AppExerciseListScreen({super.key});
 
   @override

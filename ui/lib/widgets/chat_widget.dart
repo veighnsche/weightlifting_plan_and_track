@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/chat_model.dart';
 import '../providers/chat_provider.dart';
-import '../services/chat_service.dart';
+import '../services/chat/chat_service.dart';
 import '../widgets/app_logo.dart';
 import 'chat/message_input.dart';
 import 'chat/message_widgets.dart';

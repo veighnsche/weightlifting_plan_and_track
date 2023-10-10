@@ -16,8 +16,8 @@ class ChatBottomSheet {
   });
 
   void show({required String name}) {
-    Provider.of<ChatProvider>(context, listen: false)
-        .newChat("Chatting about $name");
+    // Provider.of<ChatProvider>(context, listen: false)
+    //     .newChat("Chatting about $name");
 
     scaffoldKey.currentState!
         .showBottomSheet((context) {
