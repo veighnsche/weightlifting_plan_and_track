@@ -223,9 +223,19 @@ function transformData(data: ActualData): DesiredData {
   });
 
   const completedWorkouts = Object.values(completedWorkoutsMap).map(workout => {
-    workout.avgRestTimeBefore = workout.avgRestTimeBefore.dividedBy(workout.completedSets).toNumber();
-    workout.differenceInTotalVolume = workout.totalVolume.minus(workout.plannedTotalVolume).toNumber();
-    return workout;
+    workout.avgRestTimeBefore = workout.avgRestTimeBefore.dividedBy(workout.completedSets);
+    workout.differenceInTotalVolume = workout.totalVolume.minus(workout.plannedTotalVolume);
+
+    return {
+      ...workout,
+      minWeight: workout.minWeight.toNumber(),
+      maxWeight: workout.maxWeight.toNumber(),
+      avgRestTimeBefore: workout.avgRestTimeBefore.toNumber(),
+      completedRepsAmount: workout.completedRepsAmount.toNumber(),
+      totalVolume: workout.totalVolume.toNumber(),
+      plannedTotalVolume: workout.plannedTotalVolume.toNumber(),
+      differenceInTotalVolume: workout.differenceInTotalVolume.toNumber(),
+    };
   });
 
   return {

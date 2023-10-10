@@ -98,7 +98,7 @@ class Scr4CompletedWorkout {
       maxReps: json['maxReps'],
       minWeight: json['minWeight'].toDouble(),
       maxWeight: json['maxWeight'].toDouble(),
-      avgRestTimeBefore: json['avgRestTimeBefore'],
+      avgRestTimeBefore: json['avgRestTimeBefore'].toDouble(),
       completedRepsAmount: json['completedRepsAmount'],
       totalVolume: json['totalVolume'].toDouble(),
       plannedTotalVolume: json['plannedTotalVolume'].toDouble(),

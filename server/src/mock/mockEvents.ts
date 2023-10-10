@@ -105,6 +105,7 @@ create table public.wpt_completed_sets
 );
 */
 
+import Decimal from "decimal.js";
 import express from "express";
 import { CompletedSetEntity } from "../models/app/completedSets/completedSetEntity";
 import { CompletedWorkoutEntity } from "../models/app/completedWorkouts/completedWorkoutEntity";
@@ -424,9 +425,9 @@ async function insertSetDetails(savedSetReferences: SetReferenceEntity[], savedW
   let isFirstWarmup = true;
 
   function adjustWeight(weight: number, weeksAgo: 0 | 1 | 2, isWarmup: boolean): number {
-    const weekAdjustment = 1 - weeksAgo * 0.05;
-    const warmupAdjustment = isWarmup ? (isFirstWarmup ? 0.5 : 0.75) : 1;
-    return weight * weekAdjustment * warmupAdjustment;
+    const weekAdjustment = new Decimal(1).minus(new Decimal(weeksAgo).times(0.05));
+    const warmupAdjustment = isWarmup ? (isFirstWarmup ? new Decimal(0.5) : new Decimal(0.75)) : new Decimal(1);
+    return parseFloat(weekAdjustment.times(warmupAdjustment).times(weight).toFixed(2));
   }
 
   savedSetReferences.forEach(setReference => {
@@ -451,7 +452,7 @@ async function insertSetDetails(savedSetReferences: SetReferenceEntity[], savedW
       const weight = adjustWeight(currentWeight, weeksAgo as 0 | 1 | 2, isWarmup);
 
       const setDetail: Partial<SetDetailEntity> = {
-        created_at: new Date(Date.now() - (weeksAgo * 7 * 24 * 60 * 60 * 1000)),
+        created_at: new Date(Date.now() - (weeksAgo * 6048e5)),
         set_reference_id: setReference.set_reference_id,
         rep_count: 12,
         weight: weight === 0 ? undefined : weight,
@@ -484,8 +485,8 @@ async function insertCompletedWorkouts(savedWorkouts: WorkoutEntity[]) {
       const completedWorkout: Partial<CompletedWorkoutEntity> = {
         user_uid,
         workout_id: workout.workout_id,
-        started_at: new Date(Date.now() - (weeksAgo * 7 * 24 * 60 * 60 * 1000)),
-        completed_at: new Date(Date.now() - (weeksAgo * 7 * 24 * 60 * 60 * 1000)),
+        started_at: new Date(Date.now() - (weeksAgo * 6048e5)),
+        completed_at: new Date(Date.now() - (weeksAgo * 6048e5)),
         is_active: false,
       };
 
@@ -614,7 +615,7 @@ router.get("/", async (req, res) => {
 function varyRepCount(repCount: number | undefined): number | undefined {
   if (repCount === undefined || 0) return repCount;
 
-  // 50% chance of varying the rep count
+  // 20% chance of varying the rep count
   if (Math.random() < 0.2 && repCount > 2) {
     return repCount - 1;
   }
@@ -623,11 +624,11 @@ function varyRepCount(repCount: number | undefined): number | undefined {
 }
 
 function varyWeight(weight: number | undefined): number | undefined {
-  if (weight === undefined || 0) return weight;
+  if (weight === undefined || weight === 0) return weight;
 
   // 50% chance of varying the weight
   if (Math.random() < 0.2 && weight > 2) {
-    return weight - 2.5;
+    return parseFloat(new Decimal(weight).minus(2.5).toFixed(2));
   }
 
   return weight;
