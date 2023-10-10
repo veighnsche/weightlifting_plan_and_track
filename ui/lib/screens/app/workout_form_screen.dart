@@ -4,7 +4,16 @@ import 'package:weightlifting_plan_and_track/services/app/workout_service.dart';
 import '../../widgets/app/workout_form.dart';
 
 class AppWorkoutFormScreen extends StatefulWidget {
-  const AppWorkoutFormScreen({super.key});
+  final String? initialName;
+  final int? initialDayOfWeek;
+  final String? initialNote;
+
+  const AppWorkoutFormScreen({
+    super.key,
+    this.initialName,
+    this.initialDayOfWeek,
+    this.initialNote,
+  });
 
   @override
   _AppWorkoutFormScreenState createState() => _AppWorkoutFormScreenState();
@@ -34,6 +43,9 @@ class _AppWorkoutFormScreenState extends State<AppWorkoutFormScreen> {
           child: AppWorkoutForm(
             onSubmitted: _onSubmitted,
             appWorkoutService: _appWorkoutService,
+            initialName: widget.initialName,
+            initialDayOfWeek: widget.initialDayOfWeek,
+            initialNote: widget.initialNote,
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 import '../../../utils/dates.dart';
+import 'abstract.dart';
 
-class Scr3WorkoutDetails {
+class Scr3WorkoutDetails extends ScreenModel {
   final String workoutId;
   final String name;
   final int? dayOfWeek;
@@ -46,6 +47,7 @@ class Scr3WorkoutDetails {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'workout_id': workoutId,
@@ -62,7 +64,7 @@ class Scr3WorkoutDetails {
   }
 }
 
-class Scr3Exercise {
+class Scr3Exercise extends ScreenModel {
   final String exerciseId;
   final String name;
   final String? note;
@@ -108,6 +110,7 @@ class Scr3Exercise {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'exercise_id': exerciseId,
@@ -126,7 +129,7 @@ class Scr3Exercise {
   }
 }
 
-class Scr3CompletedWorkout {
+class Scr3CompletedWorkout extends ScreenModel {
   final String completedWorkoutId;
   final String startedAt;
   final String? note;
@@ -151,6 +154,7 @@ class Scr3CompletedWorkout {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'completed_workout_id': completedWorkoutId,
@@ -162,7 +166,7 @@ class Scr3CompletedWorkout {
   }
 }
 
-class Scr3Set {
+class Scr3Set extends ScreenModel {
   final int setNumber;
   final int reps;
   final num? weight;
@@ -194,13 +198,15 @@ class Scr3Set {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'set_number': setNumber,
       'reps': reps,
       'weight': weight,
       'weight_text': weightText,
-      'weight_adjustments': weightAdjustments?.map((key, value) => MapEntry(key.toString(), value)),
+      'weight_adjustments': weightAdjustments
+          ?.map((key, value) => MapEntry(key.toString(), value)),
       'rest_time_before': restTimeBefore,
       'note': note,
     };

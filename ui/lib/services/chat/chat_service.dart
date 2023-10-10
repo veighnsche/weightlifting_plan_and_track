@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:weightlifting_plan_and_track/models/app/screen_models/abstract.dart';
 
 import '../../models/chat_model.dart';
 import '../api_service.dart';
@@ -28,7 +29,13 @@ class ChatService {
     });
   }
 
-  Future<void> sendMessage(String? chatId, String message, List<WPTChatMessage> messages, Function(String chatId) updateChatId) async {
+  Future<void> sendMessage({
+    String? chatId,
+    required String message,
+    required List<WPTChatMessage> messages,
+    ScreenModel? systemData,
+    required Function(String chatId) updateChatId,
+  }) async {
     try {
       final response = await _apiService.post(
         'http://localhost:3000/chat',
@@ -36,6 +43,7 @@ class ChatService {
           'chatId': chatId,
           'message': message,
           'messages': messages.map((message) => message.toMap()).toList(),
+          if (systemData != null) 'systemData': systemData.toJson(),
         },
       );
 
@@ -60,7 +68,8 @@ class ChatService {
 
   Future<List<WPTChatConversation>> fetchHistory() async {
     try {
-      final response = await _apiService.get('http://localhost:3000/chat/history');
+      final response =
+          await _apiService.get('http://localhost:3000/chat/history');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -79,7 +88,8 @@ class ChatService {
 
   Future<bool> deleteHistory() async {
     try {
-      final response = await _apiService.delete('http://localhost:3000/chat/history');
+      final response =
+          await _apiService.delete('http://localhost:3000/chat/history');
 
       if (response.statusCode == 204) {
         return true;
@@ -96,7 +106,8 @@ class ChatService {
 
   Future<String> fetchChatName(String chatId) async {
     try {
-      final response = await _apiService.get('http://localhost:3000/chat/$chatId/name');
+      final response =
+          await _apiService.get('http://localhost:3000/chat/$chatId/name');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);

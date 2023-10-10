@@ -1,4 +1,6 @@
-class Scr4ExerciseDetails {
+import 'abstract.dart';
+
+class Scr4ExerciseDetails extends ScreenModel {
   String name;
   int totalCompletedWorkouts;
   double totalCompletedVolume;
@@ -33,6 +35,7 @@ class Scr4ExerciseDetails {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -46,7 +49,7 @@ class Scr4ExerciseDetails {
   }
 }
 
-class Scr4Workout {
+class Scr4Workout extends ScreenModel {
   String workoutId;
   String name;
   String? note;
@@ -68,6 +71,7 @@ class Scr4Workout {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'workoutId': workoutId,
@@ -78,7 +82,7 @@ class Scr4Workout {
   }
 }
 
-class Scr4CompletedWorkout {
+class Scr4CompletedWorkout extends ScreenModel {
   String name;
   String completedWorkoutId;
   String startedAt;
@@ -127,6 +131,7 @@ class Scr4CompletedWorkout {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'name': name,

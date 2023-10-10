@@ -2,35 +2,25 @@ import { FunctionDefinition, FunctionDefinitionProperty } from "./functionDefini
 
 export const functionDefinitions: FunctionDefinition[] = [
   {
-    name: "exerciseActions",
-    description: "Handle the details of a workout, such as adding, viewing, updating, or removing it.",
+    name: "createWorkout",
+    description: "Create a new workout.",
     parameters: {
       type: "object",
       properties: {
-        action: {
+        name: {
           type: "string",
-          enum: ["add", "view", "change", "remove"],
-          description: "What you want to do: add, view, change, or remove a workout.",
+          description: "The name of the workout.",
         },
-        exerciseID: {
-          type: "integer",
-          description: "The unique ID for the workout. You'll need this to view, change, or remove a workout.",
-        },
-        exerciseName: {
-          type: "string",
-          description: "The name of the workout. Use this when you're adding or changing a workout.",
-        },
-        muscleGroup: {
-          type: "string",
-          enum: ["chest", "legs", "back", "arms", "shoulders", "core"],
-          description: "The main muscle the workout targets. Use this when adding or changing a workout.",
+        dayOfWeek: {
+          type: "number",
+          description: "0 = Monday, 6 = Sunday. The day of the week that the workout should be performed on.",
         },
         description: {
           type: "string",
-          description: "A brief overview of the workout. You can add this when you're adding or changing a workout, but it's optional.",
+          description: "A brief overview of the workout.",
         },
       },
-      required: ["action"],
+      required: ["name", "description"],
     },
   },
 ];

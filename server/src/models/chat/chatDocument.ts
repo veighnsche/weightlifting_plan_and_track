@@ -2,19 +2,19 @@ import { ChatCompletionMessage } from "openai/src/resources/chat/completions";
 
 export interface WPTChatConversation {
   conversationID: string;
-  messages: WPTChatMessage[];
+  messages: ChatMessage[];
 }
 
-export interface WPTChatMessage extends ChatCompletionMessage {
+export interface ChatMessage extends ChatCompletionMessage {
   messageID?: string;
-  function_call?: WPTFunctionCall;
+  function_call?: FunctionCall;
 }
 
-export interface WPTFunctionCall extends ChatCompletionMessage.FunctionCall {
+export interface FunctionCall extends ChatCompletionMessage.FunctionCall {
   callback?: string;
 }
 
-export enum WPTFunctionStatus {
+export enum FunctionStatus {
   Pending = 'pending',
   Expired = 'expired',
   Approved = 'approved',

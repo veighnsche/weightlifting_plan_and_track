@@ -16,7 +16,20 @@ Map<String, Widget Function(BuildContext)> routes = {
   '/history': (context) => HistoryScreen(),
   '/settings': (context) => const SettingsScreen(),
   '/user/edit': (context) => UserDetailsEditScreen(),
-  '/app/workouts/create': (context) => const AppWorkoutFormScreen(),
+  '/app/workouts/create': (context) {
+    final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    final initialName = routeArgs?['initialName'] as String?;
+    final initialNote = routeArgs?['initialNote'] as String?;
+    final initialDayOfWeek = routeArgs?['initialDayOfWeek'] as int?;
+
+    return AppWorkoutFormScreen(
+      initialName: initialName,
+      initialNote: initialNote,
+      initialDayOfWeek: initialDayOfWeek,
+    );
+  },
+
   '/app/workouts/:workout_id': (context) {
     final routeArgs =
         ModalRoute.of(context)?.settings.arguments as Map<String, String>;

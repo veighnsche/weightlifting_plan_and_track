@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weightlifting_plan_and_track/services/chat/chat_wpt_store_service.dart';
 
 import '../models/chat_model.dart';
 import '../providers/chat_provider.dart';
 import '../services/chat/chat_service.dart';
 import '../widgets/app_logo.dart';
+import 'app_chat/system_message_grid.dart';
 import 'chat/message_input.dart';
 import 'chat/message_widgets.dart';
 
@@ -19,6 +21,8 @@ class _ChatWidgetState extends State<ChatWidget> {
   final TextEditingController _contentController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final ChatService _chatService = ChatService();
+  final ChatWptStoreService _chatWptStoreService = ChatWptStoreService();
+
   List<WPTChatMessage> _messagesCache = [];
 
   void handleSend(BuildContext context) {
@@ -26,10 +30,11 @@ class _ChatWidgetState extends State<ChatWidget> {
     final messageContent = _contentController.text;
 
     _chatService.sendMessage(
-      chatProvider.chatId,
-      messageContent,
-      _messagesCache,
-      (newChatId) {
+      chatId: chatProvider.chatId,
+      message: messageContent,
+      messages: _messagesCache,
+      systemData: _chatWptStoreService.getWpt(),
+      updateChatId: (newChatId) {
         chatProvider.setChatId(newChatId);
         Future.delayed(const Duration(seconds: 10), () {
           if (chatProvider.chatId == null) return;
@@ -40,6 +45,7 @@ class _ChatWidgetState extends State<ChatWidget> {
       },
     );
 
+    _chatWptStoreService.clearStore();
     _contentController.clear();
   }
 
@@ -57,14 +63,29 @@ class _ChatWidgetState extends State<ChatWidget> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
+
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 _messagesCache = [];
-                return const Center(
-                  child: AppLogo(
-                    iconSize: 60,
-                    textSize: 16,
-                    title: 'Chat with your assistant',
-                  ),
+                return Column(
+                  children: [
+                    if (_chatWptStoreService.hasData)
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ChatWptGridWidget(),
+                        ),
+                      ),
+                    const Expanded(
+                      child: Center(
+                        child: AppLogo(
+                          iconSize: 60,
+                          textSize: 16,
+                          title: 'Chat with your assistant',
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               }
 
@@ -80,13 +101,24 @@ class _ChatWidgetState extends State<ChatWidget> {
               _messagesCache = messages;
               final showLoadingBar = messages.last.isFromUser;
 
+              final itemCount =
+                  messages.length + (_chatWptStoreService.hasData ? 1 : 0);
+
               return Column(
                 children: [
                   Expanded(
                     child: ListView.builder(
                       controller: _scrollController,
-                      itemCount: messages.length,
+                      itemCount: itemCount,
                       itemBuilder: (context, index) {
+                        if (_chatWptStoreService.hasData &&
+                            index == itemCount - 1) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ChatWptGridWidget(),
+                          );
+                        }
+
                         WPTChatMessage message = messages[index];
                         return ChatMessageWidget(message: message);
                       },
@@ -104,5 +136,12 @@ class _ChatWidgetState extends State<ChatWidget> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 }

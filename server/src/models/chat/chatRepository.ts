@@ -1,7 +1,7 @@
 import { ChatCompletionRole } from "openai/src/resources/chat/completions";
 import { dataSource } from "../../services/database";
 import { getDatabase } from "../../services/firebase";
-import { WPTChatMessage } from "./chatDocument";
+import { ChatMessage } from "./chatDocument";
 import { ChatEntity } from "./chatEntity";
 
 interface BaseMessageParams {
@@ -35,7 +35,7 @@ const fetchAndUpdateChatEntity = async (userUid: string, chatId: string): Promis
 /**
  * Save a message to Firestore.
  */
-const saveMessageToFirestore = async (chatId: string, message: WPTChatMessage): Promise<void> => {
+const saveMessageToFirestore = async (chatId: string, message: ChatMessage): Promise<void> => {
   const db = getDatabase();
   const conversationsRef = db.collection("conversations");
   const conversationRef = conversationsRef.doc(chatId);
@@ -46,7 +46,7 @@ const saveMessageToFirestore = async (chatId: string, message: WPTChatMessage): 
 
 export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<{
   chatId: string;
-  wptChatMessage: WPTChatMessage;
+  chatMessage: ChatMessage;
 }> => {
   const db = getDatabase();
   const conversationsRef = db.collection("conversations");
@@ -59,7 +59,7 @@ export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<
   chatEntity.updatedAt = new Date();
   await chatRepository.save(chatEntity);
 
-  const wptChatMessage: WPTChatMessage = {
+  const wptChatMessage: ChatMessage = {
     role: "user",
     content: content!,
   };
@@ -68,7 +68,7 @@ export const newChat = async ({ userUid, content }: BaseMessageParams): Promise<
 
   return {
     chatId: conversationRef.id,
-    wptChatMessage,
+    chatMessage: wptChatMessage,
   };
 };
 
@@ -80,14 +80,14 @@ export const addMessage = async ({
   functionCallback,
   role,
   userUid,
-}: BaseMessageParams): Promise<WPTChatMessage> => {
+}: BaseMessageParams): Promise<ChatMessage> => {
   if (!userUid || !chatId) {
     throw new Error(`Invalid parameters provided. userUid: ${userUid}, chatId: ${chatId}`);
   }
 
   const chatEntity = await fetchAndUpdateChatEntity(userUid, chatId);
 
-  const wptChatMessage: WPTChatMessage = {
+  const wptChatMessage: ChatMessage = {
     role: role ?? "user",
     content: content ?? null,
   };
@@ -108,7 +108,7 @@ export const addMessage = async ({
   return wptChatMessage;
 };
 
-export const fetchAllMessages = async (chatId: string): Promise<WPTChatMessage[]> => {
+export const fetchAllMessages = async (chatId: string): Promise<ChatMessage[]> => {
   const db = getDatabase();
   const conversationsRef = db.collection("conversations");
   const conversationRef = conversationsRef.doc(chatId);
@@ -119,7 +119,7 @@ export const fetchAllMessages = async (chatId: string): Promise<WPTChatMessage[]
     return [];
   }
 
-  return snapshot.docs.map(doc => doc.data() as WPTChatMessage);
+  return snapshot.docs.map(doc => doc.data() as ChatMessage);
 };
 
 export const fetchChatHistory = async (userUid: string): Promise<ChatEntity[]> => {

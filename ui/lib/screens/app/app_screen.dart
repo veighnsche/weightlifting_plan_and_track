@@ -46,11 +46,11 @@ class _AppScreenState extends State<AppScreen> {
           });
         },
         physics: const AlwaysScrollableScrollPhysics(),
-        children: [
+        children: const [
           AppWorkoutListScreen(),
-          const AppExerciseListScreen(),
-          const CompletedListScreen(),
-          const SearchScreen(),
+          AppExerciseListScreen(),
+          CompletedListScreen(),
+          SearchScreen(),
         ],
       ),
     );

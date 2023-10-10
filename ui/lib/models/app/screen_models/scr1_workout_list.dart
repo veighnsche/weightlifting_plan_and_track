@@ -1,6 +1,8 @@
+import 'package:weightlifting_plan_and_track/models/app/screen_models/abstract.dart';
+
 import '../../../utils/dates.dart';
 
-class Scr1WorkoutList {
+class Scr1WorkoutList extends ScreenModel {
   final List<Scr1WorkoutItem> workouts;
 
   Scr1WorkoutList({required this.workouts});
@@ -15,6 +17,7 @@ class Scr1WorkoutList {
     return Scr1WorkoutList(workouts: workouts);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'scr1_workout_list': workouts.map((workout) => workout.toJson()).toList(),
@@ -22,7 +25,7 @@ class Scr1WorkoutList {
   }
 }
 
-class Scr1WorkoutItem {
+class Scr1WorkoutItem extends ScreenModel {
   final String workoutId;
   final String name;
   final int? dayOfWeek;
@@ -55,6 +58,7 @@ class Scr1WorkoutItem {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'workout_id': workoutId,

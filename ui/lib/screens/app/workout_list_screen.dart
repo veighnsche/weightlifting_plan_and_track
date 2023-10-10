@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weightlifting_plan_and_track/services/chat/chat_wpt_store_service.dart';
 import 'package:weightlifting_plan_and_track/widgets/future_stream_builder.dart';
 
 import '../../animations/card_animation.dart';
@@ -8,16 +7,13 @@ import '../../services/app/workout_service.dart';
 import '../../widgets/app/scr1_workout_card.dart';
 
 class AppWorkoutListScreen extends StatelessWidget {
-  final ChatWptStoreService _chatWptService = ChatWptStoreService();
-
-  AppWorkoutListScreen({super.key});
+  const AppWorkoutListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return FutureStreamBuilder(
       futureStream: AppWorkoutService().scr1workoutListSubscription(),
       builder: (context, workoutListScreenModel) {
-        _chatWptService.setWpt(workoutList: workoutListScreenModel);
         return _buildWorkoutsList(workoutListScreenModel.workouts);
       },
     );

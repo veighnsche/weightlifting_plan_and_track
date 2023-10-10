@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../models/chat_model.dart';
 import '../../models/function_call_model.dart';
 import '../../providers/function_definition_provider.dart';
+import '../../screens/app/workout_form_screen.dart';
 import '../../utils/strings.dart';
 import 'function_call_body.dart';
 import 'function_call_form.dart';
@@ -114,7 +115,25 @@ class FunctionCallMessage extends StatelessWidget {
           label: "Approve",
         ),
         _buildOutlinedButton(
-          onPressed: () => _showEditDialog(context, functionDefinition),
+          onPressed: () {
+            Map<String, dynamic> parsedJson = json
+                .decode(message.functionCall?.arguments ?? '{}')
+                .cast<String, dynamic>();
+
+            print('name: ${functionDefinition?.name}');
+
+            if (message.functionCall?.name == 'createWorkout') {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AppWorkoutFormScreen(
+                    initialName: parsedJson['name'],
+                    initialDayOfWeek: parsedJson['dayOfWeek'],
+                    initialNote: parsedJson['description'],
+                  ),
+                ),
+              );
+            }
+          },
           icon: Icon(Icons.edit, size: 20.0, color: Colors.grey.shade600),
           label: "Edit",
         ),

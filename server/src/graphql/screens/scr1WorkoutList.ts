@@ -35,7 +35,7 @@ type ActualData = {
   };
 };
 
-type DesiredData = {
+export type Scr1WorkoutList = {
   workouts: {
     workout_id: string;
     name: string;
@@ -57,7 +57,7 @@ const SUBSCRIPTION = gql`
             name
             day_of_week
             note
-            wpt_workout_exercises(limit: 3, order_by: {order_number: asc}) {
+            wpt_workout_exercises(order_by: {order_number: asc}) {
                 wpt_exercise {
                     name
                 }
@@ -97,7 +97,7 @@ export const scr1WorkoutListTypeDefs = gql`
 
 /** TRANSFORMER */
 
-function transformData(input: ActualData): DesiredData {
+function transformData(input: ActualData): Scr1WorkoutList {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   return {
     workouts: input.data.wpt_workouts.map(workout => ({

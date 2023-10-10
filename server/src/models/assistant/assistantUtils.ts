@@ -1,5 +1,5 @@
 import { ChatCompletionMessage } from "openai/resources/chat";
-import { WPTChatMessage } from "../chat/chatDocument";
+import { ChatMessage } from "../chat/chatDocument";
 
 export const removeMetaData = (parameters: Record<string, any>): Record<string, any> => {
   const newParameters: Record<string, any> = {};
@@ -13,7 +13,7 @@ export const removeMetaData = (parameters: Record<string, any>): Record<string, 
   return newParameters;
 };
 
-export const toChatCompletionFunctionCall = (message: WPTChatMessage): ChatCompletionMessage.FunctionCall => {
+export const toChatCompletionFunctionCall = (message: ChatMessage): ChatCompletionMessage.FunctionCall => {
   const json = JSON.parse(message.function_call!.arguments);
 
   if (message.content) {

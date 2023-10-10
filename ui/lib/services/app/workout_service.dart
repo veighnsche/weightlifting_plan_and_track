@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
+import 'package:weightlifting_plan_and_track/services/chat/chat_wpt_store_service.dart';
 
 import '../../models/app/screen_models/scr1_workout_list.dart';
 import '../../models/app/screen_models/scr3_workout_details.dart';
@@ -11,6 +12,7 @@ import '../graphql_service.dart';
 class AppWorkoutService {
   final ApiService _apiService = ApiService();
   final GraphQLService _graphQLService = GraphQLService();
+  final ChatWptStoreService _chatWptStoreService = ChatWptStoreService();
 
   Future<Stream<Scr1WorkoutList>> scr1workoutListSubscription() async {
     // language=GraphQL
@@ -43,7 +45,9 @@ class AppWorkoutService {
         throw queryResult.exception!;
       }
 
-      return Scr1WorkoutList.fromJson(queryResult.data!);
+      final workout = Scr1WorkoutList.fromJson(queryResult.data!);
+      _chatWptStoreService.setWpt(workoutList: workout);
+      return workout;
     });
   }
 

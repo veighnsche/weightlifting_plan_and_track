@@ -1,6 +1,6 @@
 import { OpenAI } from "openai";
 import { ChatCompletionMessage } from "openai/resources/chat";
-import { WPTChatMessage } from "../chat/chatDocument";
+import { ChatMessage } from "../chat/chatDocument";
 import { addMessage, updateChatName } from "../chat/chatRepository";
 import { findByUid } from "../users/userRepository";
 import { findSettingsValue } from "../users/userSettingsRepository";
@@ -11,7 +11,7 @@ const openai = () => new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const callAssistant = async (uid: string, chatId: string, wptChatMessages: WPTChatMessage[]): Promise<ChatCompletionMessage> => {
+export const callAssistant = async (uid: string, chatId: string, ChatMessages: ChatMessage[]): Promise<ChatCompletionMessage> => {
   const [extraInstructions, userDetails] = await Promise.all([
     findSettingsValue(uid, "instructions"),
     findByUid(uid),
@@ -22,7 +22,7 @@ Meet ${userDetails?.name}, a ${userDetails?.age}-year-old fitness enthusiast. We
 
   const messages: ChatCompletionMessage[] = [
     { role: "system", content: fullSystemInstructions },
-    ...wptChatMessages.map((message) => {
+    ...ChatMessages.map((message) => {
       if (message.function_call) {
         return ({
           role: message.role,

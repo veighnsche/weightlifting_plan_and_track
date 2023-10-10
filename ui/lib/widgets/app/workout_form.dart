@@ -7,10 +7,17 @@ class AppWorkoutForm extends StatefulWidget {
   final Function(bool ok) onSubmitted;
   final AppWorkoutService appWorkoutService;
 
+  final String? initialName;
+  final String? initialNote;
+  final int? initialDayOfWeek;
+
   const AppWorkoutForm({
     super.key,
     required this.onSubmitted,
     required this.appWorkoutService,
+    this.initialName,
+    this.initialNote,
+    this.initialDayOfWeek,
   });
 
   @override
@@ -18,8 +25,8 @@ class AppWorkoutForm extends StatefulWidget {
 }
 
 class _AppWorkoutFormState extends State<AppWorkoutForm> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
+  final TextEditingController _nameController;
+  final TextEditingController _noteController;
   final List<String> _daysOfWeek = [
     'None',
     'Monday',
@@ -30,7 +37,12 @@ class _AppWorkoutFormState extends State<AppWorkoutForm> {
     'Saturday',
     'Sunday'
   ];
+
   String? _selectedDay;
+
+  _AppWorkoutFormState()
+      : _nameController = TextEditingController(),
+        _noteController = TextEditingController();
 
   void _submitForm() async {
     final Map<String, dynamic> data = {
@@ -40,11 +52,27 @@ class _AppWorkoutFormState extends State<AppWorkoutForm> {
       'note': _noteController.text,
     };
 
-    final bool ok =
-        await widget.appWorkoutService.upsert(data);
+    final bool ok = await widget.appWorkoutService.upsert(data);
 
     if (ok) {
       widget.onSubmitted(true);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialName != null) {
+      _nameController.text = widget.initialName!;
+    }
+
+    if (widget.initialNote != null) {
+      _noteController.text = widget.initialNote!;
+    }
+
+    if (widget.initialDayOfWeek != null) {
+      _selectedDay = _daysOfWeek[widget.initialDayOfWeek! + 1];
     }
   }
 
